@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur de Programme d'Entraînement</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>🏃‍♂️ Générateur de Programme d'Entraînement</h1>
+        <div class="form-card">
+            <form action="/generate" method="POST">
+                <div class="form-group">
+                    <label for="volume_tps">
+                        Volume de temps hebdomadaire (en heures)
+                    </label>
+                    <input 
+                        type="number" 
+                        id="volume_tps" 
+                        name="volume_tps" 
+                        step="0.5" 
+                        min="1" 
+                        max="20" 
+                        required
+                        placeholder="Ex: 5.0"
+                    >
+                    <small>Entre 1 et 20 heures par semaine</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="nb_semaines">
+                        Nombre de semaines d'entraînement
+                    </label>
+                    <input 
+                        type="number" 
+                        id="nb_semaines" 
+                        name="nb_semaines" 
+                        min="4" 
+                        max="52" 
+                        required
+                        placeholder="Ex: 12"
+                    >
+                    <small>Entre 4 et 52 semaines</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="objectif">
+                        Objectif (distance en km)
+                    </label>
+                    <input 
+                        type="number" 
+                        id="objectif" 
+                        name="objectif" 
+                        min="5" 
+                        max="100" 
+                        required
+                        placeholder="Ex: 21"
+                    >
+                    <small>Distance de votre objectif (5km, 10km, 21km, 42km...)</small>
+                </div>
+
+                <button type="submit" class="btn-primary">
+                    Générer mon programme
+                </button>
+            </form>
+        </div>
+
+        <div class="info-card">
+            <h3>ℹ️ Comment ça marche ?</h3>
+            <ul>
+                <li><strong>Volume hebdomadaire :</strong> Le temps total que vous pouvez consacrer à la course par semaine</li>
+                <li><strong>Nombre de semaines :</strong> La durée de votre préparation jusqu'à l'objectif</li>
+                <li><strong>Objectif :</strong> La distance que vous souhaitez parcourir (5km, 10km, semi-marathon, marathon...)</li>
+            </ul>
+            <p>Le programme généré inclut :</p>
+            <ul>
+                <li>✅ Séances de VMA (Vitesse Maximale Aérobie)</li>
+                <li>✅ Séances au Seuil</li>
+                <li>✅ Séances d'Endurance Fondamentale</li>
+                <li>✅ Périodisation avec cycles de récupération</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

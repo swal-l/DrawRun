@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Votre Programme d'Entraînement</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header-results">
+            <h1>📋 Votre Programme d'Entraînement</h1>
+            <div class="summary">
+                <p><strong>Objectif :</strong> {{ objectif }} km</p>
+                <p><strong>Phase générale :</strong> {{ phase_generale }} semaines</p>
+                <p><strong>Durée totale :</strong> {{ nb_semaines }} semaines</p>
+            </div>
+            <a href="/" class="btn-secondary">← Nouveau programme</a>
+        </div>
+
+        {% for week in weeks %}
+        <div class="week-card">
+            <div class="week-header">
+                <h2>Semaine {{ week.numero }}</h2>
+                <span class="badge {% if 'Récupération' in week.cycle %}badge-recovery{% else %}badge-charge{% endif %}">
+                    {{ week.cycle }}
+                </span>
+            </div>
+            
+            <div class="week-volume">
+                <strong>Volume :</strong> {{ (week.volume * 60)|format_time }}
+            </div>
+
+            <div class="seances-container">
+                {% for seance in week.seances %}
+                    {% if seance.type == 'VMA' %}
+                    <div class="seance-card seance-vma">
+                        <h3>🔥 Séance VMA</h3>
+                        <p><strong>Durée totale :</strong> {{ seance.duree|format_time }}</p>
+                        <div class="seance-details">
+                            <div class="detail-item">
+                                <span class="zone">Z1</span>
+                                <span>Échauffement : {{ seance.echauffement|format_time }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="zone zone-intense">Z5</span>
+                                {% if seance.is_short %}
+                                    <span>Corps : {{ seance.nb_fractions }} × ({{ (seance.effort * 60)|int }}s effort / {{ (seance.recup_effort * 60)|int }}s récup)</span>
+                                {% else %}
+                                    <span>Corps : {{ seance.nb_fractions }} × ({{ seance.effort|format_time }} effort / {{ seance.recup_effort|format_time }} récup)</span>
+                                {% endif %}
+                            </div>
+                            <div class="detail-item">
+                                <span class="zone">Z1</span>
+                                <span>Retour au calme : {{ seance.recup|format_time }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% elif seance.type == 'Seuil' %}
+                    <div class="seance-card seance-seuil">
+                        <h3>⚡ Séance Seuil</h3>
+                        <p><strong>Durée totale :</strong> {{ seance.duree|format_time }}</p>
+                        <div class="seance-details">
+                            <div class="detail-item">
+                                <span class="zone">Z1</span>
+                                <span>Échauffement : {{ seance.echauffement|format_time }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="zone zone-seuil">Z4</span>
+                                {% if seance.is_continuous %}
+                                    <span>Corps : {{ seance.nb_fractions }} × {{ seance.effort|format_time }} en continu</span>
+                                {% else %}
+                                    <span>Corps : {{ seance.nb_fractions }} × ({{ seance.effort|format_time }} effort / {{ seance.recup_effort|format_time }} récup)</span>
+                                {% endif %}
+                            </div>
+                            <div class="detail-item">
+                                <span class="zone">Z1</span>
+                                <span>Retour au calme : {{ seance.recup|format_time }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% elif seance.type == 'EF_unique' %}
+                    <div class="seance-card seance-ef">
+                        <h3>🏃 Endurance Fondamentale</h3>
+                        <p><strong>Durée totale :</strong> {{ seance.duree|format_time }}</p>
+                        <div class="seance-details">
+                            <div class="detail-item">
+                                <span class="zone">Z1</span>
+                                <span>Échauffement : {{ seance.echauffement|format_time }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="zone zone-ef">Z2</span>
+                                <span>Corps : {{ seance.corps|format_time }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="zone">Z1</span>
+                                <span>Retour au calme : {{ seance.recup|format_time }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% elif seance.type == 'EF_longue' %}
+                    <div class="seance-card seance-ef">
+                        <h3>🏃 EF Longue</h3>
+                        <p><strong>Durée totale :</strong> {{ seance.duree|format_time }}</p>
+                        <div class="seance-details">
+                            <div class="detail-item">
+                                <span class="zone">Z1</span>
+                                <span>Échauffement : {{ seance.echauffement|format_time }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="zone zone-ef">Z2</span>
+                                <span>Corps : {{ seance.corps|format_time }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="zone">Z1</span>
+                                <span>Retour au calme : {{ seance.recup|format_time }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% elif seance.type == 'EF_courte' %}
+                    <div class="seance-card seance-ef">
+                        <h3>🏃 EF Courte</h3>
+                        <p><strong>Durée totale :</strong> {{ seance.duree|format_time }}</p>
+                        <div class="seance-details">
+                            <div class="detail-item">
+                                <span class="zone">Z1</span>
+                                <span>Échauffement : {{ seance.echauffement|format_time }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="zone zone-ef">Z2</span>
+                                <span>Corps : {{ seance.corps|format_time }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="zone">Z1</span>
+                                <span>Retour au calme : {{ seance.recup|format_time }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+
+        <div class="footer-actions">
+            <a href="/" class="btn-primary">Générer un nouveau programme</a>
+        </div>
+    </div>
+</body>
+</html>
