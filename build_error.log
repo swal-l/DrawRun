@@ -1,0 +1,231 @@
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by net.rubygrapefruit.platform.internal.NativeLibraryLoader in an unnamed module (file:/C:/Users/lomic/.gradle/wrapper/dists/gradle-8.11.1-bin/bpt9gzteqjrbo1mjrsomdt32c/gradle-8.11.1/lib/native-platform-0.22-milestone-26.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :app:checkKotlinGradlePluginConfigurationErrors
+> Task :app:generateDebugBuildConfig UP-TO-DATE
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+> Task :app:generateDebugResValues UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:mergeDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+> Task :app:processDebugMainManifest UP-TO-DATE
+> Task :app:processDebugManifest UP-TO-DATE
+> Task :app:processDebugManifestForPackage UP-TO-DATE
+> Task :app:processDebugResources UP-TO-DATE
+> Task :app:javaPreCompileDebug UP-TO-DATE
+> Task :app:mergeDebugShaders UP-TO-DATE
+> Task :app:compileDebugShaders NO-SOURCE
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :app:mergeDebugAssets UP-TO-DATE
+> Task :app:compressDebugAssets UP-TO-DATE
+> Task :app:desugarDebugFileDependencies UP-TO-DATE
+> Task :app:checkDebugDuplicateClasses UP-TO-DATE
+> Task :app:mergeDebugStartupProfile UP-TO-DATE
+> Task :app:mergeExtDexDebug UP-TO-DATE
+> Task :app:mergeLibDexDebug UP-TO-DATE
+> Task :app:mergeDebugJniLibFolders UP-TO-DATE
+> Task :app:mergeDebugNativeLibs NO-SOURCE
+> Task :app:stripDebugDebugSymbols NO-SOURCE
+> Task :app:validateSigningDebug UP-TO-DATE
+> Task :app:writeDebugAppMetadata UP-TO-DATE
+> Task :app:writeDebugSigningConfigVersions UP-TO-DATE
+
+> Task :app:compileDebugKotlin
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:678:9 Expecting member declaration
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:678:13 Expecting member declaration
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:681:11 Expecting member declaration
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:681:17 Expecting member declaration
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:681:18 Expecting member declaration
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:681:19 Expecting member declaration
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:681:21 Expecting member declaration
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:681:30 Expecting member declaration
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:681:32 Expecting member declaration
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:1234:1 Expecting a top level declaration
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:476:48 Unresolved reference: it
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:476:104 Unresolved reference: it
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:484:57 Unresolved reference: it
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:653:17 Unresolved reference: a
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:655:17 Unresolved reference: a
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:655:26 Overload resolution ambiguity: 
+public inline fun <T> Iterable<TypeVariable(T)>.forEach(action: (TypeVariable(T)) -> Unit): Unit defined in kotlin.collections
+public inline fun <K, V> Map<out TypeVariable(K), TypeVariable(V)>.forEach(action: (Map.Entry<TypeVariable(K), TypeVariable(V)>) -> Unit): Unit defined in kotlin.collections
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:655:36 Cannot infer a type for this parameter. Please specify it explicitly.
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:659:36 Cannot infer a type for this parameter. Please specify it explicitly.
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:659:46 Overload resolution ambiguity: 
+public open fun put(p0: String!, p1: Any!): JSONObject! defined in org.json.JSONObject
+public open fun put(p0: String!, p1: Boolean): JSONObject! defined in org.json.JSONObject
+public open fun put(p0: String!, p1: Double): JSONObject! defined in org.json.JSONObject
+public open fun put(p0: String!, p1: Float): JSONObject! defined in org.json.JSONObject
+public open fun put(p0: String!, p1: Int): JSONObject! defined in org.json.JSONObject
+public open fun put(p0: String!, p1: Long): JSONObject! defined in org.json.JSONObject
+public open fun put(p0: String!, p1: (Mutable)Collection<*>!): JSONObject! defined in org.json.JSONObject
+public open fun put(p0: String!, p1: (Mutable)Map<*, *>!): JSONObject! defined in org.json.JSONObject
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:660:39 Cannot infer a type for this parameter. Please specify it explicitly.
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:660:49 Overload resolution ambiguity: 
+public open fun put(p0: String!, p1: Any!): JSONObject! defined in org.json.JSONObject
+public open fun put(p0: String!, p1: Boolean): JSONObject! defined in org.json.JSONObject
+public open fun put(p0: String!, p1: Double): JSONObject! defined in org.json.JSONObject
+public open fun put(p0: String!, p1: Float): JSONObject! defined in org.json.JSONObject
+public open fun put(p0: String!, p1: Int): JSONObject! defined in org.json.JSONObject
+public open fun put(p0: String!, p1: Long): JSONObject! defined in org.json.JSONObject
+public open fun put(p0: String!, p1: (Mutable)Collection<*>!): JSONObject! defined in org.json.JSONObject
+public open fun put(p0: String!, p1: (Mutable)Map<*, *>!): JSONObject! defined in org.json.JSONObject
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:661:41 Cannot infer a type for this parameter. Please specify it explicitly.
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:661:51 Overload resolution ambiguity: 
+public open fun put(p0: String!, p1: Any!): JSONObject! defined in org.json.JSONObject
+public open fun put(p0: String!, p1: Boolean): JSONObject! defined in org.json.JSONObject
+public open fun put(p0: String!, p1: Double): JSONObject! defined in org.json.JSONObject
+public open fun put(p0: String!, p1: Float): JSONObject! defined in org.json.JSONObject
+public open fun put(p0: String!, p1: Int): JSONObject! defined in org.json.JSONObject
+public open fun put(p0: String!, p1: Long): JSONObject! defined in org.json.JSONObject
+public open fun put(p0: String!, p1: (Mutable)Collection<*>!): JSONObject! defined in org.json.JSONObject
+public open fun put(p0: String!, p1: (Mutable)Map<*, *>!): JSONObject! defined in org.json.JSONObject
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:662:36 Cannot infer a type for this parameter. Please specify it explicitly.
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:662:46 Overload resolution ambiguity: 
+public open fun put(p0: String!, p1: Any!): JSONObject! defined in org.json.JSONObject
+public open fun put(p0: String!, p1: Boolean): JSONObject! defined in org.json.JSONObject
+public open fun put(p0: String!, p1: Double): JSONObject! defined in org.json.JSONObject
+public open fun put(p0: String!, p1: Float): JSONObject! defined in org.json.JSONObject
+public open fun put(p0: String!, p1: Int): JSONObject! defined in org.json.JSONObject
+public open fun put(p0: String!, p1: Long): JSONObject! defined in org.json.JSONObject
+public open fun put(p0: String!, p1: (Mutable)Collection<*>!): JSONObject! defined in org.json.JSONObject
+public open fun put(p0: String!, p1: (Mutable)Map<*, *>!): JSONObject! defined in org.json.JSONObject
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:665:17 Unresolved reference: obj
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:669:17 Unresolved reference: a
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:671:17 Unresolved reference: a
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:671:36 Overload resolution ambiguity: 
+public inline fun <T> Iterable<TypeVariable(T)>.forEach(action: (TypeVariable(T)) -> Unit): Unit defined in kotlin.collections
+public inline fun <K, V> Map<out TypeVariable(K), TypeVariable(V)>.forEach(action: (Map.Entry<TypeVariable(K), TypeVariable(V)>) -> Unit): Unit defined in kotlin.collections
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:671:55 Unresolved reference: it
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:672:17 Unresolved reference: obj
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:675:27 Unresolved reference: obj
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:678:13 Conflicting overloads: public final fun `<no name provided>`(): Unit defined in com.orbital.run.logic.Persistence, public final fun `<no name provided>`(): Unit defined in com.orbital.run.logic.Persistence
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:678:13 Function declaration must have a name
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:679:29 Unresolved reference: context
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:680:28 Unresolved reference: jsonArray
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:681:32 Conflicting overloads: public final fun `<no name provided>`(): Unit defined in com.orbital.run.logic.Persistence, public final fun `<no name provided>`(): Unit defined in com.orbital.run.logic.Persistence
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:681:32 Function declaration must have a name
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:682:13 Unresolved reference: e
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:686:45 Unresolved reference: CompletedActivity
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:687:43 Unresolved reference: HISTORY_FILE
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:693:54 Unresolved reference: PREFS_NAME
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:705:34 Unresolved reference: CompletedActivity
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:713:48 Unresolved reference: Split
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:718:40 Unresolved reference: Split
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:736:30 Unresolved reference: CompletedActivity
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:784:58 Unresolved reference: HeartRateSample
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:789:37 Unresolved reference: add
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:789:41 Unresolved reference: HeartRateSample
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:793:54 Unresolved reference: SpeedSample
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:798:37 Unresolved reference: add
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:798:41 Unresolved reference: SpeedSample
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:802:54 Unresolved reference: PowerSample
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:807:37 Unresolved reference: add
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:807:41 Unresolved reference: PowerSample
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:811:56 Unresolved reference: CadenceSample
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:816:37 Unresolved reference: add
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:816:41 Unresolved reference: CadenceSample
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:820:58 Unresolved reference: ElevationSample
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:825:37 Unresolved reference: add
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:825:41 Unresolved reference: ElevationSample
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:829:61 Unresolved reference: RunningDynamicSample
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:834:37 Unresolved reference: add
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:834:41 Unresolved reference: RunningDynamicSample
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:838:52 Unresolved reference: RunningDynamicSample
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:843:37 Unresolved reference: add
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:843:41 Unresolved reference: RunningDynamicSample
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:847:68 Unresolved reference: RunningDynamicSample
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:852:37 Unresolved reference: add
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:852:41 Unresolved reference: RunningDynamicSample
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:856:62 Unresolved reference: RunningDynamicSample
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:861:37 Unresolved reference: add
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:861:41 Unresolved reference: RunningDynamicSample
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:882:29 Unresolved reference: it
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:882:55 Unresolved reference: it
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:885:13 Unresolved reference: saveHistoryList
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:892:39 Unresolved reference: it
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:897:64 Unresolved reference: it
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:903:29 Unresolved reference: it
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:904:9 Unresolved reference: saveHistoryList
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:921:43 Unresolved reference: BLACKLIST_FILE
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:935:47 Unresolved reference: BLACKLIST_FILE
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:941:50 Unresolved reference: PREFS_NAME
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:949:47 Unresolved reference: HISTORY_FILE
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:955:91 Unresolved reference: RecordDetails
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:957:16 Unresolved reference: RecordDetails
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:965:48 Unresolved reference: PersonalRecords
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:966:50 Unresolved reference: PREFS_NAME
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:967:16 Unresolved reference: PersonalRecords
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:984:67 Unresolved reference: CompletedActivity
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:986:50 Unresolved reference: PREFS_NAME
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:989:31 Unresolved reference: RecordDetails
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:1043:42 Unresolved reference: Gear
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:1044:50 Unresolved reference: PREFS_NAME
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:1046:34 Unresolved reference: Gear
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:1051:26 Unresolved reference: Gear
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:1064:48 Unresolved reference: Gear
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:1065:50 Unresolved reference: PREFS_NAME
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:1067:25 Cannot infer a type for this parameter. Please specify it explicitly.
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:1080:61 Unresolved reference: CompletedActivity
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:1085:50 Unresolved reference: it
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:1085:71 Unresolved reference: it
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:1097:47 Unresolved reference: PersonalRecords
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:1099:50 Unresolved reference: PREFS_NAME
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:1102:61 Unresolved reference: CompletedActivity
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:1103:38 Unresolved reference: CompletedActivity
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:1104:39 Unresolved reference: CompletedActivity
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:1106:66 Unresolved reference: CompletedActivity
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:1113:27 Cannot infer a type for this parameter. Please specify it explicitly.
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:1127:50 Unresolved reference: it
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:1164:55 Unresolved reference: CompletedActivity
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:1172:33 Cannot infer a type for this parameter. Please specify it explicitly.
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:1174:27 Cannot infer a type for this parameter. Please specify it explicitly.
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:1180:28 Cannot infer a type for this parameter. Please specify it explicitly.
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:1194:31 Unresolved reference: CompletedActivity
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:1194:57 Unresolved reference: CompletedActivity
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:1194:77 Unresolved reference: CompletedActivity
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:64:20 Not enough information to infer type variable T
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:64:20 Property delegate must have a 'getValue(Nothing?, KProperty<*>)' method. None of the following functions is suitable: 
+public inline operator fun <T> State<???>.getValue(thisObj: Any?, property: KProperty<*>): ??? defined in androidx.compose.runtime
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:64:58 Unresolved reference: loadHistory
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:65:35 Unresolved reference: it
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:76:18 Not enough information to infer type variable T
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:76:18 Property delegate must have a 'getValue(Nothing?, KProperty<*>)' method. None of the following functions is suitable: 
+public inline operator fun <T> State<???>.getValue(thisObj: Any?, property: KProperty<*>): ??? defined in androidx.compose.runtime
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:78:16 Property delegate must have a 'getValue(Nothing?, KProperty<*>)' method. None of the following functions is suitable: 
+public inline operator fun <T> State<Int>.getValue(thisObj: Any?, property: KProperty<*>): Int defined in androidx.compose.runtime
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:78:16 Property delegate must have a 'setValue(Nothing?, KProperty<*>, [Error type: Error delegation type for remember { mutableStateOf(activity.rpe ?: 0) }])' method. None of the following functions is suitable: 
+public inline operator fun <T> MutableState<Int>.setValue(thisObj: Any?, property: KProperty<*>, value: Int): Unit defined in androidx.compose.runtime
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:93:29 Overload resolution ambiguity: 
+public fun OutlinedTextField(value: TextFieldValue, onValueChange: (TextFieldValue) -> Unit, modifier: Modifier = ..., enabled: Boolean = ..., readOnly: Boolean = ..., textStyle: TextStyle = ..., label: (() -> Unit)? = ..., placeholder: (() -> Unit)? = ..., leadingIcon: (() -> Unit)? = ..., trailingIcon: (() -> Unit)? = ..., prefix: (() -> Unit)? = ..., suffix: (() -> Unit)? = ..., supportingText: (() -> Unit)? = ..., isError: Boolean = ..., visualTransformation: VisualTransformation = ..., keyboardOptions: KeyboardOptions = ..., keyboardActions: KeyboardActions = ..., singleLine: Boolean = ..., maxLines: Int = ..., minLines: Int = ..., interactionSource: MutableInteractionSource = ..., shape: Shape = ..., colors: TextFieldColors = ...): Unit defined in androidx.compose.material3
+public fun OutlinedTextField(value: String, onValueChange: (String) -> Unit, modifier: Modifier = ..., enabled: Boolean = ..., readOnly: Boolean = ..., textStyle: TextStyle = ..., label: (() -> Unit)? = ..., placeholder: (() -> Unit)? = ..., leadingIcon: (() -> Unit)? = ..., trailingIcon: (() -> Unit)? = ..., prefix: (() -> Unit)? = ..., suffix: (() -> Unit)? = ..., supportingText: (() -> Unit)? = ..., isError: Boolean = ..., visualTransformation: VisualTransformation = ..., keyboardOptions: KeyboardOptions = ..., keyboardActions: KeyboardActions = ..., singleLine: Boolean = ..., maxLines: Int = ..., minLines: Int = ..., interactionSource: MutableInteractionSource = ..., shape: Shape = ..., colors: TextFieldColors = ...): Unit defined in androidx.compose.material3
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:95:59 Unresolved reference: it
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:133:51 Unresolved reference: loadHistory
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:223:37 Unresolved reference: deleteActivity
+
+> Task :app:compileDebugKotlin FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:compileDebugKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 15s
+29 actionable tasks: 2 executed, 27 up-to-date
