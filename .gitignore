@@ -24,3 +24,5 @@ google-services.json
 # Build
 /app/build
 /website/.DS_Store
+
+.gradle_local_override/

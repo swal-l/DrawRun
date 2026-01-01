@@ -15,6 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -176,6 +177,9 @@ fun ActivityDetailScreen(
  
             // 6. Laps & Splits
             SplitsSection(activity, trainingPlan)
+
+            // 7. Social & Sharing
+            SocialContextSection(activity)
 
             Spacer(Modifier.height(24.dp))
 
@@ -1300,6 +1304,17 @@ fun RunningQualitySection(activity: Persistence.CompletedActivity, trainingPlan:
                     color = AirAccent,
                     onClick = { selectedMetric = "RE" }
                 )
+
+                if (science.enduranceIndex != null) {
+                    Divider(Modifier.padding(vertical = 16.dp), color = AirSurface, thickness = 1.dp)
+                    QualityItem(
+                        label = "Indice d'Endurance (IE)",
+                        value = String.format("%.1f", science.enduranceIndex),
+                        description = "Indice de Péronnet. Cible > -8.0.",
+                        color = Color(0xFF00B0FF),
+                        onClick = { selectedMetric = "IE" }
+                    )
+                }
             }
         }
     }
@@ -1307,6 +1322,88 @@ fun RunningQualitySection(activity: Persistence.CompletedActivity, trainingPlan:
     // Explanation Dialog
     selectedMetric?.let { metric ->
         MetricExplanationDialog(metric) { selectedMetric = null }
+    }
+}
+
+@Composable
+fun SocialContextSection(activity: Persistence.CompletedActivity) {
+    Card(
+        modifier = Modifier.fillMaxWidth().padding(16.dp),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = AirWhite),
+        elevation = CardDefaults.cardElevation(2.dp)
+    ) {
+        Column(Modifier.padding(20.dp)) {
+            // Header
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Rounded.Share, null, tint = AirPrimary, modifier = Modifier.size(20.dp))
+                Spacer(Modifier.width(8.dp))
+                Text("Social & Partage", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = AirTextPrimary)
+            }
+            Spacer(Modifier.height(16.dp))
+
+            // Latest Draws (Mock)
+            val mockDrawers = listOf("Sophie D.", "Thomas B.", "Léa M.")
+            if (mockDrawers.isNotEmpty()) {
+                Text("Derniers Draws", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = AirTextSecondary)
+                Spacer(Modifier.height(8.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    // Overlapping avatars
+                    Box(Modifier.width((24 * mockDrawers.size + 12).dp)) {
+                        mockDrawers.forEachIndexed { index, name ->
+                            Box(
+                                modifier = Modifier
+                                    .padding(start = (index * 18).dp)
+                                    .size(24.dp)
+                                    .background(AirPrimary, CircleShape)
+                                    .border(2.dp, Color.White, CircleShape),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(name.first().toString(), fontSize = 10.sp, color = Color.White, fontWeight = FontWeight.Bold)
+                            }
+                        }
+                    }
+                    Text(
+                        text = "Bravo de ${mockDrawers.joinToString(", ")}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = AirTextPrimary,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
+                Divider(Modifier.padding(vertical = 16.dp), color = AirSurface)
+            }
+
+            // Privacy Controls
+            Text("Options de visibilité", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = AirTextSecondary)
+            Spacer(Modifier.height(8.dp))
+            
+            SharingToggle("Afficher sur le fil Social", true)
+            SharingToggle("Inclure la carte", true)
+            SharingToggle("Inclure les données cardiaques", false)
+        }
+    }
+}
+
+@Composable
+fun SharingToggle(label: String, initialChecked: Boolean) {
+    var checked by remember { mutableStateOf(initialChecked) }
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(label, fontSize = 13.sp, color = AirTextPrimary)
+        Switch(
+            checked = checked,
+            onCheckedChange = { checked = it },
+            colors = SwitchDefaults.colors(
+                checkedThumbColor = Color.White,
+                checkedTrackColor = AirPrimary,
+                uncheckedThumbColor = AirTextSecondary,
+                uncheckedTrackColor = AirSurface
+            ),
+            modifier = Modifier.scale(0.7f)
+        )
     }
 }
 

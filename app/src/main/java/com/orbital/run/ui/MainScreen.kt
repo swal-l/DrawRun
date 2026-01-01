@@ -44,6 +44,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import com.orbital.run.logic.*
 import com.orbital.run.logic.formatDuration
 import com.orbital.run.ui.theme.*
+import com.orbital.run.social.SocialScreen // NEW IMPORT
 import androidx.compose.ui.graphics.drawscope.withTransform
 import kotlin.random.Random
 import kotlin.math.sin
@@ -207,7 +208,11 @@ fun MainScreen() {
         topBar = { 
             Column {
                 Spacer(Modifier.height(12.dp))
-                if (onboardingComplete) TopBar(notifications.size) { showNotifDialog = true } 
+                Spacer(Modifier.height(12.dp))
+                if (onboardingComplete) TopBar(
+                    hasNewSocial = true, // Mock state, ideally from ViewModel
+                    onSocialClick = { currentView = 6 }
+                ) 
             }
         },
         bottomBar = { if (result != null && onboardingComplete) BottomNav(currentView) { currentView = it } }
@@ -299,7 +304,9 @@ fun MainScreen() {
                                 onBack = { currentView = 4 }
                             )
                         }
+                        6 -> SocialScreen() // SOCIAL FEAT
                     }
+
                 }
             }
             
@@ -711,7 +718,7 @@ fun formatDate(ms: Long): String {
 }
 
 @Composable
-fun TopBar(notifCount: Int, onNotif: () -> Unit) {
+fun TopBar(hasNewSocial: Boolean, onSocialClick: () -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth().height(60.dp).padding(horizontal = 20.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -721,16 +728,23 @@ fun TopBar(notifCount: Int, onNotif: () -> Unit) {
         Text("DrawRun", fontSize = 24.sp, fontWeight = FontWeight.ExtraBold, color = AirPrimary, letterSpacing = 1.sp)
         
         Box {
-            IconButton(onClick = onNotif) {
-                Icon(Icons.Default.Notifications, null, tint = if(notifCount > 0) AirAccent else AirTextLight)
+            // Replaced Notification Icon with Social Icon
+            IconButton(onClick = onSocialClick) {
+                Icon(
+                    imageVector = Icons.Rounded.Group, 
+                    contentDescription = "Social", 
+                    tint = if(hasNewSocial) AirPrimary else AirTextLight
+                )
             }
-            if(notifCount > 0) {
+            if(hasNewSocial) {
                 Box(
-                    modifier = Modifier.align(Alignment.TopEnd).padding(8.dp).size(16.dp).background(AirAccent, CircleShape),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text("$notifCount", color = Color.White, fontSize = 10.sp, fontWeight = FontWeight.Bold)
-                }
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(8.dp)
+                        .size(10.dp) // Smaller dot for social
+                        .background(Color(0xFFFF3D00), CircleShape) // Bright Orange/Red for alert
+                        .border(1.dp, AirWhite, CircleShape)
+                )
             }
         }
     }

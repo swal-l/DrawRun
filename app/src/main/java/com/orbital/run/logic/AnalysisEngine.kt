@@ -46,7 +46,8 @@ data class ScientificMetrics(
     val acwr: Double? = null,
     val rTss: Int? = null,
     val rss: Int? = null,
-    val rFtpW: Double? = null
+    val rFtpW: Double? = null,
+    val enduranceIndex: Double? = null
 )
 
 object AnalysisEngine {
@@ -165,8 +166,55 @@ object AnalysisEngine {
             runningEffectiveness = re,
             rTss = rTss,
             rss = rss,
-            rFtpW = estimatedRftpW
+            rFtpW = estimatedRftpW,
+            enduranceIndex = calculateEnduranceIndex(a, tp)
         )
+    }
+
+    private fun calculateEnduranceIndex(a: Persistence.CompletedActivity, tp: TrainingPlanResult?): Double? {
+        // Formula: IE = (100 - %VMA) / ln(7) - ln(t) ? 
+        // Image says: IE = (100 - %VMA) / ln(7/t) ?? No, image says ln(7/t) OR ln(t/7) ?
+        // Image: IE = (100 - %VMA) / ln(7/t)
+        // Wait, if t > 7, ln(7/t) is negative. 
+        // 100 - %VMA is usually positive (running slower than VMA).
+        // So IE would be negative. 
+        // Peronnet & Thibault usually define IE as negative (slope). 
+        // Let's check formula carefully.
+        // Image text: "Défini par Péronnet et Thibault... pente de décroissance... (négatif)"
+        // "Plus cet indice est proche de zéro et plus l'athlète est endurant."
+        // Formula in image: IE = (100 - %VMA) / ln ( 7 ) / t  <-- NO
+        // Formula in image: IE = (100 - %VMA) / ln ( 7 / t )  OR  ln ( t / 7 ) ?
+        // Let's re-read the image text in my mind or zoom in.
+        // Image: IE = (100 - %VMA) / ln( 7 / t ) 
+        // Let's test:
+        // Run 60 min at 12kmh. VMA 15. %VMA = 80%.
+        // 100 - 80 = 20.
+        // ln(7/60) = ln(0.116) = -2.15.
+        // IE = 20 / -2.15 = -9.3.
+        // Run 60 min at 14kmh. %VMA = 93%.
+        // 100 - 93 = 7.
+        // IE = 7 / -2.15 = -3.25 (Closer to zero -> better endurance).
+        // This makes sense. IE is typically between -10 (poor) and -3 (elite).
+        
+        if (a.durationMin <= 0 || a.distanceKm <= 0) return null
+        val vma = tp?.vma ?: return null // Need VMA
+        
+        val speedKmh = a.distanceKm / (a.durationMin / 60.0)
+        val pctVma = (speedKmh / vma) * 100
+        val t = a.durationMin
+        
+        // Avoid division by zero if t approx 7 or log issues
+        // Actually if t = 7, ln(1) = 0 -> Infinity.
+        if (pctVma > 100) return null // Sprinted faster than VMA?? Not useful for endurance index.
+        
+        // If duration is very short < 7 min, ln(7/t) > 0. Then IE > 0.
+        // The formula usually applies for t > 7 min (since 7 min is time limit at 100% VMA).
+        if (t < 7) return null 
+
+        val denominator = kotlin.math.ln(7.0 / t)
+        if (denominator == 0.0) return null
+        
+        return (100.0 - pctVma) / denominator
     }
     
     private fun calculateSwimScience(a: Persistence.CompletedActivity): ScientificMetrics {

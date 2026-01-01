@@ -3,6 +3,8 @@ WARNING: java.lang.System::load has been called by net.rubygrapefruit.platform.i
 WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
 WARNING: Restricted methods will be blocked in a future release unless native access is enabled
 
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.11.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
 > Task :app:preBuild UP-TO-DATE
 > Task :app:preDebugBuild UP-TO-DATE
 > Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
@@ -39,27 +41,9 @@ WARNING: Restricted methods will be blocked in a future release unless native ac
 > Task :app:writeDebugAppMetadata UP-TO-DATE
 > Task :app:writeDebugSigningConfigVersions UP-TO-DATE
 > Task :app:compileDebugKotlin
-w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/api/OtherAPIs.kt:544:68 Parameter '_callback' is never used
-w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/api/OtherAPIs.kt:553:68 Parameter '_callback' is never used
-w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:489:13 Variable 'prefs' is never used
-w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:872:9 Variable 'textMeasurer' is never used
-w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:873:9 Variable 'labelStyle' is never used
-w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:1315:21 Name shadowed: cw
-w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/api/HealthConnectManager.kt:294:13 Variable 'power' is never used
-w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/api/SyncOptimizer.kt:75:13 Variable 'afterTimestamp' is never used
-w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/api/SyncOptimizer.kt:86:13 Variable 'newActivities' is never used
-w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/api/SyncOptimizer.kt:171:9 Parameter 'context' is never used
-w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/AdvancedAnalytics.kt:235:46 Parameter 'index' is never used, could be renamed to _
-w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/AdvancedAnalytics.kt:337:29 Parameter 'gctMs' is never used
-w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/AdvancedAnalytics.kt:337:44 Parameter 'durationSec' is never used
-w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/AdvancedAnalytics.kt:337:65 Parameter 'distanceMeters' is never used
-w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:63:9 Variable 'coachInsight' is never used
-w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/RecapScreen.kt:207:21 Variable 'streak' is never used
-w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ShareActivityDialog.kt:265:5 Parameter 'context' is never used
-w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ShareActivityDialog.kt:325:107 Parameter 'settings' is never used
-w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ShareActivityDialog.kt:357:5 Parameter 'height' is never used
-w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ShareActivityDialog.kt:422:109 Parameter 'settings' is never used
-w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ShareActivityDialog.kt:524:44 'insertImage(ContentResolver!, Bitmap!, String!, String!): String!' is deprecated. Deprecated in Java
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1329:26 Parameter 'activity' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:66:9 Variable 'coachInsight' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/MainScreen.kt:94:21 Variable 'wasConfigured' is never used
 
 > Task :app:compileDebugJavaWithJavac UP-TO-DATE
 > Task :app:dexBuilderDebug
@@ -68,8 +52,8 @@ w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/
 > Task :app:mergeDebugJavaResource UP-TO-DATE
 > Task :app:mergeProjectDexDebug
 > Task :app:packageDebug
-> Task :app:createDebugApkListingFileRedirect
+> Task :app:createDebugApkListingFileRedirect UP-TO-DATE
 > Task :app:assembleDebug
 
-BUILD SUCCESSFUL in 50s
-37 actionable tasks: 6 executed, 31 up-to-date
+BUILD SUCCESSFUL in 1m 1s
+37 actionable tasks: 5 executed, 32 up-to-date

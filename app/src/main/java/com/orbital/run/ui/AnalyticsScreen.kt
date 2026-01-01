@@ -1,11 +1,14 @@
 package com.orbital.run.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
@@ -61,7 +64,7 @@ fun AnalyticsScreen(
     val pmcPoints by analysisVm.pmcPoints.collectAsState()
     val sportBreakdown by analysisVm.sportBreakdown.collectAsState()
     val coachInsight by analysisVm.coachInsight.collectAsState()
-    val coachInsight by analysisVm.coachInsight.collectAsState()
+
     var history by remember { mutableStateOf(Persistence.loadHistory(context).sortedByDescending { it.date }) }
     var isSyncing by remember { mutableStateOf(false) }
     var selectedActivityId by remember { mutableStateOf<String?>(null) }
@@ -467,10 +470,31 @@ fun ActivityRow(activity: Persistence.CompletedActivity, onClick: () -> Unit) {
         border = androidx.compose.foundation.BorderStroke(1.dp, AirSurface)
     ) {
         Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-            Box(
-                modifier = Modifier.size(48.dp).background(if(activity.type == WorkoutType.SWIMMING) AirSecondary.copy(alpha=0.1f) else AirPrimary.copy(alpha=0.1f), RoundedCornerShape(14.dp)),
-                contentAlignment = Alignment.Center
-            ) { Text(if(activity.type == WorkoutType.SWIMMING) "🏊" else "🏃", fontSize = 22.sp) }
+            Box {
+                Box(
+                    modifier = Modifier.size(48.dp).background(if(activity.type == WorkoutType.SWIMMING) AirSecondary.copy(alpha=0.1f) else AirPrimary.copy(alpha=0.1f), RoundedCornerShape(14.dp)),
+                    contentAlignment = Alignment.Center
+                ) { Text(if(activity.type == WorkoutType.SWIMMING) "🏊" else "🏃", fontSize = 22.sp) }
+                
+                // Mock Draw Badge (Mocking logic based on ID hash for demo)
+                val mockDraws = (activity.id.hashCode() % 20).takeIf { it > 0 }
+                if (mockDraws != null) {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .offset(x = 6.dp, y = (-6).dp)
+                            .background(Color(0xFFFFD700), CircleShape) // Gold
+                            .border(2.dp, Color.White, CircleShape)
+                            .padding(horizontal = 5.dp, vertical = 2.dp)
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Rounded.Edit, null, tint = Color.Black, modifier = Modifier.size(8.dp))
+                            Spacer(Modifier.width(2.dp))
+                            Text("$mockDraws", fontSize = 8.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+                        }
+                    }
+                }
+            }
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(activity.title, fontWeight = FontWeight.Bold, color = AirTextPrimary, fontSize = 15.sp)

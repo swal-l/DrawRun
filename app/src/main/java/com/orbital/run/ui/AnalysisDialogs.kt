@@ -41,6 +41,7 @@ object MetricEducation {
             "Cadence" -> "Fréquence de Pas/Bras" to "Nombre de pas par minute (spm). Une cadence élevée (>170) réduit souvent l'impact au sol et le risque de blessure."
             "Watts" -> "Puissance" to "Mesure instantanée de l'effort produit. Contrairement à l'allure, la puissance est indépendante du vent ou de la pente."
             "QUADRANT" -> "Analyse par Quadrants" to "Méthode de visualisation de la relation entre la force (couple) et la vélocité (cadence). Permet d'identifier si votre puissance est produite en force ou en vitesse."
+            "IE" -> "Indice d'Endurance" to "L'indice de Péronnet et Thibault mesure la pente de décroissance de votre vitesse. Plus il est proche de 0 (ex: -4), plus vous êtes endurant."
             else -> "Information" to "Détails sur la métrique $metricName à venir dans la prochaine mise à jour."
         }
     }
@@ -194,6 +195,17 @@ fun MetricExplanationDialog(metric: String, onDismiss: () -> Unit) {
                                              "• Q3 (Bas/Gauche - Récup) : Force basse, Cadence basse. Récupération ou descente. Stress minimal.\n\n" +
                                              "• Q4 (Bas/Droit - Vélocité) : Force basse, Cadence élevée. Souplesse de pédalage, typique du peloton ou de l'endurance fluide.",
                             utility = "Permet de vérifier si vous respectez les spécificités de votre entraînement (ex: séance de force vs travail de vélocité)."
+                        )
+                    }
+                    "IE" -> {
+                        MetricInfoContent(
+                            title = "Indice d'Endurance (IE)",
+                            icon = Icons.Rounded.Timeline,
+                            color = AirAccent,
+                            definition = "Mesure la capacité à maintenir un pourcentage élevé de VMA dans le temps (Péronnet & Thibault).",
+                            formula = "IE = (100 - %VMA) / ln(7/t)",
+                            interpretation = "Score (toujours négatif) :\n• -3 à -5 : Exceptionnel (Marathonien Elite)\n• -6 à -8 : Bon niveau d'endurance\n• < -10 : Profil profil 'Vitesse' ou manque d'endurance",
+                            utility = "Plus l'indice est proche de zéro, moins votre vitesse décroît avec la distance."
                         )
                     }
                     else -> {
