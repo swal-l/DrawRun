@@ -148,6 +148,7 @@ nav a:hover {
     transition: transform 0.2s, box-shadow 0.2s;
     display: inline-block;
     text-decoration: none;
+    text-align: center;
 }
 
 .virus-total {
@@ -188,6 +189,7 @@ nav a:hover {
     transition: all 0.3s;
     display: inline-block;
     border: 1px solid rgba(41, 121, 255, 0.2);
+    text-align: center;
 }
 
 .btn-secondary:hover {
