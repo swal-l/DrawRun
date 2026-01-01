@@ -393,9 +393,67 @@ footer p {
     .hero-image {
         width: 100%;
         height: auto;
+        margin-top: 2rem;
+    }
+
+    /* Mock Screen Scaling for Mobile */
+    .mock-screen {
+        width: 70%;
+        /* 250px -> 70% */
+        height: auto;
+        aspect-ratio: 9/19;
+        margin: 0 auto;
+        /* Center it */
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     }
 
     h1 {
         font-size: 2.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 2.2rem;
+    }
+
+    .hero {
+        padding-top: 100px;
+    }
+
+    .hero-content {
+        padding: 1rem;
+    }
+
+    .cta-group {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        width: 100%;
+        text-align: center;
+    }
+
+    .feature-card {
+        padding: 1.5rem;
+    }
+}
+
+/* Floating Animation for Mockup */
+.hero-image {
+    animation: float-mockup 6s ease-in-out infinite;
+}
+
+@keyframes float-mockup {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-15px);
     }
 }
