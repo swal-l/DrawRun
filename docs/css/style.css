@@ -150,6 +150,29 @@ nav a:hover {
     text-decoration: none;
 }
 
+.virus-total {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    margin-left: 5px;
+    display: inline-flex;
+    align-items: center;
+    background: rgba(46, 204, 113, 0.1);
+    padding: 5px 10px;
+    border-radius: 12px;
+    border: 1px solid rgba(46, 204, 113, 0.2);
+    transition: all 0.2s;
+}
+
+.virus-total:hover {
+    background: rgba(46, 204, 113, 0.2);
+    transform: translateY(-1px);
+}
+
+.virus-total .shield {
+    margin-right: 5px;
+}
+
 .btn-primary:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(0, 191, 165, 0.4);
