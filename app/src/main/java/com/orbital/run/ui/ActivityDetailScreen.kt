@@ -179,7 +179,7 @@ fun ActivityDetailScreen(
             SplitsSection(activity, trainingPlan)
 
             // 7. Social & Sharing
-            SocialContextSection(activity)
+            // SocialContextSection(activity)
 
             Spacer(Modifier.height(24.dp))
 

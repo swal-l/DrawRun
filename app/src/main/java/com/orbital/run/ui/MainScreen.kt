@@ -209,10 +209,7 @@ fun MainScreen() {
             Column {
                 Spacer(Modifier.height(12.dp))
                 Spacer(Modifier.height(12.dp))
-                if (onboardingComplete) TopBar(
-                    hasNewSocial = true, // Mock state, ideally from ViewModel
-                    onSocialClick = { currentView = 6 }
-                ) 
+                if (onboardingComplete) TopBar(notifications.size) { showNotifDialog = true } 
             }
         },
         bottomBar = { if (result != null && onboardingComplete) BottomNav(currentView) { currentView = it } }
@@ -304,7 +301,7 @@ fun MainScreen() {
                                 onBack = { currentView = 4 }
                             )
                         }
-                        6 -> SocialScreen() // SOCIAL FEAT
+
                     }
 
                 }
@@ -718,7 +715,7 @@ fun formatDate(ms: Long): String {
 }
 
 @Composable
-fun TopBar(hasNewSocial: Boolean, onSocialClick: () -> Unit) {
+fun TopBar(notifCount: Int, onNotif: () -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth().height(60.dp).padding(horizontal = 20.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -728,23 +725,16 @@ fun TopBar(hasNewSocial: Boolean, onSocialClick: () -> Unit) {
         Text("DrawRun", fontSize = 24.sp, fontWeight = FontWeight.ExtraBold, color = AirPrimary, letterSpacing = 1.sp)
         
         Box {
-            // Replaced Notification Icon with Social Icon
-            IconButton(onClick = onSocialClick) {
-                Icon(
-                    imageVector = Icons.Rounded.Group, 
-                    contentDescription = "Social", 
-                    tint = if(hasNewSocial) AirPrimary else AirTextLight
-                )
+            IconButton(onClick = onNotif) {
+                Icon(Icons.Default.Notifications, null, tint = if(notifCount > 0) AirAccent else AirTextLight)
             }
-            if(hasNewSocial) {
+            if(notifCount > 0) {
                 Box(
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(8.dp)
-                        .size(10.dp) // Smaller dot for social
-                        .background(Color(0xFFFF3D00), CircleShape) // Bright Orange/Red for alert
-                        .border(1.dp, AirWhite, CircleShape)
-                )
+                    modifier = Modifier.align(Alignment.TopEnd).padding(8.dp).size(16.dp).background(AirAccent, CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text("$notifCount", color = Color.White, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                }
             }
         }
     }
