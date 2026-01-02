@@ -263,6 +263,9 @@ fun MainScreen() {
                             // for UI feedback we can toggle a dummy state or wait for next frame
                             appToConnect = "Health Connect" 
                         },
+                        onConnectGarmin = { showGarminLogin = true },
+                        onConnectPolar = { com.orbital.run.api.PolarAPI.openAuthorizationPage(context) },
+                        onConnectSuunto = { com.orbital.run.api.SuuntoAPI.openAuthorizationPage(context) },
                         onFinish = {
                             Persistence.setOnboardingComplete(context, true)
                             // Hard restart for clean state
@@ -272,7 +275,10 @@ fun MainScreen() {
                             context.startActivity(intent)
                         },
                         isStravaConnected = isStravaConnected,
-                        isHealthConnectConnected = connectedApps["Health Connect"] ?: false
+                        isHealthConnectConnected = connectedApps["Health Connect"] ?: false,
+                        isGarminConnected = connectedApps["Garmin"] ?: false,
+                        isPolarConnected = connectedApps["Polar Flow"] ?: false,
+                        isSuuntoConnected = connectedApps["Suunto App"] ?: false
                     )
                 }
             } else {

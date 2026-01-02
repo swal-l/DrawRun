@@ -22,15 +22,11 @@ import androidx.security.crypto.MasterKey
  * Service d'intégration avec l'API Strava (Refactored for Performance & Reliability)
  */
 object StravaAPI {
-    private val CLIENT_ID = BuildConfig.STRAVA_CLIENT_ID
-    private val CLIENT_SECRET = BuildConfig.STRAVA_CLIENT_SECRET
+    // Vercel Bridge URL (Public Data Bridge)
+    private const val BRIDGE_URL = "https://drawrunvercel-d2nnvlyct-lomics-projects.vercel.app/api/strava_bridge"
 
-    /**
-     * ✅ IMPORTANT: This must match EXACTLY the 'Authorization Callback Domain' in your Strava Dashboard.
-     * Use "localhost" in the Strava Dashboard for this setting to work.
-     */
-    private const val REDIRECT_URI = "http://localhost/strava_callback"
-    private const val AUTH_URL = "https://www.strava.com/oauth/authorize"
+    // Client Secret removed from App for security. Handled by Bridge.
+    private val CLIENT_ID = BuildConfig.STRAVA_CLIENT_ID
     
     // Config OkHttp propre
     private val client = OkHttpClient.Builder()
@@ -90,9 +86,6 @@ object StravaAPI {
     /**
      * Charge le token depuis les préférences au démarrage (version sécurisée)
      */
-    /**
-     * Charge le token depuis les préférences au démarrage (version sécurisée)
-     */
     fun loadToken(context: Context) {
         try {
             val securePrefs = getEncryptedPrefs(context)
@@ -122,7 +115,7 @@ object StravaAPI {
     }
 
     /**
-     * Refresh the access token if it is expired or about to expire (within 5 mins).
+     * Refresh the access token using Vercel Bridge
      */
     suspend fun refreshTokenIfNeeded(context: Context): Boolean {
         // If no refresh token, we can't refresh
@@ -135,19 +128,16 @@ object StravaAPI {
             return true // Token still valid
         }
         
-        android.util.Log.d("STRAVA_AUTH", "🔄 Refreshing Strava Token...")
+        android.util.Log.d("STRAVA_AUTH", "🔄 Refreshing Strava Token via Bridge...")
         
         return withContext(Dispatchers.IO) {
-            val formBody = FormBody.Builder()
-                .add("client_id", CLIENT_ID)
-                .add("client_secret", CLIENT_SECRET)
-                .add("grant_type", "refresh_token")
-                .add("refresh_token", rToken)
-                .build()
+            val json = JSONObject()
+            json.put("refresh_token", rToken)
+            val body = json.toString().toRequestBody("application/json".toMediaType())
 
             val request = Request.Builder()
-                .url("https://www.strava.com/oauth/token")
-                .post(formBody)
+                .url("$BRIDGE_URL/refresh") // Call bridge endpoint
+                .post(body)
                 .build()
 
             try {
@@ -157,11 +147,11 @@ object StravaAPI {
                         return@withContext false
                     }
                     
-                    val body = response.body?.string() ?: return@withContext false
-                    val json = JSONObject(body)
-                    val newAccessToken = json.optString("access_token")
-                    val newRefreshToken = json.optString("refresh_token")
-                    val newExpiresAt = json.optLong("expires_at")
+                    val respBody = response.body?.string() ?: return@withContext false
+                    val respJson = JSONObject(respBody)
+                    val newAccessToken = respJson.optString("access_token")
+                    val newRefreshToken = respJson.optString("refresh_token")
+                    val newExpiresAt = respJson.optLong("expires_at")
                     
                     if (newAccessToken.isNotBlank()) {
                         saveFullTokenState(context, newAccessToken, newRefreshToken, newExpiresAt)
@@ -203,9 +193,6 @@ object StravaAPI {
     /**
      * Sauvegarde le token UNIQUEMENT s'il est valide (chiffré)
      */
-    /**
-     * Sauvegarde le token UNIQUEMENT s'il est valide (chiffré)
-     */
     fun saveToken(context: Context, token: String) {
         accessToken = token
         try {
@@ -234,26 +221,10 @@ object StravaAPI {
     }
 
     fun openAuthorizationPage(context: Context) {
-        // 1. Try Native App Intent
-        val nativeUri = Uri.parse("strava://oauth/mobile/authorize")
-            .buildUpon()
-            .appendQueryParameter("client_id", CLIENT_ID)
-            .appendQueryParameter("redirect_uri", REDIRECT_URI)
-            .appendQueryParameter("response_type", "code")
-            .appendQueryParameter("approval_prompt", "auto")
-            .appendQueryParameter("scope", "activity:read_all,profile:read_all,read_all")
-            .build()
-            
-        try {
-            val intent = Intent(Intent.ACTION_VIEW, nativeUri)
-            context.startActivity(intent)
-        } catch (e: android.content.ActivityNotFoundException) {
-            // 2. Fallback to Browser
-            val encodedRedirect = java.net.URLEncoder.encode(REDIRECT_URI, "UTF-8")
-            val url = "$AUTH_URL?client_id=$CLIENT_ID&response_type=code&redirect_uri=$encodedRedirect&approval_prompt=auto&scope=activity:read_all,profile:read_all,read_all"
-            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-            context.startActivity(browserIntent)
-        }
+        // Use Bridge Login endpoint which handles redirect logic and CLIENT_SECRET
+        val url = "$BRIDGE_URL/login"
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        context.startActivity(browserIntent)
     }
 
     /**
@@ -496,38 +467,10 @@ object StravaAPI {
     
     // New signature requires context for saving
     // New signature requires context for saving
-    suspend fun exchangeToken(context: Context, code: String): Boolean = withContext(Dispatchers.IO) {
-         val formBody = FormBody.Builder()
-            .add("client_id", CLIENT_ID)
-            .add("client_secret", CLIENT_SECRET)
-            .add("code", code)
-            .add("grant_type", "authorization_code")
-            .build()
-
-        val request = Request.Builder()
-            .url("https://www.strava.com/oauth/token")
-            .post(formBody)
-            .build()
-
-        try {
-            client.newCall(request).execute().use { response ->
-                if (!response.isSuccessful) return@withContext false
-                
-                val body = response.body?.string() ?: return@withContext false
-                val json = JSONObject(body)
-                val newAccessToken = json.optString("access_token")
-                val newRefreshToken = json.optString("refresh_token")
-                val newExpiresAt = json.optLong("expires_at")
-                
-                if (newAccessToken.isNotBlank()) {
-                    saveFullTokenState(context, newAccessToken, newRefreshToken, newExpiresAt)
-                    return@withContext true
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return@withContext false
+    // Deprecated: Token exchange is now handled by the Vercel Bridge
+    suspend fun exchangeToken(context: Context, code: String): Boolean {
+         android.util.Log.e("STRAVA_AUTH", "exchangeToken called but should be handled by Bridge deep link")
+         return false
     }
 
     // Legacy support for older APIs if needed

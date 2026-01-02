@@ -29,9 +29,15 @@ import com.orbital.run.ui.theme.*
 fun SyncOnboardingScreen(
     onConnectStrava: () -> Unit,
     onConnectHealthConnect: () -> Unit,
+    onConnectGarmin: () -> Unit,
+    onConnectPolar: () -> Unit,
+    onConnectSuunto: () -> Unit,
     onFinish: () -> Unit,
     isStravaConnected: Boolean,
-    isHealthConnectConnected: Boolean
+    isHealthConnectConnected: Boolean,
+    isGarminConnected: Boolean,
+    isPolarConnected: Boolean,
+    isSuuntoConnected: Boolean
 ) {
     Column(
         modifier = Modifier
@@ -71,6 +77,16 @@ fun SyncOnboardingScreen(
 
         Spacer(Modifier.height(12.dp))
 
+        // Garmin Card
+        SyncServiceCard(
+            title = "Garmin Connect",
+            description = "Synchronisation directe depuis votre montre Garmin.",
+            icon = androidx.compose.material.icons.filled.Watch,
+            accentColor = Color(0xFF007CC3), // Garmin Blue
+            isConnected = isGarminConnected,
+            onClick = onConnectGarmin
+        )
+
         // Strava Card
         SyncServiceCard(
             title = "Strava",
@@ -89,6 +105,26 @@ fun SyncOnboardingScreen(
             accentColor = Color(0xFF4285F4), // Google Blue-ish
             isConnected = isHealthConnectConnected,
             onClick = onConnectHealthConnect
+        )
+
+        // Polar Card
+        SyncServiceCard(
+            title = "Polar Flow",
+            description = "Connectez votre compte Polar Flow.",
+            icon = androidx.compose.material.icons.filled.FavoriteBorder,
+            accentColor = Color(0xFFE2001A), // Polar Red
+            isConnected = isPolarConnected,
+            onClick = onConnectPolar
+        )
+
+        // Suunto Card
+        SyncServiceCard(
+            title = "Suunto App",
+            description = "Connectez votre compte Suunto.",
+            icon = androidx.compose.material.icons.filled.Explore,
+            accentColor = Color(0xFF00D7D7), // Suunto Cyan
+            isConnected = isSuuntoConnected,
+            onClick = onConnectSuunto
         )
 
         Spacer(Modifier.weight(1f))

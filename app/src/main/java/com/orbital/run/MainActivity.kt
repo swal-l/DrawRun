@@ -81,21 +81,23 @@ class MainActivity : ComponentActivity() {
                                    (data.scheme == "http" && data.host == "localhost" && data.path?.startsWith("/strava_callback") == true)
             
             if (isStravaCallback) {
-            val code = intent.data?.getQueryParameter("code")
-            if (code != null) {
-                lifecycleScope.launch {
-                    val success = com.orbital.run.api.StravaAPI.exchangeToken(this@MainActivity, code)
-                    if (success) {
-                        android.widget.Toast.makeText(this@MainActivity, "Strava Connecté ! Redémarrage...", android.widget.Toast.LENGTH_SHORT).show()
-                        
-                        // Hard restart to ensure all states are refreshed and sync starts immediately
-                        val restartIntent = android.content.Intent(this@MainActivity, com.orbital.run.MainActivity::class.java).apply {
-                            addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK or android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                        }
-                        startActivity(restartIntent)
-                    } else {
-                        android.widget.Toast.makeText(this@MainActivity, "Echec Connexion Strava", android.widget.Toast.LENGTH_LONG).show()
-                    }
+                val uri = intent.data
+                val accessToken = uri?.getQueryParameter("access_token")
+                val refreshToken = uri?.getQueryParameter("refresh_token")
+                val expiresAtStr = uri?.getQueryParameter("expires_at")
+                
+                if (accessToken != null && refreshToken != null) {
+                     val expiresAt = expiresAtStr?.toLongOrNull() ?: 0L
+                     com.orbital.run.api.StravaAPI.saveFullTokenState(this@MainActivity, accessToken, refreshToken, expiresAt)
+                     android.widget.Toast.makeText(this@MainActivity, "Strava Connecté !", android.widget.Toast.LENGTH_SHORT).show()
+                     
+                     // Restart to refresh UI
+                     val restartIntent = android.content.Intent(this@MainActivity, com.orbital.run.MainActivity::class.java).apply {
+                        addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK or android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                     }
+                     startActivity(restartIntent)
+                } else {
+                    android.util.Log.e("MainActivity", "Missing tokens in callback")
                 }
             }
         }
