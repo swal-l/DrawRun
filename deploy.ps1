@@ -58,3 +58,11 @@ Set-Content -Path $indexFile -Value $newHtml
 
 Write-Host "Deployment Complete! ✅"
 Write-Host "New APK: $docsDir/$apkName"
+
+# 5. Git Automation
+Write-Host "Committing and Pushing to GitHub..."
+git add .
+git commit -m "Auto-Deploy Version $version"
+git push origin main
+
+Write-Host "Deployment & Git Push Complete! ✅"

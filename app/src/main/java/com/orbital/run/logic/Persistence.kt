@@ -60,6 +60,16 @@ object Persistence {
         return prefs.getString("garmin_email", null)
     }
 
+    fun saveGarminPassword(context: Context, pass: String) {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        prefs.edit().putString("garmin_pass", pass).apply()
+    }
+
+    fun loadGarminPassword(context: Context): String? {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        return prefs.getString("garmin_pass", null)
+    }
+
     fun saveSwims(context: Context, workouts: List<Workout>) {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val jsonArray = org.json.JSONArray()

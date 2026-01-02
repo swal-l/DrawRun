@@ -1,16 +1,16 @@
 {
-    "latestVersionCode": 5,
-    "latestVersionName": "1.4",
-    "downloadUrl": "https://swal-l.github.io/DrawRun/DrawRun_v1.4.apk",
+    "latestVersionCode": 6,
+    "latestVersionName": "1.5",
+    "downloadUrl": "https://swal-l.github.io/DrawRun/DrawRun_v1.5.apk",
     "releaseNotes": {
         "features": [
-            "Sécurité Renforcée (Strava Bridge)",
-            "Nouveaux Services (Garmin, Polar, Suunto)",
-            "Onboarding Unifié"
+            "Synchronisation Garmin complète",
+            "Sauvegarde sécurisée des identifiants",
+            "Amélioration robustesse SyncManager"
         ],
         "fixes": [
-            "Amélioration sync automatique",
-            "Correctifs UI"
+            "Correction erreur 401 Garmin",
+            "Sync ne bloque plus si un service échoue"
         ]
     }
 }

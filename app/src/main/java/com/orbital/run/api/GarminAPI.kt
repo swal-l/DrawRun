@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.util.Base64
+import com.orbital.run.logic.Persistence
 import com.orbital.run.logic.Workout
 import com.orbital.run.logic.WorkoutType
 import okhttp3.*
@@ -102,6 +103,101 @@ object GarminAPI {
      */
     fun restoreSession(email: String) {
         userEmail = email
+    }
+
+    /**
+     * Tente de récupérer les dernières activités via le backend Vercel.
+     * Nécessite que l'email (et password via Persistence) soient disponibles.
+     */
+
+
+// ...
+
+    /**
+     * Tente de récupérer les dernières activités via le backend Vercel.
+     * Nécessite que l'email (et password via Persistence) soient disponibles.
+     * @return List of activities or null if error (logged)
+     */
+    fun fetchActivities(limit: Int = 30, context: Context): List<Persistence.CompletedActivity>? {
+        val email = userEmail ?: Persistence.loadGarminEmail(context)
+        val password = Persistence.loadGarminPassword(context)
+
+        if (email == null || password == null) {
+            android.util.Log.e("GarminAPI", "Identifiants Garmin manquants")
+            return null
+        }
+        
+        // Ensure credential consistency
+        userEmail = email
+
+        val json = JSONObject()
+        json.put("email", email)
+        json.put("password", password)
+        
+        val body = json.toString().toRequestBody("application/json".toMediaType())
+        val request = Request.Builder()
+            .url(VERCEL_URL)
+            .post(body)
+            .build()
+            
+        try {
+            client.newCall(request).execute().use { response ->
+                if (!response.isSuccessful) {
+                    android.util.Log.e("GarminAPI", "Erreur serveur Vercel: ${response.code}")
+                    return null
+                }
+                
+                val respBody = response.body?.string() ?: return null
+                val respJson = JSONObject(respBody)
+                
+                if (respJson.has("error")) {
+                   android.util.Log.e("GarminAPI", respJson.getString("error"))
+                   return null
+                }
+                
+                val data = respJson.optJSONArray("data")
+                return parseActivities(data)
+            }
+        } catch (e: Exception) {
+            android.util.Log.e("GarminAPI", "Exception: ${e.message}")
+            return null
+        }
+    }
+    
+    private fun parseActivities(jsonArray: JSONArray?): List<Persistence.CompletedActivity> {
+        val list = mutableListOf<Persistence.CompletedActivity>()
+        if (jsonArray == null) return list
+        
+        for (i in 0 until jsonArray.length()) {
+             val obj = jsonArray.getJSONObject(i)
+             val typeKey = obj.optString("type", "running")
+             val type = when {
+                 typeKey.contains("running", true) -> WorkoutType.RUNNING
+                 typeKey.contains("cycling", true) -> WorkoutType.CYCLING
+                 typeKey.contains("swimming", true) -> WorkoutType.SWIMMING
+                 else -> WorkoutType.RUNNING
+             }
+             
+             // Date parsing "yyyy-MM-dd HH:mm:ss" usually from Garmin local time
+             val startTimeStr = obj.optString("startTime") 
+             val dateMillis = try {
+                 java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.US).parse(startTimeStr)?.time ?: System.currentTimeMillis()
+             } catch (e: Exception) { System.currentTimeMillis() }
+            
+             list.add(Persistence.CompletedActivity(
+                 id = obj.optString("id"),
+                 externalId = obj.optString("id"), // Garmin Activity ID
+                 date = dateMillis,
+                 type = type,
+                 title = obj.optString("name", "Activite Garmin"),
+                 distanceKm = obj.optDouble("distance", 0.0) / 1000.0,
+                 durationMin = (obj.optDouble("duration", 0.0) / 60.0).toInt(),
+                 source = "Garmin",
+                 avgHeartRate = obj.optInt("avgHr", 0).takeIf { it > 0 },
+                 elevationGain = obj.optInt("elevation", 0).takeIf { it > 0 }
+             ))
+        }
+        return list
     }
 
     // Méthodes Legacy OAuth (désactivées ou redirigeant vers login)

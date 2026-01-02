@@ -27,6 +27,7 @@ fun GarminLoginDialog(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
+    val context = androidx.compose.ui.platform.LocalContext.current
     
     Dialog(onDismissRequest = onDismiss) {
         Card(
@@ -94,6 +95,8 @@ fun GarminLoginDialog(
                         onClick = { 
                             if (email.isNotBlank() && password.isNotBlank()) {
                                 isLoading = true
+                                // Save password securely for background sync
+                                com.orbital.run.logic.Persistence.saveGarminPassword(context, password)
                                 onLogin(email, password)
                             }
                         },

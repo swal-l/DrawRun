@@ -31,24 +31,45 @@ object SyncManager {
         val totalSynced = AtomicInteger(0)
         
         val stravaJob = async {
-            if (StravaAPI.isAuthenticated()) {
-                val result = syncStrava(context)
-                totalSynced.addAndGet(result)
-            } else {
-                android.util.Log.w("SYNC", "⚠️ Strava NON authentifié - skip")
+            try {
+                if (StravaAPI.isAuthenticated()) {
+                    val result = syncStrava(context)
+                    totalSynced.addAndGet(result)
+                }
+                Unit // Force return Unit
+            } catch (e: Exception) {
+                android.util.Log.e("SYNC", "Erreur Strava: ${e.message}")
+                Unit
             }
         }
         
         val healthJob = async {
-            if (HealthConnectManager.isAvailable(context) && HealthConnectManager.hasAllPermissions(context)) {
-                val result = syncHealthConnect(context)
-                totalSynced.addAndGet(result)
-            } else {
-                android.util.Log.w("SYNC", "⚠️ Health Connect non disponible/autorisé - skip")
+            try {
+                if (HealthConnectManager.isAvailable(context) && HealthConnectManager.hasAllPermissions(context)) {
+                    val result = syncHealthConnect(context)
+                    totalSynced.addAndGet(result)
+                }
+                Unit
+            } catch (e: Exception) {
+               android.util.Log.e("SYNC", "Erreur HC: ${e.message}")
+               Unit
             }
         }
         
-        awaitAll(stravaJob, healthJob)
+        val garminJob = async {
+            try {
+                if (GarminAPI.isConfigured()) {
+                    val result = syncGarmin(context)
+                    totalSynced.addAndGet(result)
+                }
+                Unit
+            } catch (e: Exception) {
+                android.util.Log.e("SYNC", "Erreur Garmin: ${e.message}")
+                Unit
+            }
+        }
+        
+        awaitAll(stravaJob, healthJob, garminJob)
         android.util.Log.d("SYNC", "=== FIN SYNC: ${totalSynced.get()} nouvelles activités ===")
         totalSynced.get()
     }
@@ -192,4 +213,42 @@ object SyncManager {
             0
         }
     }
+    /**
+     * Synchronizes Garmin activities (via Vercel Proxy).
+     */
+    suspend fun syncGarmin(context: Context): Int = withContext(Dispatchers.IO) {
+        android.util.Log.d("SYNC", "--- Sync Garmin START ---")
+        val activities = GarminAPI.fetchActivities(30, context)
+        
+        if (activities == null) {
+             android.util.Log.e("SYNC", "❌ Échec récupération Garmin (voir logs API)")
+             return@withContext 0
+        }
+        
+        android.util.Log.d("SYNC", "✅ Garmin a retourné ${activities.size} activités")
+        
+        val history = Persistence.loadHistory(context)
+        val toSave = mutableListOf<Persistence.CompletedActivity>()
+        
+        activities.forEach { act ->
+             // Deduplicate by externalId (Garmin ID) or fuzzy match
+             val existing = history.find { 
+                 (act.externalId != null && it.externalId == act.externalId) || 
+                 (kotlin.math.abs(it.date - act.date) < 300000 && kotlin.math.abs(it.distanceKm - act.distanceKm) < 0.1)
+             }
+             
+             if (existing == null && !Persistence.isBlacklisted(context, act.externalId ?: "")) {
+                 toSave.add(act)
+             }
+        }
+        
+        if (toSave.isNotEmpty()) {
+             android.util.Log.d("SYNC", "💾 Sauvegarde de ${toSave.size} activités Garmin...")
+             Persistence.saveHistoryBatch(context, toSave)
+             return@withContext toSave.size
+        }
+        
+        return@withContext 0
+    }
 }
+// Note: syncAll must be updated too (replaced below)
