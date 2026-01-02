@@ -246,6 +246,8 @@ fun ActivityDetailScreen(
 @Composable
 fun ActivityMapHero(activity: Persistence.CompletedActivity, onMapClick: () -> Unit) {
     val context = LocalContext.current
+    var is3DMode by remember { mutableStateOf(false) } // State for 3D Toggle
+
     val points = remember(activity.summaryPolyline) {
         if (activity.summaryPolyline.isNullOrEmpty()) emptyList()
         else decodePolyline(activity.summaryPolyline)
@@ -265,9 +267,14 @@ fun ActivityMapHero(activity: Persistence.CompletedActivity, onMapClick: () -> U
             .shadow(8.dp, RoundedCornerShape(24.dp))
             .clip(RoundedCornerShape(24.dp))
             .background(AirSurface)
+            .clip(RoundedCornerShape(24.dp))
+            .background(AirSurface)
             .clickable { onMapClick() }
     ) {
-        if (points.isNotEmpty()) {
+        // Toggle between 2D (Osmdroid) and 3D (MapLibre)
+        if (is3DMode) {
+             MapLibreHero(activity = activity, isInteractive = false)
+        } else if (points.isNotEmpty()) {
             AndroidView(
                 modifier = Modifier.fillMaxSize(),
                 factory = { ctx ->
@@ -276,7 +283,6 @@ fun ActivityMapHero(activity: Persistence.CompletedActivity, onMapClick: () -> U
                         setMultiTouchControls(false) 
                         controller.setZoom(15.0)
                         zoomController.setVisibility(org.osmdroid.views.CustomZoomButtonsController.Visibility.NEVER)
-                        // Important for loading
                         onResume() 
                     }
                 },
@@ -298,8 +304,9 @@ fun ActivityMapHero(activity: Persistence.CompletedActivity, onMapClick: () -> U
                     }
                 }
             )
+        }
             
-            // Fullscreen Indicator
+            // Fullscreen Indicator (Existing)
             Surface(
                 color = Color.White.copy(0.9f),
                 shape = CircleShape,
@@ -309,7 +316,24 @@ fun ActivityMapHero(activity: Persistence.CompletedActivity, onMapClick: () -> U
                     Icon(Icons.Default.Fullscreen, null, tint = AirPrimary, modifier = Modifier.size(24.dp))
                 }
             }
-        } else {
+
+            // 3D Toggle Button
+            Surface(
+                color = if (is3DMode) AirPrimary else Color.White.copy(0.9f),
+                shape = CircleShape,
+                modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp).size(40.dp)
+            ) {
+                IconButton(onClick = { is3DMode = !is3DMode }) {
+                    Icon(
+                        Icons.Rounded.Layers, // Using Layers icon for 3D switch
+                        contentDescription = "Basculer 3D",
+                        tint = if (is3DMode) Color.White else AirPrimary,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+            }
+        
+        if (points.isEmpty() && !is3DMode) {
              Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Icon(Icons.Rounded.Map, null, modifier = Modifier.size(56.dp), tint = AirTextLight)
@@ -1208,53 +1232,88 @@ fun SplitsSection(activity: Persistence.CompletedActivity, trainingPlan: com.orb
 
 
 
+
+
 @Composable
 fun FullScreenMapDialog(activity: Persistence.CompletedActivity, onDismiss: () -> Unit) {
+    // Reuse MapLibreHero for Fullscreen as it supports interaction better for 3D
+    // Or stick to 2D vs 3D choice? 
+    // Let's allow switching inside Fullscreen too or just default to the current mode?
+    // For simplicity, let's keep it simple: A dedicated Fullscreen Dialog that remembers state?
+    // User requested "change mode of map".
+    
+    var is3DMode by remember { mutableStateOf(false) }
+
     Dialog(onDismissRequest = onDismiss) {
         Card(
-            modifier = Modifier.fillMaxWidth().fillMaxHeight(0.8f).padding(16.dp),
+            modifier = Modifier.fillMaxWidth().fillMaxHeight(0.9f).padding(8.dp),
             shape = RoundedCornerShape(24.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White)
         ) {
             Box(Modifier.fillMaxSize()) {
-                val points = remember(activity.summaryPolyline) {
-                    if (activity.summaryPolyline.isNullOrEmpty()) emptyList()
-                    else decodePolyline(activity.summaryPolyline)
-                }
-                
-                AndroidView(
-                    modifier = Modifier.fillMaxSize(),
-                    factory = { ctx ->
-                        MapView(ctx).apply {
-                            setTileSource(TileSourceFactory.MAPNIK)
-                            setMultiTouchControls(true)
-                            controller.setZoom(16.0)
-                        }
-                    },
-                    update = { mapView ->
-                        mapView.overlays.clear()
-                        val geoPoints = points.map { GeoPoint(it.first, it.second) }
-                        val line = Polyline().apply {
-                            setPoints(geoPoints)
-                            outlinePaint.color = android.graphics.Color.parseColor("#007AFF")
-                            outlinePaint.strokeWidth = 12f
-                        }
-                        mapView.overlays.add(line)
-                        mapView.invalidate()
-                        mapView.post {
-                            try {
-                                val boundingBox = BoundingBox.fromGeoPoints(geoPoints)
-                                mapView.zoomToBoundingBox(boundingBox, true, 80)
-                            } catch (e: Exception) {}
-                        }
+                if (is3DMode) {
+                    MapLibreHero(activity = activity, isInteractive = true, onClose = onDismiss)
+                    
+                    // Toggle back to 2D
+                     IconButton(
+                        onClick = { is3DMode = false },
+                        modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp, 80.dp, 16.dp, 16.dp).background(Color.White.copy(0.8f), CircleShape)
+                    ) {
+                        Icon(Icons.Rounded.Layers, "2D", tint = AirPrimary)
                     }
-                )
-                
-                IconButton(
-                    onClick = onDismiss,
-                    modifier = Modifier.align(Alignment.TopEnd).padding(16.dp).background(Color.White.copy(0.8f), CircleShape)
-                ) {
-                    Icon(Icons.Rounded.Close, null)
+
+                } else {
+                    // Regular OSM 2D Map
+                    val points = remember(activity.summaryPolyline) {
+                        if (activity.summaryPolyline.isNullOrEmpty()) emptyList()
+                        else decodePolyline(activity.summaryPolyline)
+                    }
+                    
+                    if (points.isNotEmpty()) {
+                         AndroidView(
+                            modifier = Modifier.fillMaxSize(),
+                            factory = { ctx ->
+                                MapView(ctx).apply {
+                                    setTileSource(TileSourceFactory.MAPNIK)
+                                    setMultiTouchControls(true)
+                                    controller.setZoom(16.0)
+                                }
+                            },
+                            update = { mapView ->
+                                mapView.overlays.clear()
+                                val geoPoints = points.map { GeoPoint(it.first, it.second) }
+                                val line = Polyline().apply {
+                                    setPoints(geoPoints)
+                                    outlinePaint.color = android.graphics.Color.parseColor("#007AFF")
+                                    outlinePaint.strokeWidth = 12f
+                                }
+                                mapView.overlays.add(line)
+                                mapView.invalidate()
+                                mapView.post {
+                                    try {
+                                        val boundingBox = BoundingBox.fromGeoPoints(geoPoints)
+                                        mapView.zoomToBoundingBox(boundingBox, true, 80)
+                                    } catch (e: Exception) {}
+                                }
+                            }
+                        )
+                    }
+                    
+                    // Close Button
+                    IconButton(
+                        onClick = onDismiss,
+                        modifier = Modifier.align(Alignment.TopEnd).padding(16.dp).background(Color.White.copy(0.8f), CircleShape)
+                    ) {
+                        Icon(Icons.Rounded.Close, null, tint = AirTextPrimary)
+                    }
+                    
+                    // Toggle to 3D
+                    IconButton(
+                        onClick = { is3DMode = true },
+                        modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp).background(AirPrimary, CircleShape)
+                    ) {
+                        Icon(Icons.Rounded.Layers, "3D", tint = Color.White)
+                    }
                 }
             }
         }

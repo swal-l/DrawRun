@@ -193,12 +193,22 @@ fun MainScreen() {
                 savedSwims.addAll(swims)
             }
             
+            
             // Initial check for connected apps
             val stravaAuth = com.orbital.run.api.StravaAPI.isConfigured()
             val hcAuth = com.orbital.run.api.HealthConnectManager.hasAllPermissionsSync(context)
+            
+            // Restore Garmin Session
+            val garminEmail = Persistence.loadGarminEmail(context)
+            if (garminEmail != null) {
+                com.orbital.run.api.GarminAPI.restoreSession(garminEmail)
+            }
+            val garminAuth = com.orbital.run.api.GarminAPI.isConfigured()
+
             withContext(Dispatchers.Main) {
                 connectedApps["Strava"] = stravaAuth
                 connectedApps["Health Connect"] = hcAuth
+                connectedApps["Garmin"] = garminAuth
             }
 
         }
@@ -373,6 +383,7 @@ fun MainScreen() {
                              if (success) {
                                  // Update State 
                                  connectedApps["Garmin"] = true
+                                 Persistence.saveGarminEmail(context, email)
                                  kotlinx.coroutines.CoroutineScope(Dispatchers.Main).launch {
                                      android.widget.Toast.makeText(context, "Garmin connecté !", android.widget.Toast.LENGTH_SHORT).show()
                                  }

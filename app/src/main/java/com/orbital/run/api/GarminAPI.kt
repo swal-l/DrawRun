@@ -97,7 +97,15 @@ object GarminAPI {
     }
     
     // Méthodes Legacy OAuth (désactivées ou redirigeant vers login)
-    fun isConfigured(): Boolean = true 
+    /**
+     * Restaure une session via l'email stocké
+     */
+    fun restoreSession(email: String) {
+        userEmail = email
+    }
+
+    // Méthodes Legacy OAuth (désactivées ou redirigeant vers login)
+    fun isConfigured(): Boolean = isAuthenticated() 
     fun getRequestToken(callback: (String?, String?) -> Unit) { callback(null, "use_login_dialog") }
     fun openAuthorizationPage(context: Context, token: String) { /* No-op */ }
 }

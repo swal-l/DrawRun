@@ -50,6 +50,16 @@ object Persistence {
         prefs.edit().putBoolean("onboarding_complete", complete).apply()
     }
 
+    fun saveGarminEmail(context: Context, email: String) {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        prefs.edit().putString("garmin_email", email).apply()
+    }
+
+    fun loadGarminEmail(context: Context): String? {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        return prefs.getString("garmin_email", null)
+    }
+
     fun saveSwims(context: Context, workouts: List<Workout>) {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val jsonArray = org.json.JSONArray()
