@@ -28,8 +28,7 @@ import javax.crypto.spec.SecretKeySpec
  * 3. Remplacer les valeurs ci-dessous par vos vraies clés
  */
 object GarminAPI {
-    // URL Vercel (temporaire, à remplacer par la vôtre)
-    private const val VERCEL_URL = "https://YOUR_VERCEL_APP.vercel.app/api/garmin_sync"
+    private const val VERCEL_URL = "https://drawrunvercel-d2nnvlyct-lomics-projects.vercel.app/api/garmin_sync"
     
     // Credentials stockés (Sécurité: attention, stockés en clair ou base64 simple ici)
     private var userEmail: String? = null
