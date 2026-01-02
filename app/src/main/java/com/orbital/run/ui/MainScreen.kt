@@ -385,18 +385,7 @@ fun MainScreen() {
                         }
                     }
                 )
-            } catch (e: Exception) {
-                                    android.widget.Toast.makeText(context, "Erreur: ${e.message}", android.widget.Toast.LENGTH_LONG).show()
-                                }
-                            }
-                            "Polar Flow" -> com.orbital.run.api.PolarAPI.openAuthorizationPage(context)
-                            "Suunto App" -> com.orbital.run.api.SuuntoAPI.openAuthorizationPage(context)
-                        }
-                        // State will be updated by lifecycle observer when app resumes
-                        appToConnect = null
-                    }
-                )
-            }
+
             
             if (syncApp != null) {
                 SyncDialog(
