@@ -344,6 +344,18 @@ fun MainScreen() {
                                     // For now, reload swims
                                     savedSwims.clear()
                                 },
+                                onCheckForUpdate = {
+                                    kotlinx.coroutines.CoroutineScope(Dispatchers.IO).launch {
+                                        val info = UpdateManager.checkForUpdate(BuildConfig.VERSION_CODE)
+                                        withContext(Dispatchers.Main) {
+                                            if (info != null) {
+                                                updateInfo = info
+                                            } else {
+                                                android.widget.Toast.makeText(context, "Votre application est à jour (v${BuildConfig.VERSION_NAME})", android.widget.Toast.LENGTH_SHORT).show()
+                                            }
+                                        }
+                                    }
+                                },
                                 onBack = { currentView = 4 }
                             )
                         }
@@ -430,6 +442,15 @@ fun MainScreen() {
                         }
                     },
                     onDismiss = { updateInfo = null }
+                )
+            }
+            
+            // Notification Dialog
+            if (showNotifDialog) {
+                NotificationDialog(
+                    notifications = notifications,
+                    onDismiss = { showNotifDialog = false },
+                    onClear = { notifications.clear() }
                 )
             }
             
@@ -1281,6 +1302,7 @@ fun ProfileSettingsScreen(
     onDisconnect: (String) -> Unit,
     onUpdateProfile: (UserProfile) -> Unit,
     onResetData: () -> Unit,
+    onCheckForUpdate: () -> Unit, // Added
     onBack: () -> Unit
 ) {
     // Local editable state
@@ -1476,6 +1498,19 @@ fun ProfileSettingsScreen(
             Text("RÉINITIALISER TOUTES LES DONNÉES", color = Color.White, fontWeight = FontWeight.Bold)
         }
         Text("Attention: Supprime tout l'historique et les activités.", color = ZoneRed, fontSize = 10.sp, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+        
+        Spacer(modifier = Modifier.height(24.dp))
+        
+        // Manual Update Check
+        OutlinedButton(
+            onClick = onCheckForUpdate,
+            modifier = Modifier.fillMaxWidth(),
+            border = BorderStroke(1.dp, AirPrimary)
+        ) {
+            Icon(Icons.Default.SystemUpdate, null, tint = AirPrimary, modifier = Modifier.size(16.dp))
+            Spacer(modifier = Modifier.width(8.dp))
+            Text("Rechercher une mise à jour", color = AirPrimary)
+        }
         Spacer(modifier = Modifier.height(24.dp))
     }
 }
