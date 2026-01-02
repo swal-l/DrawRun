@@ -1,0 +1,16 @@
+{
+    "latestVersionCode": 1,
+    "latestVersionName": "1.0",
+    "downloadUrl": "https://swal-l.github.io/DrawRun/DrawRun.apk",
+    "releaseNotes": {
+        "features": [
+            "Nouveau Backend Garmin (Proxy Vercel)",
+            "Popup de Mises à jour",
+            "Suppression du Bilan Global (Refonte UI)"
+        ],
+        "fixes": [
+            "Optimisation du fetch (50 activités)",
+            "Correctif limite API Strava"
+        ]
+    }
+}

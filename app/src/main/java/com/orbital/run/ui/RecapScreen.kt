@@ -33,8 +33,8 @@ import com.orbital.run.logic.AdvancedAnalytics
 
 @Composable
 fun RecapScreen(context: android.content.Context, dataVersion: Int = 0, onNavigateToSettings: () -> Unit) {
-    val analysisVm: AnalysisViewModel = viewModel()
-    val globalSummary by analysisVm.globalSummary.collectAsState()
+
+    // val globalSummary by analysisVm.globalSummary.collectAsState()
     
     var history by remember { mutableStateOf(Persistence.loadHistory(context)) }
     var prs by remember { mutableStateOf(Persistence.loadPersonalRecords(context)) }
@@ -128,7 +128,7 @@ fun RecapScreen(context: android.content.Context, dataVersion: Int = 0, onNaviga
             contentPadding = PaddingValues(bottom = 32.dp)
         ) {
             // 0. GLOBAL STATS (From Analysis)
-            item { GlobalStatsSection(globalSummary) }
+            // 0. GLOBAL STATS (Removed)
 
             // 1. WEEKLY / MONTHLY FOCUS
             item {
@@ -310,43 +310,7 @@ fun RecapScreen(context: android.content.Context, dataVersion: Int = 0, onNaviga
 
 // COMPONENTS
 
-@Composable
-fun GlobalStatsSection(summary: AdvancedAnalytics.GlobalSummary?) {
-    if (summary == null) return
 
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = AirSurface),
-        shape = RoundedCornerShape(24.dp)
-    ) {
-        Column(Modifier.padding(20.dp)) {
-            Text("Bilan Global", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = AirTextPrimary)
-            Spacer(Modifier.height(16.dp))
-            
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                GlobalStatItem("Activités", "${summary.count}")
-                GlobalStatItem("Distance", "${summary.totalDistanceKm.toInt()} km")
-                GlobalStatItem("Heures", "${summary.totalDurationH.toInt()} h")
-            }
-            Spacer(Modifier.height(16.dp))
-            Divider(color = Color.White.copy(alpha=0.5f))
-            Spacer(Modifier.height(16.dp))
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                GlobalStatItem("D+ Total", "${summary.totalElevationM} m")
-                GlobalStatItem("Eddington", "${summary.eddingtonNumber}")
-                GlobalStatItem("Série Max", "${summary.maxStreakDays} j")
-            }
-        }
-    }
-}
-
-@Composable
-fun GlobalStatItem(label: String, value: String) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(value, fontSize = 18.sp, fontWeight = FontWeight.Black, color = AirPrimary)
-        Text(label, fontSize = 19.sp, color = AirTextSecondary, fontWeight = FontWeight.Medium) // Adjusted font size
-    }
-}
 
 @Composable
 fun DashFilterChip(selected: Boolean, onClick: () -> Unit, label: String) {

@@ -27,8 +27,8 @@ class handler(BaseHTTPRequestHandler):
             client = Garmin(email, password)
             client.login()
             
-            # Fetch last 10 activities
-            activities = client.get_activities(0, 10)
+            # Fetch last 50 activities (Temporary limit to avoid Vercel timeout)
+            activities = client.get_activities(0, 50)
             
             # Extract relevant fields for our App
             # Map standard Activity fields to our needs
