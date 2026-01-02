@@ -114,6 +114,13 @@ object HealthConnectManager {
             false
         }
     }
+
+    /**
+     * Checks if the integration is effectively enabled by the user AND has permissions.
+     */
+    fun isIntegrationEnabled(context: Context): Boolean {
+        return Persistence.loadHealthConnectEnabled(context) && hasAllPermissionsSync(context)
+    }
     
     /**
      * Request Health Connect permissions using the proper contract.

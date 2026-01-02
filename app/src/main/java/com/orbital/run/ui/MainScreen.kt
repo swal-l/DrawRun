@@ -107,6 +107,7 @@ fun MainScreen() {
                         Persistence.recalculateRecords(context)
                         withContext(Dispatchers.Main) {
                             dataVersion++
+                            connectedApps["Garmin"] = com.orbital.run.api.GarminAPI.status == com.orbital.run.api.GarminAPI.ConnectionStatus.CONNECTED
                         }
                     }
                 }
@@ -135,6 +136,7 @@ fun MainScreen() {
         kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Main).launch {
             val hasAll = com.orbital.run.api.HealthConnectManager.hasAllPermissions(context)
             if (hasAll) {
+                Persistence.saveHealthConnectEnabled(context, true)
                 connectedApps["Health Connect"] = true
                 android.widget.Toast.makeText(context, "✅ Health Connect autorisé !", android.widget.Toast.LENGTH_SHORT).show()
             }
@@ -196,19 +198,21 @@ fun MainScreen() {
             
             // Initial check for connected apps
             val stravaAuth = com.orbital.run.api.StravaAPI.isConfigured()
-            val hcAuth = com.orbital.run.api.HealthConnectManager.hasAllPermissionsSync(context)
+            // Updated check: uses both permissions AND enabled flag
+            val hcAuth = com.orbital.run.api.HealthConnectManager.isIntegrationEnabled(context)
             
             // Restore Garmin Session
             val garminEmail = Persistence.loadGarminEmail(context)
-            if (garminEmail != null) {
+            if (garminEmail != null && garminEmail.isNotBlank()) {
                 com.orbital.run.api.GarminAPI.restoreSession(garminEmail)
             }
-            val garminAuth = com.orbital.run.api.GarminAPI.isConfigured()
-
+            
             withContext(Dispatchers.Main) {
                 connectedApps["Strava"] = stravaAuth
                 connectedApps["Health Connect"] = hcAuth
-                connectedApps["Garmin"] = garminAuth
+                // Garmin depends on live status which might update later during sync, 
+                // but efficiently check if we have email and no error yet.
+                connectedApps["Garmin"] = com.orbital.run.api.GarminAPI.status == com.orbital.run.api.GarminAPI.ConnectionStatus.CONNECTED
             }
 
         }
@@ -320,7 +324,15 @@ fun MainScreen() {
                                 result!!.userProfile, 
                                 connectedApps,
                                 onConnect = { appToConnect = it },
-                                onDisconnect = { connectedApps[it] = false },
+                                onDisconnect = { app ->
+                                     connectedApps[app] = false
+                                     if (app == "Garmin") {
+                                         com.orbital.run.api.GarminAPI.disconnect(context)
+                                     }
+                                     if (app == "Health Connect") {
+                                         Persistence.saveHealthConnectEnabled(context, false)
+                                     }
+                                },
                                 onUpdateProfile = { updated -> 
                                     age = updated.age.toString()
                                     weight = updated.weightKg.toString()
@@ -390,6 +402,7 @@ fun MainScreen() {
                                  // Update State 
                                  connectedApps["Garmin"] = true
                                  Persistence.saveGarminEmail(context, email)
+                                 Persistence.saveGarminPassword(context, pass) // Ensure password is saved
                                  kotlinx.coroutines.CoroutineScope(Dispatchers.Main).launch {
                                      android.widget.Toast.makeText(context, "Garmin connecté !", android.widget.Toast.LENGTH_SHORT).show()
                                  }
@@ -1361,6 +1374,8 @@ fun ProfileSettingsScreen(
             kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Main).launch {
                 hcHasPermissions = com.orbital.run.api.HealthConnectManager.hasAllPermissions(context)
                 if (hcHasPermissions) {
+                    Persistence.saveHealthConnectEnabled(context, true) // Added persistence
+                    // Also update main app state if possible, though it might be reactive via Persistence check on resume
                     android.widget.Toast.makeText(context, "✅ Health Connect autorisé !", android.widget.Toast.LENGTH_SHORT).show()
                 }
             }
@@ -1586,32 +1601,40 @@ fun AppItem(
                     )
                     
                     // Status Badge
+                    // Status Badge
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.padding(top = 4.dp)
                     ) {
+                        // Check specifically for Garmin Auth Error
+                        val isGarminError = name.contains("Garmin") && 
+                                          com.orbital.run.api.GarminAPI.status == com.orbital.run.api.GarminAPI.ConnectionStatus.AUTH_ERROR
+                        
+                        val statusColor = if (isGarminError) ZoneRed else if (isConnected) ZoneGreen else AirTextLight
+                        val statusText = if (isGarminError) "Erreur Auth" else if (isConnected) "Connecté" else "Non connecté" // Fix: "Non connecté" was implicitly handled by "Déconnecté" in previous code, but "Non connecté" is better here. preserving "Déconnecté" if that's what was there. valid: "Déconnecté"
+                        
                         Surface(
                             shape = RoundedCornerShape(4.dp),
-                            color = if (isConnected) ZoneGreen.copy(alpha = 0.15f) else AirSurface
+                            color = if (isGarminError) ZoneRed.copy(alpha = 0.15f) else if (isConnected) ZoneGreen.copy(alpha = 0.15f) else AirSurface
                         ) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
                             ) {
-                                if (isConnected) {
+                                if (isConnected || isGarminError) {
                                     Icon(
-                                        Icons.Default.CheckCircle, 
+                                        if (isGarminError) Icons.Default.Warning else Icons.Default.CheckCircle, 
                                         contentDescription = null,
-                                        tint = ZoneGreen,
+                                        tint = if (isGarminError) ZoneRed else ZoneGreen,
                                         modifier = Modifier.size(12.dp)
                                     )
                                     Spacer(modifier = Modifier.width(4.dp))
                                 }
                                 Text(
-                                    if (isConnected) "Connecté" else "Déconnecté",
+                                    statusText,
                                     fontSize = 11.sp,
                                     fontWeight = FontWeight.Medium,
-                                    color = if (isConnected) ZoneGreen else AirTextLight
+                                    color = if (isGarminError) ZoneRed else if (isConnected) ZoneGreen else AirTextLight
                                 )
                             }
                         }
@@ -1630,7 +1653,7 @@ fun AppItem(
             }
             
             // Right: Action Button
-            if (isConnected) {
+            if (isConnected && (!name.contains("Garmin") || com.orbital.run.api.GarminAPI.status != com.orbital.run.api.GarminAPI.ConnectionStatus.AUTH_ERROR)) {
                 OutlinedButton(
                     onClick = onDisconnect,
                     border = BorderStroke(1.dp, ZoneRed.copy(alpha = 0.5f)),
@@ -1643,9 +1666,9 @@ fun AppItem(
             } else {
                 Button(
                     onClick = onConnect,
-                    colors = ButtonDefaults.buttonColors(containerColor = appColor)
+                    colors = ButtonDefaults.buttonColors(containerColor = if(name.contains("Garmin") && com.orbital.run.api.GarminAPI.status == com.orbital.run.api.GarminAPI.ConnectionStatus.AUTH_ERROR) ZoneRed else appColor)
                 ) {
-                    Text("Connecter", fontSize = 12.sp)
+                    Text(if(name.contains("Garmin") && com.orbital.run.api.GarminAPI.status == com.orbital.run.api.GarminAPI.ConnectionStatus.AUTH_ERROR) "RE-CONNECTER" else "Connecter", fontSize = 12.sp)
                 }
             }
         }

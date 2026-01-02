@@ -39,6 +39,15 @@ object GarminAPI {
         .readTimeout(60, TimeUnit.SECONDS)
         .build()
 
+    enum class ConnectionStatus {
+        CONNECTED,
+        NOT_CONNECTED,
+        AUTH_ERROR
+    }
+
+    private var _status = ConnectionStatus.NOT_CONNECTED
+    val status: ConnectionStatus get() = _status
+
     /**
      * Vérifie si l'utilisateur est connecté (email présent)
      */
@@ -76,6 +85,7 @@ object GarminAPI {
                         } else {
                             // Succès
                             userEmail = email
+                            _status = ConnectionStatus.CONNECTED
                             callback(true, "Connecté avec succès !")
                             // Note: Les activités sont dans respJson.getJSONArray("data")
                             // On pourrait les parser ici si besoin immédiat
@@ -84,6 +94,10 @@ object GarminAPI {
                         callback(false, "Erreur format: ${e.message}")
                     }
                 } else {
+                    if (response.code == 401) {
+                        _status = ConnectionStatus.AUTH_ERROR
+                        // Do not clear immediately, let UI show error
+                    }
                     callback(false, "Erreur ${response.code}: $respBody")
                 }
             }
@@ -93,8 +107,11 @@ object GarminAPI {
     /**
      * Déconnexion
      */
-    fun disconnect() {
+    fun disconnect(context: Context) {
         userEmail = null
+        Persistence.saveGarminEmail(context, "") // Clear persistent storage
+        Persistence.saveGarminPassword(context, null)
+        _status = ConnectionStatus.NOT_CONNECTED
     }
     
     // Méthodes Legacy OAuth (désactivées ou redirigeant vers login)
@@ -103,15 +120,10 @@ object GarminAPI {
      */
     fun restoreSession(email: String) {
         userEmail = email
+        if (email.isNotBlank()) {
+            _status = ConnectionStatus.CONNECTED
+        }
     }
-
-    /**
-     * Tente de récupérer les dernières activités via le backend Vercel.
-     * Nécessite que l'email (et password via Persistence) soient disponibles.
-     */
-
-
-// ...
 
     /**
      * Tente de récupérer les dernières activités via le backend Vercel.
@@ -122,13 +134,15 @@ object GarminAPI {
         val email = userEmail ?: Persistence.loadGarminEmail(context)
         val password = Persistence.loadGarminPassword(context)
 
-        if (email == null || password == null) {
+        if (email.isNullOrBlank() || password.isNullOrBlank()) {
             android.util.Log.e("GarminAPI", "Identifiants Garmin manquants")
+            _status = ConnectionStatus.NOT_CONNECTED
             return null
         }
         
         // Ensure credential consistency
         userEmail = email
+        _status = ConnectionStatus.CONNECTED
 
         val json = JSONObject()
         json.put("email", email)
@@ -143,6 +157,10 @@ object GarminAPI {
         try {
             client.newCall(request).execute().use { response ->
                 if (!response.isSuccessful) {
+                    if (response.code == 401) {
+                         android.util.Log.e("GarminAPI", "Erreur Auth 401 - Token invalide ou expiré")
+                         _status = ConnectionStatus.AUTH_ERROR
+                    }
                     android.util.Log.e("GarminAPI", "Erreur serveur Vercel: ${response.code}")
                     return null
                 }
@@ -155,6 +173,8 @@ object GarminAPI {
                    return null
                 }
                 
+                // Success implies connected
+                _status = ConnectionStatus.CONNECTED
                 val data = respJson.optJSONArray("data")
                 return parseActivities(data)
             }
@@ -164,6 +184,8 @@ object GarminAPI {
         }
     }
     
+    // ... parseActivities is unchanged ...
+
     private fun parseActivities(jsonArray: JSONArray?): List<Persistence.CompletedActivity> {
         val list = mutableListOf<Persistence.CompletedActivity>()
         if (jsonArray == null) return list

@@ -60,7 +60,7 @@ object Persistence {
         return prefs.getString("garmin_email", null)
     }
 
-    fun saveGarminPassword(context: Context, pass: String) {
+    fun saveGarminPassword(context: Context, pass: String?) {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         prefs.edit().putString("garmin_pass", pass).apply()
     }
@@ -68,6 +68,16 @@ object Persistence {
     fun loadGarminPassword(context: Context): String? {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         return prefs.getString("garmin_pass", null)
+    }
+
+    fun saveHealthConnectEnabled(context: Context, enabled: Boolean) {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        prefs.edit().putBoolean("hc_enabled", enabled).apply()
+    }
+
+    fun loadHealthConnectEnabled(context: Context): Boolean {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        return prefs.getBoolean("hc_enabled", false)
     }
 
     fun saveSwims(context: Context, workouts: List<Workout>) {
