@@ -1,7 +1,7 @@
 {
     "latestVersionCode": 1,
     "latestVersionName": "1.0",
-    "downloadUrl": "https://swal-l.github.io/DrawRun/DrawRun.apk",
+    "downloadUrl": "https://swal-l.github.io/DrawRun/DrawRun_v1.0.apk",
     "releaseNotes": {
         "features": [
             "Nouveau Backend Garmin (Proxy Vercel)",
