@@ -102,8 +102,6 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-    }
-
     // Health Connect permission check
     private fun checkAndRequestPermissions() {
         lifecycleScope.launch {

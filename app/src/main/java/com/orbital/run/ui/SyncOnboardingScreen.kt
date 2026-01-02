@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.Bluetooth
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Sync
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.rounded.CloudSync
 import androidx.compose.material.icons.rounded.HealthAndSafety
 import androidx.compose.material3.*
@@ -81,7 +82,7 @@ fun SyncOnboardingScreen(
         SyncServiceCard(
             title = "Garmin Connect",
             description = "Synchronisation directe depuis votre montre Garmin.",
-            icon = androidx.compose.material.icons.filled.Watch,
+            icon = Icons.Default.Watch,
             accentColor = Color(0xFF007CC3), // Garmin Blue
             isConnected = isGarminConnected,
             onClick = onConnectGarmin
@@ -111,7 +112,7 @@ fun SyncOnboardingScreen(
         SyncServiceCard(
             title = "Polar Flow",
             description = "Connectez votre compte Polar Flow.",
-            icon = androidx.compose.material.icons.filled.FavoriteBorder,
+            icon = Icons.Default.FavoriteBorder,
             accentColor = Color(0xFFE2001A), // Polar Red
             isConnected = isPolarConnected,
             onClick = onConnectPolar
@@ -121,7 +122,7 @@ fun SyncOnboardingScreen(
         SyncServiceCard(
             title = "Suunto App",
             description = "Connectez votre compte Suunto.",
-            icon = androidx.compose.material.icons.filled.Explore,
+            icon = Icons.Default.Explore,
             accentColor = Color(0xFF00D7D7), // Suunto Cyan
             isConnected = isSuuntoConnected,
             onClick = onConnectSuunto
