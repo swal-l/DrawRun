@@ -11,6 +11,32 @@ $gradleFile = "app/build.gradle.kts"
 $docsDir = "docs"
 $indexFile = "$docsDir/index.html"
 
+
+# 0. Auto-Increment Version
+Write-Host "Auto-incrementing version in $gradleFile..."
+$content = Get-Content $gradleFile -Raw
+
+# Increment versionCode
+if ($content -match 'versionCode\s*=\s*(\d+)') {
+    $currentCode = [int]$matches[1]
+    $newCode = $currentCode + 1
+    $content = $content -replace "versionCode\s*=\s*$currentCode", "versionCode = $newCode"
+    Write-Host "  Code: $currentCode -> $newCode"
+}
+
+# Increment versionName
+if ($content -match 'versionName\s*=\s*"([\d\.]+)"') {
+    $currentName = $matches[1]
+    $parts = $currentName.Split('.')
+    $lastIndex = $parts.Length - 1
+    $parts[$lastIndex] = [int]$parts[$lastIndex] + 1
+    $newName = $parts -join '.'
+    $content = $content -replace "versionName\s*=\s*""$currentName""", "versionName = ""$newName"""
+    Write-Host "  Name: $currentName -> $newName"
+}
+
+Set-Content -Path $gradleFile -Value $content
+
 # 1. Extract Version
 Write-Host "Reading version from $gradleFile..."
 $content = Get-Content $gradleFile -Raw
