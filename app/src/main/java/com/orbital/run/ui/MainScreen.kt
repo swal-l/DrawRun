@@ -125,7 +125,6 @@ fun MainScreen() {
     var showNotifDialog by remember { mutableStateOf(false) }
     var showCelebration by remember { mutableStateOf(false) }
     val savedSwims = remember { mutableStateListOf<Workout>() }
-    val savedSwims = remember { mutableStateListOf<Workout>() }
     val notifications = remember { mutableStateListOf<AppNotification>() }
     var updateInfo by remember { mutableStateOf<UpdateInfo?>(null) }
 
@@ -385,31 +384,8 @@ fun MainScreen() {
                         }
                     }
                 )
+            }
 
-            
-            if (syncApp != null) {
-                SyncDialog(
-                    appName = syncApp!!,
-                    onDismiss = { syncApp = null }
-                )
-            }
-            
-            // Notification Dialog
-            if (showNotifDialog) {
-                NotificationDialog(
-                    notifications = notifications,
-                    onDismiss = { showNotifDialog = false },
-                    onClear = { notifications.clear() }
-                )
-            }
-            
-            if (showNotifDialog) {
-                NotificationDialog(
-                    notifications = notifications,
-                    onDismiss = { showNotifDialog = false },
-                    onClear = { notifications.clear() }
-                )
-            }
             
             // Update Dialog
             if (updateInfo != null) {

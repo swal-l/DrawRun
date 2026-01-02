@@ -76,7 +76,7 @@ fun UpdateDialog(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     if (updateInfo.releaseNotes.features.isNotEmpty()) {
-                        SectionHeader("✨ Nouveautés")
+                        UpdateSectionHeader("✨ Nouveautés")
                         updateInfo.releaseNotes.features.forEach { feature ->
                             BulletPoint(feature)
                         }
@@ -84,7 +84,7 @@ fun UpdateDialog(
                     
                     if (updateInfo.releaseNotes.fixes.isNotEmpty()) {
                         if (updateInfo.releaseNotes.features.isNotEmpty()) Spacer(modifier = Modifier.height(8.dp))
-                        SectionHeader("🐛 Corrections")
+                        UpdateSectionHeader("🐛 Corrections")
                         updateInfo.releaseNotes.fixes.forEach { fix ->
                             BulletPoint(fix)
                         }
@@ -121,7 +121,7 @@ fun UpdateDialog(
 }
 
 @Composable
-private fun SectionHeader(title: String) {
+private fun UpdateSectionHeader(title: String) {
     Text(
         text = title,
         fontSize = 14.sp,
@@ -135,7 +135,7 @@ private fun SectionHeader(title: String) {
 private fun BulletPoint(text: String) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        crossAxisAlignment = Alignment.Top
+        verticalAlignment = Alignment.Top
     ) {
         Text(
             text = "•",
