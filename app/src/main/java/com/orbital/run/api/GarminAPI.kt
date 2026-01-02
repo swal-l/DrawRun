@@ -98,7 +98,8 @@ object GarminAPI {
                         _status = ConnectionStatus.AUTH_ERROR
                         // Do not clear immediately, let UI show error
                     }
-                    callback(false, "Erreur ${response.code}: $respBody")
+                    val errorMsg = if (respBody != null && respBody.isNotEmpty()) respBody else "Code ${response.code}"
+                    callback(false, "Erreur Serveur (${response.code}): $errorMsg")
                 }
             }
         })

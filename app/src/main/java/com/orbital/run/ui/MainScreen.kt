@@ -1411,7 +1411,7 @@ fun ProfileSettingsScreen(
         }
         
         // Garmin Connect API Integration
-        GarminInstallCard()
+        // GarminInstallCard() // Removed per user request
         
         Spacer(modifier = Modifier.height(16.dp))
         
@@ -1433,8 +1433,8 @@ fun ProfileSettingsScreen(
                 
                 AppItem(
                     name = "Health Connect",
-                    isLinked = hcHasPermissions,
-                    isConfigured = true,
+                    isLinked = hcHasPermissions && com.orbital.run.logic.Persistence.loadHealthConnectEnabled(context),
+                    isConfigured = com.orbital.run.logic.Persistence.loadHealthConnectEnabled(context),
                     subtitle = "Sync: Garmin, autres wearables",
                     onConnect = {
                         try {
@@ -1543,6 +1543,7 @@ fun PRItem(label: String, seconds: Long?) {
     }
 }
 
+/* Removed per user request
 @Composable
 fun GarminInstallCard() {
     Card(
@@ -1560,6 +1561,7 @@ fun GarminInstallCard() {
         }
     }
 }
+*/
 
 @Composable
 fun AppItem(
