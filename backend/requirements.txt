@@ -1,0 +1,4 @@
+garminconnect==0.2.14
+http.server
+requests
+supabase==2.3.0

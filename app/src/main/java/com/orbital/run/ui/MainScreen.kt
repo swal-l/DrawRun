@@ -1,6 +1,11 @@
 package com.orbital.run.ui
 
 import com.orbital.run.api.SyncManager
+import com.orbital.run.logic.UpdateManager
+import com.orbital.run.logic.UpdateInfo
+// UpdateDialog is in the same package com.orbital.run.ui, no import needed
+import com.orbital.run.BuildConfig
+import android.net.Uri
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.animateFloatAsState
@@ -115,11 +120,14 @@ fun MainScreen() {
     var onboardingComplete by remember { mutableStateOf(Persistence.isOnboardingComplete(context)) }
     
     var appToConnect by remember { mutableStateOf<String?>(null) }
+    var showGarminLogin by remember { mutableStateOf(false) }
     var syncApp by remember { mutableStateOf<String?>(null) }
     var showNotifDialog by remember { mutableStateOf(false) }
     var showCelebration by remember { mutableStateOf(false) }
     val savedSwims = remember { mutableStateListOf<Workout>() }
+    val savedSwims = remember { mutableStateListOf<Workout>() }
     val notifications = remember { mutableStateListOf<AppNotification>() }
+    var updateInfo by remember { mutableStateOf<UpdateInfo?>(null) }
 
     // Health Connect Permission Launcher (Lifted to MainScreen)
     val hcPermissionLauncher = rememberLauncherForActivityResult(
@@ -192,6 +200,17 @@ fun MainScreen() {
             withContext(Dispatchers.Main) {
                 connectedApps["Strava"] = stravaAuth
                 connectedApps["Health Connect"] = hcAuth
+            }
+
+        }
+        
+        // Check for updates
+        withContext(Dispatchers.IO) {
+            val info = UpdateManager.checkForUpdate(BuildConfig.VERSION_CODE)
+            withContext(Dispatchers.Main) {
+                if (info != null) {
+                    updateInfo = info
+                }
             }
         }
     }
@@ -316,11 +335,9 @@ fun MainScreen() {
                         // Ouvrir le flux OAuth selon l'app
                         when(appToConnect) {
                             "Garmin Connect" -> {
-                                com.orbital.run.api.GarminAPI.getRequestToken { token, _ ->
-                                    if (token != null) {
-                                        com.orbital.run.api.GarminAPI.openAuthorizationPage(context, token)
-                                    }
-                                }
+                                // Now using Vercel Proxy -> Show Dialog
+                                showGarminLogin = true
+                                appToConnect = null
                             }
                             "Strava" -> {
                                 com.orbital.run.api.StravaAPI.openAuthorizationPage(context)
@@ -348,12 +365,76 @@ fun MainScreen() {
                 )
             }
             
+            if (showGarminLogin) {
+                GarminLoginDialog(
+                    onDismiss = { showGarminLogin = false },
+                    onLogin = { email, pass ->
+                        com.orbital.run.api.GarminAPI.login(email, pass) { success, msg ->
+                             showGarminLogin = false
+                             if (success) {
+                                 // Update State 
+                                 connectedApps["Garmin"] = true
+                                 kotlinx.coroutines.CoroutineScope(Dispatchers.Main).launch {
+                                     android.widget.Toast.makeText(context, "Garmin connecté !", android.widget.Toast.LENGTH_SHORT).show()
+                                 }
+                             } else {
+                                 kotlinx.coroutines.CoroutineScope(Dispatchers.Main).launch {
+                                     android.widget.Toast.makeText(context, "Erreur: $msg", android.widget.Toast.LENGTH_LONG).show()
+                                 }
+                             }
+                        }
+                    }
+                )
+            } catch (e: Exception) {
+                                    android.widget.Toast.makeText(context, "Erreur: ${e.message}", android.widget.Toast.LENGTH_LONG).show()
+                                }
+                            }
+                            "Polar Flow" -> com.orbital.run.api.PolarAPI.openAuthorizationPage(context)
+                            "Suunto App" -> com.orbital.run.api.SuuntoAPI.openAuthorizationPage(context)
+                        }
+                        // State will be updated by lifecycle observer when app resumes
+                        appToConnect = null
+                    }
+                )
+            }
+            
+            if (syncApp != null) {
+                SyncDialog(
+                    appName = syncApp!!,
+                    onDismiss = { syncApp = null }
+                )
+            }
+            
             // Notification Dialog
             if (showNotifDialog) {
                 NotificationDialog(
                     notifications = notifications,
                     onDismiss = { showNotifDialog = false },
                     onClear = { notifications.clear() }
+                )
+            }
+            
+            if (showNotifDialog) {
+                NotificationDialog(
+                    notifications = notifications,
+                    onDismiss = { showNotifDialog = false },
+                    onClear = { notifications.clear() }
+                )
+            }
+            
+            // Update Dialog
+            if (updateInfo != null) {
+                UpdateDialog(
+                    updateInfo = updateInfo!!,
+                    onUpdate = {
+                        try {
+                            val intent = Intent(Intent.ACTION_VIEW, android.net.Uri.parse(updateInfo!!.downloadUrl))
+                            context.startActivity(intent)
+                        } catch (e: Exception) {
+                            android.widget.Toast.makeText(context, "Impossible d'ouvrir le lien", android.widget.Toast.LENGTH_SHORT).show()
+                        }
+                    },
+                    onDismiss = { updateInfo = null }
                 )
             }
             
