@@ -1438,9 +1438,9 @@ fun ProfileSettingsScreen(
         key(refreshTrigger) {
         val apps = listOf(
             "Garmin Connect",
-            "Strava",
-            "Polar Flow",
-            "Suunto App",
+            // "Strava",
+            // "Polar Flow",
+            // "Suunto App",
             "Health Connect"
         )
         
