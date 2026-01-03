@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: drawrun-backend
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python render_server.py
+    envVars:
+      - key: PORT
+        value: 10000
