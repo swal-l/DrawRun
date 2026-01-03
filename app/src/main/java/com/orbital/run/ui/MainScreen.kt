@@ -374,11 +374,11 @@ fun MainScreen() {
                     onConnect = {
                         // Ouvrir le flux OAuth selon l'app
                         when(appToConnect) {
-                            "Garmin Connect" -> {
-                                // Now using Vercel Proxy -> Show Dialog
-                                showGarminLogin = true
-                                appToConnect = null
-                            }
+                            // "Garmin Connect" -> {
+                            //     // Disabled - backend integration removed
+                            //     showGarminLogin = true
+                            //     appToConnect = null
+                            // }
                             "Strava" -> {
                                 com.orbital.run.api.StravaAPI.openAuthorizationPage(context)
                             }
@@ -405,6 +405,7 @@ fun MainScreen() {
                 )
             }
 
+            /* Garmin integration disabled - backend removed
             // Error Dialog State
             var errorDialogMessage by remember { mutableStateOf<String?>(null) }
             
