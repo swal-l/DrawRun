@@ -1394,7 +1394,7 @@ fun ProfileSettingsScreen(
         
         key(refreshTrigger) {
         val apps = listOf(
-            "Strava",
+            // "Strava",  // Hidden for Health Connect-only testing
             "Health Connect"
         )
         
