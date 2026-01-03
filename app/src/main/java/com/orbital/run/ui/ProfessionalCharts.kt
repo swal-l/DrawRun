@@ -1863,3 +1863,152 @@ fun VerticalRatioChart(samples: List<Persistence.RunningDynamicSample>, state: C
         }
     }
 }
+/**
+ * Heart Rate Derivative Chart (dHR/dt)
+ * Shows the rate of HR change - how fast the heart adapts to effort changes.
+ * Positive = HR increasing, Negative = HR decreasing
+ */
+@Composable
+fun HeartRateDerivativeChart(samples: List<Persistence.HeartRateSample>, state: ChartSyncState = rememberChartSyncState()) {
+    if (samples.size < 2) return
+    
+    ChartContainer("Dérivée Cardiaque (dHR/dt)") { isExpanded ->
+        val chartHeight = if (isExpanded) 300.dp else 180.dp
+        
+        // Calculate derivatives (BPM change per second)
+        val derivatives = remember(samples) {
+            samples.zipWithNext { a, b ->
+                val timeDiff = (b.timeOffset - a.timeOffset).coerceAtLeast(1) // Avoid div by 0
+                val hrDiff = b.bpm - a.bpm
+                val derivative = hrDiff.toDouble() / timeDiff.toDouble() // BPM per second
+                Pair(b.timeOffset, derivative)
+            }
+        }
+        
+        if (derivatives.isEmpty()) {
+            Box(Modifier.fillMaxWidth().height(100.dp), contentAlignment = Alignment.Center) {
+                Text("Données insuffisantes", color = AirTextSecondary, fontSize = 12.sp)
+            }
+            return@ChartContainer
+        }
+        
+        val maxDerivative = derivatives.maxByOrNull { kotlin.math.abs(it.second) }?.second?.let { kotlin.math.abs(it) } ?: 1.0
+        val avgDerivative = derivatives.map { it.second }.average()
+        
+        Column {
+            StreamCanvas(
+                height = chartHeight,
+                _dataSize = derivatives.size,
+                yLabels = listOf(
+                    String.format("+%.1f bpm/s", maxDerivative) to Color(0xFFFF5252),
+                    String.format("%.1f bpm/s", -maxDerivative) to Color(0xFF2979FF)
+                ),
+                avgLineY = 0.5f, // Zero line in the middle
+                avgLabel = "0 (Stable)",
+                avgColor = Color.Gray,
+                state = state,
+                scrubValue = { w, _ ->
+                    state.scrubX?.let { scrubX ->
+                        val index = ((scrubX / w) * derivatives.size).toInt().coerceIn(0, derivatives.lastIndex)
+                        val (time, deriv) = derivatives[index]
+                        val min = time / 60
+                        val sec = time % 60
+                        String.format("%d:%02d | %.2f bpm/s", min, sec, deriv)
+                    }
+                }
+            ) { w, h, zoomScale, zoomOffset ->
+                val path = Path()
+                val positiveGradient = Brush.verticalGradient(
+                    0f to Color(0xFFFF5252).copy(alpha = 0.3f),
+                    1f to Color.Transparent
+                )
+                val negativeGradient = Brush.verticalGradient(
+                    0f to Color.Transparent,
+                    1f to Color(0xFF2979FF).copy(alpha = 0.3f)
+                )
+                
+                derivatives.forEachIndexed { i, (_, deriv) ->
+                    val xRatio = i.toFloat() / (derivatives.size - 1).coerceAtLeast(1)
+                    val x = (xRatio * w * zoomScale) + zoomOffset
+                    
+                    // Map derivative to y: 0.5 = zero line, above = positive, below = negative
+                    val yRatio = 0.5f - ((deriv / maxDerivative).toFloat() * 0.5f).coerceIn(-0.5f, 0.5f)
+                    val y = yRatio * h
+                    
+                    if (i == 0) path.moveTo(x, y) else path.lineTo(x, y)
+                }
+                
+                // Fill areas above/below zero
+                val fillPath = Path()
+                fillPath.addPath(path)
+               fillPath.lineTo(derivatives.lastIndex.toFloat() / (derivatives.size - 1) * w * zoomScale + zoomOffset, h * 0.5f)
+                fillPath.lineTo(0f, h * 0.5f)
+                fillPath.close()
+                
+                // Draw gradient fill
+                drawPath(
+                    path = fillPath,
+                    brush = if (avgDerivative > 0) positiveGradient else negativeGradient
+                )
+                
+                // Draw line
+                drawPath(
+                    path = path,
+                    color = Color(0xFF00E676),
+                    style = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
+                )
+                
+                // Draw zero reference line
+                drawLine(
+                    color = Color.Gray.copy(alpha = 0.5f),
+                    start = Offset(0f, h * 0.5f),
+                    end = Offset(w, h * 0.5f),
+                    strokeWidth = 1.dp.toPx(),
+                    pathEffect = PathEffect.dashPathEffect(floatArrayOf(8f, 8f), 0f)
+                )
+            }
+            
+            Spacer(Modifier.height(8.dp))
+            
+            // Interpretation
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Column {
+                    Text("Adaptation Moyenne", fontSize = 10.sp, color = AirTextLight)
+                    Text(
+                        text = String.format("%.2f bpm/s", avgDerivative),
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = when {
+                            avgDerivative > 2 -> Color(0xFFFF5252) // Montée rapide = effort intense
+                            avgDerivative < -2 -> Color(0xFF2979FF) // Descente rapide = bonne récupération
+                            else -> Color(0xFF00E676) // Stable = allure constante
+                        }
+                    )
+                }
+                Column(horizontalAlignment = Alignment.End) {
+                    Text("Interprétation", fontSize = 10.sp, color = AirTextLight)
+                    Text(
+                        text = when {
+                            avgDerivative > 3 -> "Départ rapide ⚡"
+                            avgDerivative > 1 -> "Montée progressive 📈"
+                            avgDerivative < -3 ->"Récup efficace 💚"
+                            avgDerivative < -1 -> "Ralentissement 📉"
+                            else -> "Allure stable ✅"
+                        },
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = AirTextPrimary
+                    )
+                }
+            }
+            
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = "💡 La dérivée montre la vitesse d'adaptation du cœur. Pic élevé = effort soudain, creux profond = récupération rapide.",
+                fontSize = 10.sp,
+                color = AirTextSecondary,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+    }
+}
