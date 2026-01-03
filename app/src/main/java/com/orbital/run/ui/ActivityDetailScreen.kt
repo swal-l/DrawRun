@@ -157,8 +157,13 @@ fun ActivityDetailScreen(
                 .verticalScroll(scrollState)
         ) {
             Spacer(Modifier.height(12.dp))
-            // 1. Interactive Map (Top)
-            ActivityMapHero(activity, onMapClick = { showFullMap = true })
+            
+            // GPS Map (Health Connect) or Polyline fallback
+            if (!activity.gpsCoordinates.isNullOrEmpty()) {
+                GpsMapCard(activity) { showFullMap = true }
+            } else {
+                ActivityMapHero(activity) { showFullMap = true }
+            }
 
             // 2. Primary Metrics Banner (Below Map)
             PrimaryMetricsBanner(activity)
@@ -796,6 +801,12 @@ fun VisualAnalysisSection(activity: Persistence.CompletedActivity, trainingPlan:
         }
         if (activity.verticalRatioSamples.isNotEmpty()) {
             VerticalRatioChart(activity.verticalRatioSamples, state = syncState)
+            Spacer(Modifier.height(16.dp))
+        }
+        
+        // Heart Rate Derivative (dHR/dt)
+        if (activity.heartRateSamples.size > 1) {
+            HeartRateDerivativeChart(samples = activity.heartRateSamples, state = syncState)
             Spacer(Modifier.height(16.dp))
         }
 
