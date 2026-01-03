@@ -80,7 +80,23 @@ Write-Host "Updating downloads links in $indexFile..."
 $htmlContent = Get-Content $indexFile -Raw
 # Replace any DrawRun_vX.X.apk with new version
 $newHtml = $htmlContent -replace "DrawRun_v[\d\.]+\.apk", $apkName
+$newHtml = $htmlContent -replace "DrawRun_v[\d\.]+\.apk", $apkName
 Set-Content -Path $indexFile -Value $newHtml
+
+# 4.5 Update version_info.json
+$versionInfoFile = "version_info.json"
+Write-Host "Updating $versionInfoFile..."
+if (Test-Path $versionInfoFile) {
+    $jsonContent = Get-Content $versionInfoFile -Raw | ConvertFrom-Json
+    $jsonContent.latestVersionCode = [int]$currentCode + 1
+    $jsonContent.latestVersionName = $version
+    $jsonContent.downloadUrl = "https://swal-l.github.io/DrawRun/$apkName"
+    
+    $newJsonInfo = $jsonContent | ConvertTo-Json -Depth 5
+    Set-Content -Path $versionInfoFile -Value $newJsonInfo
+} else {
+    Write-Warning "$versionInfoFile not found, skipping update."
+}
 
 Write-Host "Deployment Complete! ✅"
 Write-Host "New APK: $docsDir/$apkName"

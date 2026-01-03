@@ -1,16 +1,16 @@
 {
-    "latestVersionCode": 6,
-    "latestVersionName": "1.5",
-    "downloadUrl": "https://swal-l.github.io/DrawRun/DrawRun_v1.5.apk",
-    "releaseNotes": {
-        "features": [
-            "Synchronisation Garmin complète",
-            "Sauvegarde sécurisée des identifiants",
-            "Amélioration robustesse SyncManager"
-        ],
-        "fixes": [
-            "Correction erreur 401 Garmin",
-            "Sync ne bloque plus si un service échoue"
-        ]
-    }
+  "latestVersionCode": 20,
+  "latestVersionName": "1.19",
+  "downloadUrl": "https://swal-l.github.io/DrawRun/DrawRun_v1.19.apk",
+  "releaseNotes": {
+    "features": [
+      "Synchronisation Garmin complète",
+      "Sauvegarde sécurisée des identifiants",
+      "Amélioration robustesse SyncManager"
+    ],
+    "fixes": [
+      "Correction erreur 401 Garmin",
+      "Sync ne bloque plus si un service échoue"
+    ]
+  }
 }
