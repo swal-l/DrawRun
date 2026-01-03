@@ -100,11 +100,13 @@ fun AnalyticsScreen(
                                 0
                             }
                             
+                            
+                            val hasHc = HealthConnectManager.hasAllPermissions(context)
                             val message = when {
                                 count > 0 -> "✅ $count nouvelles activités synchronisées !"
-                                !StravaAPI.isAuthenticated() && !HealthConnectManager.hasAllPermissionsSync(context) -> "⚠️ Connectez Strava ou Health Connect"
+                                !StravaAPI.isAuthenticated() && !hasHc -> "⚠️ Connectez Strava ou Health Connect"
                                 !StravaAPI.isAuthenticated() -> "⚠️ Strava non connecté"
-                                !HealthConnectManager.hasAllPermissionsSync(context) -> "⚠️ Health Connect non autorisé"
+                                !hasHc -> "⚠️ Health Connect non autorisé"
                                 else -> "ℹ️ Déjà à jour - 0 nouvelles"
                             }
                             android.widget.Toast.makeText(context, message, android.widget.Toast.LENGTH_LONG).show()

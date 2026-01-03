@@ -18,6 +18,8 @@ import java.util.concurrent.TimeUnit
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 
+import com.orbital.run.BuildConfig
+
 /**
  * Service d'intégration avec l'API Garmin Connect
  * 
@@ -29,7 +31,7 @@ import javax.crypto.spec.SecretKeySpec
  * 3. Remplacer les valeurs ci-dessous par vos vraies clés
  */
 object GarminAPI {
-    private const val VERCEL_URL = "https://drawrunvercel-d2nnvlyct-lomics-projects.vercel.app/api/garmin_sync"
+    private val VERCEL_URL = BuildConfig.GARMIN_API_URL
     
     // Credentials stockés (Sécurité: attention, stockés en clair ou base64 simple ici)
     private var userEmail: String? = null

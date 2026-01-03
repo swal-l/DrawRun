@@ -104,6 +104,7 @@ object HealthConnectManager {
      * Synchronous version for UI - runs async check in background.
      * Use this in onClick handlers to avoid suspend function issues.
      */
+    @androidx.annotation.WorkerThread
     fun hasAllPermissionsSync(context: Context): Boolean {
         return try {
             kotlinx.coroutines.runBlocking {

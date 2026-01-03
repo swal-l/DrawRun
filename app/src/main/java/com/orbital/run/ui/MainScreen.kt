@@ -101,8 +101,9 @@ fun MainScreen() {
                 connectedApps["Strava"] = isConfigured
                 
                 // If we just connected or coming back, trigger a background sync
-                if (isConfigured || com.orbital.run.api.HealthConnectManager.hasAllPermissionsSync(context)) {
-                    kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
+                kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
+                    val isHcConnected = com.orbital.run.api.HealthConnectManager.hasAllPermissions(context)
+                    if (isConfigured || isHcConnected) {
                         com.orbital.run.api.SyncManager.syncAll(context)
                         Persistence.recalculateRecords(context)
                         withContext(Dispatchers.Main) {
@@ -403,6 +404,23 @@ fun MainScreen() {
                     onDismiss = { syncApp = null }
                 )
             }
+
+            // Error Dialog State
+            var errorDialogMessage by remember { mutableStateOf<String?>(null) }
+            
+            if (errorDialogMessage != null) {
+                 AlertDialog(
+                    onDismissRequest = { errorDialogMessage = null },
+                    title = { Text("Erreur de connexion", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.error) },
+                    text = { Text(errorDialogMessage ?: "") },
+                    confirmButton = {
+                        TextButton(onClick = { errorDialogMessage = null }) {
+                            Text("OK")
+                        }
+                    },
+                    containerColor = Color.White
+                )
+            }
             
             if (showGarminLogin) {
                 GarminLoginDialog(
@@ -420,7 +438,8 @@ fun MainScreen() {
                                  }
                              } else {
                                  kotlinx.coroutines.CoroutineScope(Dispatchers.Main).launch {
-                                     android.widget.Toast.makeText(context, "Erreur: $msg", android.widget.Toast.LENGTH_LONG).show()
+                                     // Show persistent dialog instead of Toast
+                                     errorDialogMessage = "Échec de connexion Garmin:\n\n$msg"
                                  }
                              }
                         }

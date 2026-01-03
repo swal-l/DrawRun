@@ -14,8 +14,8 @@ android {
         applicationId = "com.orbital.run"
         minSdk = 26
         targetSdk = 35
-        versionCode = 15
-        versionName = "1.14"
+        versionCode = 18
+        versionName = "1.17"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         
@@ -30,6 +30,9 @@ android {
         
         buildConfigField("String", "STRAVA_CLIENT_ID", "\"$sId\"")
         buildConfigField("String", "STRAVA_CLIENT_SECRET", "\"$sSecret\"")
+        
+        val garminUrl = localProperties.getProperty("garmin.api_url") ?: "https://drawrunvercel-d2nnvlyct-lomics-projects.vercel.app/api/garmin_sync"
+        buildConfigField("String", "GARMIN_API_URL", "\"$garminUrl\"")
     }
 
     signingConfigs {
@@ -132,6 +135,9 @@ dependencies {
 tasks.register("testClasses") {
     dependsOn("compileDebugUnitTestSources")
 }
+
+
+
 
 
 
