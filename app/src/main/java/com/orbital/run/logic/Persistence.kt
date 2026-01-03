@@ -414,10 +414,24 @@ object Persistence {
         val strideLengthSamples: List<RunningDynamicSample> = emptyList(),
         val gctSamples: List<RunningDynamicSample> = emptyList(),
         val verticalOscillationSamples: List<RunningDynamicSample> = emptyList(),
-        val verticalRatioSamples: List<RunningDynamicSample> = emptyList()
+        val verticalRatioSamples: List<RunningDynamicSample> = emptyList(),
+        
+        // V2.0 GPS Route & Respiratory
+        val gpsCoordinates: List<GpsCoordinate>? = null,
+        val avgRespiratoryRate: Double? = null, // Respirations per minute
+        val respiratorySamples: List<RespiratorySample> = emptyList()
     ) {
         val durationSec get() = durationMin * 60
     }
+    
+    // GPS Coordinate for route display
+    data class GpsCoordinate(
+        val latitude: Double,
+        val longitude: Double,
+        val timestamp: Long,
+        val altitude: Double? = null,
+        val accuracy: Double? = null
+    )
     
     // Heart Rate Sample for time-series analysis
     data class HeartRateSample(
@@ -444,7 +458,13 @@ object Persistence {
         val timeOffset: Int,
         val avgAltitude: Double
     )
-
+    
+    // Respiratory Rate Sample
+    data class RespiratorySample(
+        val timeOffset: Int,
+        val rpm: Double  // Respirations per minute
+    )
+    
     // New Running Dynamics Sample (Generic for Stride, GCT, VO, VR)
     data class RunningDynamicSample(
         val timeOffset: Int,

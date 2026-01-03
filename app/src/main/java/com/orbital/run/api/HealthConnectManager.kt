@@ -31,9 +31,11 @@ object HealthConnectManager {
         HealthPermission.getReadPermission(SpeedRecord::class),
         HealthPermission.getReadPermission(PowerRecord::class),
         HealthPermission.getReadPermission(SleepSessionRecord::class),
+        HealthPermission.getReadPermission(RespiratoryRateRecord::class),  // NEW: Respiratory rate
         "android.permission.health.READ_EXERCISE_ROUTE",
         "android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND"
     )
+
     
     /**
      * Check if Health Connect is available on this device.
@@ -298,6 +300,21 @@ object HealthConnectManager {
             } else null
         }
         
+        // V2.0: Extract GPS Coordinates
+        val gpsCoordinates = route?.route?.mapNotNull { location ->
+            try {
+                Persistence.GpsCoordinate(
+                    latitude = location.latitude,
+                    longitude = location.longitude,
+                    timestamp = location.time.toEpochMilli(),
+                    altitude = location.altitude?.inMeters,
+                    accuracy = location.horizontalAccuracy?.inMeters
+                )
+            } catch (e: Exception) {
+                null  // Skip invalid points
+            }
+        }
+        
         // V1.4: Extract Power/Speed if record available
         val power = if (session.exerciseType == ExerciseSessionRecord.EXERCISE_TYPE_RUNNING) {
              null 
@@ -332,7 +349,8 @@ object HealthConnectManager {
             speedSamples = speedSamples,
             powerSamples = powerSamples,
             cadenceSamples = cadenceSamples,
-            summaryPolyline = polyline
+            summaryPolyline = polyline,
+            gpsCoordinates = gpsCoordinates  // NEW: GPS route
         )
     }
 
