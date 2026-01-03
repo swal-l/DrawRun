@@ -1,3 +1,0 @@
-garminconnect==0.2.14
-requests
-supabase==2.3.0
