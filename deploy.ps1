@@ -50,61 +50,76 @@ Write-Host "Detected Version: $version"
 $apkName = "DrawRun_v$version.apk"
 $apkPath = "app/build/outputs/apk/release/$apkName"
 
-# 2. Build APK
-Write-Host "Building APK for version $version..."
+# ===== 3. BUILD APK (OPTIMIZED - NO CACHE CLEAR) =====
+Write-Host "`n[3/6] Building APK..." -ForegroundColor Yellow
 $env:JAVA_HOME = "C:\Program Files\Android\Android Studio\jbr"
 
-# Clean Cache (Optional but recommended if build fails)
-Write-Host "Cleaning Gradle Cache..."
-./gradlew.bat --stop
-Remove-Item -Recurse -Force ".gradle" -ErrorAction SilentlyContinue
-Remove-Item -Recurse -Force "$env:USERPROFILE\.gradle\caches\8.11.1\transforms" -ErrorAction SilentlyContinue
-Remove-Item -Recurse -Force "$env:USERPROFILE\.gradle\caches" -ErrorAction SilentlyContinue
+Write-Host "  ⚙ Compiling release APK..." -ForegroundColor Gray
 
-./gradlew.bat clean
-./gradlew.bat assembleRelease --no-daemon
+# Try build WITHOUT cleaning cache first
+./gradlew.bat assembleRelease --no-daemon --parallel --build-cache 2>&1 | Out-Null
 
 if (-not (Test-Path $apkPath)) {
-    Write-Error "APK build failed or output not found at $apkPath"
+    Write-Host "  ⚠ Build failed, retrying with cache clean..." -ForegroundColor DarkYellow
+    
+    # Clean cache ONLY if build failed
+    ./gradlew.bat --stop 2>&1 | Out-Null
+    Remove-Item -Recurse -Force ".gradle" -ErrorAction SilentlyContinue
+    Remove-Item -Recurse -Force "$env:USERPROFILE\.gradle\caches" -ErrorAction SilentlyContinue
+    
+    # Retry with clean cache
+    ./gradlew.bat clean --quiet
+    ./gradlew.bat assembleRelease --no-daemon --parallel --build-cache 2>&1 | Out-Null
+    
+    if (-not (Test-Path $apkPath)) {
+        Write-Error "❌ APK build failed even after cache clean at $apkPath"
+        exit 1
+    }
+    
+    Write-Host "  ✓ Build succeeded after cache clean" -ForegroundColor Green
+} else {
+    Write-Host "  ✓ APK built successfully" -ForegroundColor Green
 }
 
-# 3. Deploy APK
-Write-Host "Deploying $apkName to $docsDir..."
+# ===== 4. DEPLOY APK =====
+Write-Host "`n[4/6] Deploying to $docsDir..." -ForegroundColor Yellow
 Copy-Item $apkPath -Destination "$docsDir/$apkName" -Force
 
 # Remove old APKs
-Get-ChildItem $docsDir -Filter "DrawRun_v*.apk" | Where-Object { $_.Name -ne $apkName } | Remove-Item -Force
+$removed = Get-ChildItem $docsDir -Filter "DrawRun_v*.apk" | Where-Object { $_.Name -ne $apkName }
+$removed | Remove-Item -Force
+if ($removed) {
+    Write-Host "  ✓ Removed $($removed.Count) old APK(s)" -ForegroundColor Green
+}
+Write-Host "  ✓ Deployed: $apkName" -ForegroundColor Green
 
-# 4. Update index.html
-Write-Host "Updating downloads links in $indexFile..."
+# ===== 5. UPDATE FILES =====
+Write-Host "`n[5/6] Updating website files..." -ForegroundColor Yellow
+
+# Update index.html
 $htmlContent = Get-Content $indexFile -Raw
-# Replace any DrawRun_vX.X.apk with new version
-$newHtml = $htmlContent -replace "DrawRun_v[\d\.]+\.apk", $apkName
 $newHtml = $htmlContent -replace "DrawRun_v[\d\.]+\.apk", $apkName
 Set-Content -Path $indexFile -Value $newHtml
+Write-Host "  ✓ Updated $indexFile" -ForegroundColor Green
 
-# 4.5 Update version_info.json
-$versionInfoFile = "version_info.json"
-Write-Host "Updating $versionInfoFile..."
+# Update version_info.json
 if (Test-Path $versionInfoFile) {
     $jsonContent = Get-Content $versionInfoFile -Raw | ConvertFrom-Json
-    $jsonContent.latestVersionCode = [int]$currentCode + 1
+    $jsonContent.latestVersionCode = $versionCode
     $jsonContent.latestVersionName = $version
     $jsonContent.downloadUrl = "https://swal-l.github.io/DrawRun/$apkName"
     
     $newJsonInfo = $jsonContent | ConvertTo-Json -Depth 5
     Set-Content -Path $versionInfoFile -Value $newJsonInfo
-} else {
-    Write-Warning "$versionInfoFile not found, skipping update."
+    Write-Host "  ✓ Updated $versionInfoFile" -ForegroundColor Green
 }
 
-Write-Host "Deployment Complete! ✅"
-Write-Host "New APK: $docsDir/$apkName"
-
-# 5. Git Automation
-Write-Host "Committing and Pushing to GitHub..."
+# ===== 6. GIT PUSH =====
+Write-Host "`n[6/6] Pushing to GitHub..." -ForegroundColor Yellow
 git add .
-git commit -m "Auto-Deploy Version $version"
-git push origin main
+git commit -m "🚀 Deploy v$version" -q
+git push origin main -q
 
-Write-Host "Deployment & Git Push Complete! ✅"
+Write-Host "`n✅ DEPLOYMENT COMPLETE!" -ForegroundColor Green
+Write-Host "📦 APK: $docsDir/$apkName" -ForegroundColor Cyan
+Write-Host "🌐 URL: https://swal-l.github.io/DrawRun/$apkName`n" -ForegroundColor Cyan
