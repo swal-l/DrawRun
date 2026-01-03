@@ -405,49 +405,6 @@ fun MainScreen() {
                 )
             }
 
-            /* Garmin integration disabled - backend removed
-            // Error Dialog State
-            var errorDialogMessage by remember { mutableStateOf<String?>(null) }
-            
-            if (errorDialogMessage != null) {
-                 AlertDialog(
-                    onDismissRequest = { errorDialogMessage = null },
-                    title = { Text("Erreur de connexion", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.error) },
-                    text = { Text(errorDialogMessage ?: "") },
-                    confirmButton = {
-                        TextButton(onClick = { errorDialogMessage = null }) {
-                            Text("OK")
-                        }
-                    },
-                    containerColor = Color.White
-                )
-            }
-            
-            if (showGarminLogin) {
-                GarminLoginDialog(
-                    onDismiss = { showGarminLogin = false },
-                    onLogin = { email, pass ->
-                        com.orbital.run.api.GarminAPI.login(email, pass) { success, msg ->
-                             showGarminLogin = false
-                             if (success) {
-                                 // Update State 
-                                 connectedApps["Garmin"] = true
-                                 Persistence.saveGarminEmail(context, email)
-                                 Persistence.saveGarminPassword(context, pass) // Ensure password is saved
-                                 kotlinx.coroutines.CoroutineScope(Dispatchers.Main).launch {
-                                     android.widget.Toast.makeText(context, "Garmin connecté !", android.widget.Toast.LENGTH_SHORT).show()
-                                 }
-                             } else {
-                                 kotlinx.coroutines.CoroutineScope(Dispatchers.Main).launch {
-                                     // Show persistent dialog instead of Toast
-                                     errorDialogMessage = "Échec de connexion Garmin:\n\n$msg"
-                                 }
-                             }
-                        }
-                    }
-                )
-            }
-
             
             // Update Dialog
             if (updateInfo != null) {
