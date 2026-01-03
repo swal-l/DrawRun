@@ -59,7 +59,7 @@ Write-Host "Cleaning Gradle Cache..."
 ./gradlew.bat --stop
 Remove-Item -Recurse -Force ".gradle" -ErrorAction SilentlyContinue
 Remove-Item -Recurse -Force "$env:USERPROFILE\.gradle\caches\8.11.1\transforms" -ErrorAction SilentlyContinue
-# Remove-Item -Recurse -Force "$env:USERPROFILE\.gradle\caches" -ErrorAction SilentlyContinue # Too aggressive for every build?
+Remove-Item -Recurse -Force "$env:USERPROFILE\.gradle\caches" -ErrorAction SilentlyContinue
 
 ./gradlew.bat clean
 ./gradlew.bat assembleRelease --no-daemon
