@@ -92,22 +92,20 @@ object HealthConnectManager {
      */
     suspend fun hasAllPermissions(context: Context): Boolean {
         val granted = checkPermissions(context)
-        android.util.Log.d("HC_PERMS", "Granted permissions: ${granted.size}/${PERMISSIONS.size}")
-        granted.forEach { android.util.Log.d("HC_PERMS", "  ✓ $it") }
         
-        // Exclude Background permission from the mandatory check
-        // It's often denied initially or requires separate flow, shouldn't block main usage
-        val mandatoryPermissions = PERMISSIONS.filter { 
-            !it.contains("READ_HEALTH_DATA_IN_BACKGROUND")
-        }
-
-        mandatoryPermissions.filter { !granted.contains(it) }.forEach {
-            android.util.Log.w("HC_PERMS", "  ✗ MISSING: $it")
+        // V2.1 FIX: Only require access to Exercise Sessions to consider the app "Connected".
+        // All other measurements (HR, Power, Background, etc.) are optional enhancements.
+        // This prevents blocking the user if obscure permissions are denied by the OS.
+        val sessionPermission = HealthPermission.getReadPermission(ExerciseSessionRecord::class)
+        val hasEssential = granted.contains(sessionPermission)
+        
+        android.util.Log.d("HC_PERMS", "Granted: ${granted.size}, Has Essential (Sessions): $hasEssential")
+        
+        if (!hasEssential) {
+             android.util.Log.w("HC_PERMS", "Missing essential permission: $sessionPermission")
         }
         
-        val hasAll = mandatoryPermissions.all { granted.contains(it) }
-        android.util.Log.d("HC_PERMS", "Has all permissions: $hasAll")
-        return hasAll
+        return hasEssential
     }
     
     /**
