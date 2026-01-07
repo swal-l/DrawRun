@@ -90,25 +90,19 @@ fun MainScreen() {
     val context = androidx.compose.ui.platform.LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     
-    // Observe lifecycle to refresh Strava status when app resumes from OAuth
+    // Observe lifecycle to refresh Health Connect status when app resumes
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
-                // Reload Strava token and update state when app comes back from browser
-                com.orbital.run.api.StravaAPI.loadToken(context)
-                val wasConfigured = connectedApps["Strava"] == true
-                val isConfigured = com.orbital.run.api.StravaAPI.isConfigured()
-                connectedApps["Strava"] = isConfigured
-                
-                // If we just connected or coming back, trigger a background sync
+                // Trigger sync if Health Connect is connected
                 kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
                     val isHcConnected = com.orbital.run.api.HealthConnectManager.hasAllPermissions(context)
-                    if (isConfigured || isHcConnected) {
+                    if (isHcConnected) {
                         com.orbital.run.api.SyncManager.syncAll(context)
                         Persistence.recalculateRecords(context)
                         withContext(Dispatchers.Main) {
                             dataVersion++
-                            connectedApps["Garmin"] = com.orbital.run.api.GarminAPI.status == com.orbital.run.api.GarminAPI.ConnectionStatus.CONNECTED
+                            connectedApps["Health Connect"] = true
                         }
                     }
                 }
@@ -155,14 +149,12 @@ fun MainScreen() {
         Persistence.saveProfile(context, p)
     }
     
-    // Unified Auto-Sync at Startup
+    // Auto-Sync at Startup (Health Connect only)
     LaunchedEffect(onboardingComplete) {
         if (onboardingComplete) {
             withContext(Dispatchers.IO) {
-                com.orbital.run.api.StravaAPI.loadToken(context)
-                
-                // Trigger sync only if at least one service is active
-                if (com.orbital.run.api.StravaAPI.isConfigured() || com.orbital.run.api.HealthConnectManager.hasAllPermissionsSync(context)) {
+                // Trigger sync if Health Connect is available
+                if (com.orbital.run.api.HealthConnectManager.hasAllPermissionsSync(context)) {
                     val count = com.orbital.run.api.SyncManager.syncAll(context)
                     if (count > 0) {
                         Persistence.recalculateRecords(context)
@@ -197,23 +189,11 @@ fun MainScreen() {
             }
             
             
-            // Initial check for connected apps
-            val stravaAuth = com.orbital.run.api.StravaAPI.isConfigured()
-            // Updated check: uses both permissions AND enabled flag
+            // Check Health Connect status
             val hcAuth = com.orbital.run.api.HealthConnectManager.isIntegrationEnabled(context)
             
-            // Restore Garmin Session
-            val garminEmail = Persistence.loadGarminEmail(context)
-            if (garminEmail != null && garminEmail.isNotBlank()) {
-                com.orbital.run.api.GarminAPI.restoreSession(garminEmail)
-            }
-            
             withContext(Dispatchers.Main) {
-                connectedApps["Strava"] = stravaAuth
                 connectedApps["Health Connect"] = hcAuth
-                // Garmin depends on live status which might update later during sync, 
-                // but efficiently check if we have email and no error yet.
-                connectedApps["Garmin"] = com.orbital.run.api.GarminAPI.status == com.orbital.run.api.GarminAPI.ConnectionStatus.CONNECTED
             }
 
         }
@@ -258,32 +238,17 @@ fun MainScreen() {
                         onGenerate = { generate() }
                     )
                 } else {
-                    // Step 2: Sync Onboarding
-                    val isStravaConnected = com.orbital.run.api.StravaAPI.isConfigured()
-                    // Simplified HC check for UI
-                    SyncOnboardingScreen(
-                        onConnectStrava = { appToConnect = "Strava" },
-                        onConnectHealthConnect = { 
-                            // This usually triggers permissions in MainActivity, 
-                            // for UI feedback we can toggle a dummy state or wait for next frame
-                            appToConnect = "Health Connect" 
-                        },
-                        onConnectGarmin = { showGarminLogin = true },
-                        onConnectPolar = { com.orbital.run.api.PolarAPI.openAuthorizationPage(context) },
-                        onConnectSuunto = { com.orbital.run.api.SuuntoAPI.openAuthorizationPage(context) },
+                    // Step 2: Health Connect Onboarding
+                    SimpleHealthConnectOnboarding(
+                        onConnectHealthConnect = { appToConnect = "Health Connect" },
                         onFinish = {
                             Persistence.setOnboardingComplete(context, true)
-                            // Hard restart for clean state
                             val intent = android.content.Intent(context, com.orbital.run.MainActivity::class.java).apply {
                                 addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK or android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK)
                             }
                             context.startActivity(intent)
                         },
-                        isStravaConnected = isStravaConnected,
-                        isHealthConnectConnected = connectedApps["Health Connect"] ?: false,
-                        isGarminConnected = connectedApps["Garmin"] ?: false,
-                        isPolarConnected = connectedApps["Polar Flow"] ?: false,
-                        isSuuntoConnected = connectedApps["Suunto App"] ?: false
+                        isHealthConnectConnected = connectedApps["Health Connect"] ?: false
                     )
                 }
             } else {
@@ -327,9 +292,6 @@ fun MainScreen() {
                                 onConnect = { appToConnect = it },
                                 onDisconnect = { app ->
                                      connectedApps[app] = false
-                                     if (app == "Garmin") {
-                                         com.orbital.run.api.GarminAPI.disconnect(context)
-                                     }
                                      if (app == "Health Connect") {
                                          Persistence.saveHealthConnectEnabled(context, false)
                                      }
@@ -366,33 +328,17 @@ fun MainScreen() {
                 }
             }
             
-            // Dialogs
-            if (appToConnect != null) {
+            // Health Connect Dialog
+            if (appToConnect == "Health Connect") {
                 AppConnectDialog(
-                    appName = appToConnect!!,
+                    appName = "Health Connect",
                     onDismiss = { appToConnect = null },
                     onConnect = {
-                        // Ouvrir le flux OAuth selon l'app
-                        when(appToConnect) {
-                            // "Garmin Connect" -> {
-                            //     // Disabled - backend integration removed
-                            //     showGarminLogin = true
-                            //     appToConnect = null
-                            // }
-                            "Strava" -> {
-                                com.orbital.run.api.StravaAPI.openAuthorizationPage(context)
-                            }
-                            "Health Connect" -> {
-                                try {
-                                    hcPermissionLauncher.launch(com.orbital.run.api.HealthConnectManager.getPermissionsToRequest())
-                                } catch (e: Exception) {
-                                    android.widget.Toast.makeText(context, "Erreur: ${e.message}", android.widget.Toast.LENGTH_LONG).show()
-                                }
-                            }
-                            "Polar Flow" -> com.orbital.run.api.PolarAPI.openAuthorizationPage(context)
-                            "Suunto App" -> com.orbital.run.api.SuuntoAPI.openAuthorizationPage(context)
+                        try {
+                            hcPermissionLauncher.launch(com.orbital.run.api.HealthConnectManager.getPermissionsToRequest())
+                        } catch (e: Exception) {
+                            android.widget.Toast.makeText(context, "Erreur: ${e.message}", android.widget.Toast.LENGTH_LONG).show()
                         }
-                        // State will be updated by lifecycle observer when app resumes
                         appToConnect = null
                     }
                 )
@@ -1284,14 +1230,7 @@ fun ProfileSettingsScreen(
 ) {
     // Local editable state
     var editMode by remember { mutableStateOf(false) }
-    var refreshTrigger by remember { mutableStateOf(0) } // Forces refresh of lists accessing static APIs
     val context = androidx.compose.ui.platform.LocalContext.current
-    
-    // Load persisted token on init
-    LaunchedEffect(Unit) {
-        com.orbital.run.api.StravaAPI.loadToken(context)
-        refreshTrigger++ // Force refresh after load
-    }
     
     // Fields
     var age by remember { mutableStateOf(currentProfile.age.toString()) }
@@ -1392,24 +1331,21 @@ fun ProfileSettingsScreen(
         
         Spacer(modifier = Modifier.height(16.dp))
         
-        key(refreshTrigger) {
-        val apps = listOf(
-            // "Strava",  // Hidden for Health Connect-only testing
-            "Health Connect"
-        )
+        
+        val apps = listOf("Health Connect")
         
         apps.forEach { appName ->
-            // Special handling for Health Connect
+            // Health Connect handling
             if (appName == "Health Connect") {
                 if (hcAvailable == false) {
-                    return@forEach // Skip if not available
+                    return@forEach
                 }
                 
                 AppItem(
                     name = "Health Connect",
                     isLinked = hcHasPermissions && com.orbital.run.logic.Persistence.loadHealthConnectEnabled(context),
                     isConfigured = com.orbital.run.logic.Persistence.loadHealthConnectEnabled(context),
-                    subtitle = "Sync: Garmin, autres wearables",
+                    subtitle = "Sync: Garmin, Strava, autres apps",
                     onConnect = {
                         try {
                             permissionLauncher.launch(com.orbital.run.api.HealthConnectManager.getPermissionsToRequest())
@@ -1421,42 +1357,10 @@ fun ProfileSettingsScreen(
                         android.widget.Toast.makeText(context, "Gérez les permissions dans les paramètres Android", android.widget.Toast.LENGTH_SHORT).show()
                     }
                 )
-            } else {
-                // Standard apps
-                val isLinked = when(appName) {
-                    "Garmin Connect" -> com.orbital.run.api.GarminIntent.isGarminConnectInstalled(context)
-                    "Strava" -> connectedApps["Strava"] == true
-                    "Polar Flow" -> connectedApps["Polar Flow"] == true
-                    "Suunto App" -> connectedApps["Suunto App"] == true
-                    else -> connectedApps[appName] == true
-                }
-                
-                val isConfigured = when(appName) {
-                    "Garmin Connect" -> true
-                    "Strava" -> com.orbital.run.api.StravaAPI.isConfigured()
-                    "Polar Flow" -> com.orbital.run.api.PolarAPI.isConfigured()
-                    "Suunto App" -> com.orbital.run.api.SuuntoAPI.isConfigured()
-                    else -> false
-                }
-
-                AppItem(
-                    name = appName,
-                    isLinked = isLinked,
-                    isConfigured = isConfigured,
-                    onConnect = { onConnect(appName) },
-                    onDisconnect = { 
-                        when(appName) {
-                            "Strava" -> com.orbital.run.api.StravaAPI.disconnect(context)
-                            "Polar Flow" -> com.orbital.run.api.PolarAPI.disconnect()
-                            "Suunto App" -> com.orbital.run.api.SuuntoAPI.disconnect()
-                        }
-                        onDisconnect(appName)
-                        refreshTrigger++
-                    }
-                )
             }
         }
-        } // end key
+        
+        
 
 
         
@@ -1612,31 +1516,26 @@ fun AppItem(
                     )
                     
                     // Status Badge
-                    // Status Badge
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.padding(top = 4.dp)
                     ) {
-                        // Check specifically for Garmin Auth Error
-                        val isGarminError = name.contains("Garmin") && 
-                                          com.orbital.run.api.GarminAPI.status == com.orbital.run.api.GarminAPI.ConnectionStatus.AUTH_ERROR
-                        
-                        val statusColor = if (isGarminError) ZoneRed else if (isConnected) ZoneGreen else AirTextLight
-                        val statusText = if (isGarminError) "Erreur Auth" else if (isConnected) "Connecté" else "Non connecté" // Fix: "Non connecté" was implicitly handled by "Déconnecté" in previous code, but "Non connecté" is better here. preserving "Déconnecté" if that's what was there. valid: "Déconnecté"
+                        val statusColor = if (isConnected) ZoneGreen else AirTextLight
+                        val statusText = if (isConnected) "Connecté" else "Non connecté"
                         
                         Surface(
                             shape = RoundedCornerShape(4.dp),
-                            color = if (isGarminError) ZoneRed.copy(alpha = 0.15f) else if (isConnected) ZoneGreen.copy(alpha = 0.15f) else AirSurface
+                            color = if (isConnected) ZoneGreen.copy(alpha = 0.15f) else AirSurface
                         ) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
                             ) {
-                                if (isConnected || isGarminError) {
+                                if (isConnected) {
                                     Icon(
-                                        if (isGarminError) Icons.Default.Warning else Icons.Default.CheckCircle, 
+                                        Icons.Default.CheckCircle, 
                                         contentDescription = null,
-                                        tint = if (isGarminError) ZoneRed else ZoneGreen,
+                                        tint = ZoneGreen,
                                         modifier = Modifier.size(12.dp)
                                     )
                                     Spacer(modifier = Modifier.width(4.dp))
@@ -1645,7 +1544,7 @@ fun AppItem(
                                     statusText,
                                     fontSize = 11.sp,
                                     fontWeight = FontWeight.Medium,
-                                    color = if (isGarminError) ZoneRed else if (isConnected) ZoneGreen else AirTextLight
+                                    color = if (isConnected) ZoneGreen else AirTextLight
                                 )
                             }
                         }
@@ -1664,7 +1563,7 @@ fun AppItem(
             }
             
             // Right: Action Button
-            if (isConnected && (!name.contains("Garmin") || com.orbital.run.api.GarminAPI.status != com.orbital.run.api.GarminAPI.ConnectionStatus.AUTH_ERROR)) {
+            if (isConnected) {
                 OutlinedButton(
                     onClick = onDisconnect,
                     border = BorderStroke(1.dp, ZoneRed.copy(alpha = 0.5f)),
@@ -1677,9 +1576,9 @@ fun AppItem(
             } else {
                 Button(
                     onClick = onConnect,
-                    colors = ButtonDefaults.buttonColors(containerColor = if(name.contains("Garmin") && com.orbital.run.api.GarminAPI.status == com.orbital.run.api.GarminAPI.ConnectionStatus.AUTH_ERROR) ZoneRed else appColor)
+                    colors = ButtonDefaults.buttonColors(containerColor = appColor)
                 ) {
-                    Text(if(name.contains("Garmin") && com.orbital.run.api.GarminAPI.status == com.orbital.run.api.GarminAPI.ConnectionStatus.AUTH_ERROR) "RE-CONNECTER" else "Connecter", fontSize = 12.sp)
+                    Text("Connecter", fontSize = 12.sp)
                 }
             }
         }
@@ -2021,52 +1920,7 @@ fun formatPace(speedKmh: Double): String {
 }
 
 fun shareWorkout(context: android.content.Context, workout: Workout) {
-    // PRIORITÉ 1: Garmin Connect via Intent (AUCUNE CLÉ API REQUISE)
-    if (com.orbital.run.api.GarminIntent.isGarminConnectInstalled(context)) {
-        android.widget.Toast.makeText(context, "📤 Ouverture Garmin Connect...", android.widget.Toast.LENGTH_SHORT).show()
-        com.orbital.run.api.GarminIntent.sendWorkout(context, workout) { success, msg ->
-            android.os.Handler(android.os.Looper.getMainLooper()).post {
-                if (!success) {
-                    android.widget.Toast.makeText(context, "❌ $msg", android.widget.Toast.LENGTH_LONG).show()
-                }
-            }
-        }
-        return
-    }
-    
-    // PRIORITÉ 2: Services en mode démo (Strava, Polar, Suunto)
-    when {
-        com.orbital.run.api.StravaAPI.isAuthenticated() -> {
-            android.widget.Toast.makeText(context, "📤 Strava...", android.widget.Toast.LENGTH_SHORT).show()
-            com.orbital.run.api.StravaAPI.uploadWorkout(workout) { s, m -> 
-                android.os.Handler(android.os.Looper.getMainLooper()).post { 
-                    android.widget.Toast.makeText(context, if(s) "✅ $m" else "❌ $m", android.widget.Toast.LENGTH_LONG).show() 
-                } 
-            }
-            return
-        }
-        com.orbital.run.api.PolarAPI.isAuthenticated() -> {
-            android.widget.Toast.makeText(context, "📤 Polar...", android.widget.Toast.LENGTH_SHORT).show()
-            com.orbital.run.api.PolarAPI.uploadWorkout(workout) { s, m -> 
-                android.os.Handler(android.os.Looper.getMainLooper()).post { 
-                    android.widget.Toast.makeText(context, if(s) "✅ $m" else "❌ $m", android.widget.Toast.LENGTH_LONG).show() 
-                } 
-            }
-            return
-        }
-        com.orbital.run.api.SuuntoAPI.isAuthenticated() -> {
-            android.widget.Toast.makeText(context, "📤 Suunto...", android.widget.Toast.LENGTH_SHORT).show()
-            com.orbital.run.api.SuuntoAPI.uploadWorkout(workout) { s, m -> 
-                android.os.Handler(android.os.Looper.getMainLooper()).post { 
-                    android.widget.Toast.makeText(context, if(s) "✅ $m" else "❌ $m", android.widget.Toast.LENGTH_LONG).show() 
-                } 
-            }
-            return
-        }
-    }
-    
-    // PRIORITÉ 3: Aucun service - proposer installation ou export JSON
-    android.widget.Toast.makeText(context, "⚠️ Installez Garmin Connect pour l'envoi automatique\n\nExport JSON en cours...", android.widget.Toast.LENGTH_LONG).show()
+    // Export workout as JSON for sharing
     exportAsJson(context, workout)
 }
 

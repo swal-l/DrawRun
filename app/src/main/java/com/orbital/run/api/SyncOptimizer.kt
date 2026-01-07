@@ -68,40 +68,12 @@ object SyncOptimizer {
     }
     
     /**
-     * Sync only new activities (incremental)
+     * Sync only new activities (incremental) - Health Connect only
+     * Note: This function is deprecated as Health Connect handles incremental sync automatically
      */
-    suspend fun syncIncrementalStrava(context: Context): List<Persistence.CompletedActivity> = withContext(Dispatchers.IO) {
-        val lastSync = getLastSyncTimestamp(context)
-        val afterTimestamp = lastSync / 1000 // Convert to Unix timestamp
-        
-        // Fetch only activities after last sync
-        val result = StravaAPI.fetchActivities(limit = 100)
-        
-        if (result.isFailure) return@withContext emptyList()
-        
-        val activities = result.getOrNull() ?: emptyList()
-        
-        // Filter by timestamp (Strava API doesn't support 'after' in all versions)
-        // We'll fetch all and filter client-side for now
-        val newActivities = activities.filter { workout ->
-            // Parse date from externalId if available
-            val dateStr = workout.externalId?.split("|")?.getOrNull(1)
-            if (dateStr != null) {
-                try {
-                    val sdf = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", java.util.Locale.US)
-                    sdf.timeZone = java.util.TimeZone.getTimeZone("UTC")
-                    val date = sdf.parse(dateStr)
-                    date?.time ?: 0L > lastSync
-                } catch (e: Exception) {
-                    true // Include if can't parse
-                }
-            } else true
-        }
-        
-        // Update last sync timestamp
-        saveLastSyncTimestamp(context, System.currentTimeMillis())
-        
-        // Convert to CompletedActivity (simplified, would need full conversion)
+    suspend fun syncIncrementalHealthConnect(context: Context): List<Persistence.CompletedActivity> = withContext(Dispatchers.IO) {
+        // Health Connect automatically handles incremental sync
+        // This is just a placeholder for compatibility
         emptyList()
     }
     
@@ -145,23 +117,15 @@ object SyncOptimizer {
         return decompressed
     }
     
-    // ===== BATCH PROCESSING =====
-    
     /**
      * Fetch streams for multiple activities in parallel
+     * Note: Deprecated - Health Connect provides data directly
      */
     suspend fun batchFetchStreams(
         activityIds: List<String>
     ): Map<String, List<Persistence.HeartRateSample>> = coroutineScope {
-        activityIds.map { id ->
-            async {
-                try {
-                    id to StravaAPI.fetchActivityStreams(id)
-                } catch (e: Exception) {
-                    id to emptyList()
-                }
-            }
-        }.awaitAll().toMap()
+        // Health Connect provides data directly, no need for batch fetching
+        emptyMap()
     }
     
     /**

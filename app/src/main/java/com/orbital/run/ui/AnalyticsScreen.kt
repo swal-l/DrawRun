@@ -25,7 +25,6 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.runtime.*
 import com.orbital.run.api.SyncManager
-import com.orbital.run.api.StravaAPI
 import com.orbital.run.api.HealthConnectManager
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.Dispatchers
@@ -90,9 +89,6 @@ fun AnalyticsScreen(
                         isSyncing = true
                         
                         try {
-                            // ✅ CRITICAL: Load token before checking status
-                            StravaAPI.loadToken(context)
-                            
                             val count = try {
                                 SyncManager.syncAll(context)
                             } catch (e: Exception) { 
@@ -100,13 +96,10 @@ fun AnalyticsScreen(
                                 0
                             }
                             
-                            
                             val hasHc = HealthConnectManager.hasAllPermissions(context)
                             val message = when {
                                 count > 0 -> "✅ $count nouvelles activités synchronisées !"
-                                !StravaAPI.isAuthenticated() && !hasHc -> "⚠️ Connectez Strava ou Health Connect"
-                                !StravaAPI.isAuthenticated() -> "⚠️ Strava non connecté"
-                                !hasHc -> "⚠️ Health Connect non autorisé"
+                                !hasHc -> "⚠️ Connectez Health Connect dans les paramètres"
                                 else -> "ℹ️ Déjà à jour - 0 nouvelles"
                             }
                             android.widget.Toast.makeText(context, message, android.widget.Toast.LENGTH_LONG).show()

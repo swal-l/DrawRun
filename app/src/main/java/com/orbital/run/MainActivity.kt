@@ -74,33 +74,7 @@ class MainActivity : ComponentActivity() {
     }
     
     private fun handleIntent(intent: android.content.Intent?) {
-        val data = intent?.data
-        if (intent?.action == android.content.Intent.ACTION_VIEW && data != null) {
-            // Check for both legacy/custom and standard http schemes
-            val isStravaCallback = (data.scheme == "drawrun" && data.host == "strava_callback") ||
-                                   (data.scheme == "http" && data.host == "localhost" && data.path?.startsWith("/strava_callback") == true)
-            
-            if (isStravaCallback) {
-                val uri = intent.data
-                val accessToken = uri?.getQueryParameter("access_token")
-                val refreshToken = uri?.getQueryParameter("refresh_token")
-                val expiresAtStr = uri?.getQueryParameter("expires_at")
-                
-                if (accessToken != null && refreshToken != null) {
-                     val expiresAt = expiresAtStr?.toLongOrNull() ?: 0L
-                     com.orbital.run.api.StravaAPI.saveFullTokenState(this@MainActivity, accessToken, refreshToken, expiresAt)
-                     android.widget.Toast.makeText(this@MainActivity, "Strava Connecté !", android.widget.Toast.LENGTH_SHORT).show()
-                     
-                     // Restart to refresh UI
-                     val restartIntent = android.content.Intent(this@MainActivity, com.orbital.run.MainActivity::class.java).apply {
-                        addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK or android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                     }
-                     startActivity(restartIntent)
-                } else {
-                    android.util.Log.e("MainActivity", "Missing tokens in callback")
-                }
-            }
-        }
+        // No external OAuth callbacks needed - Health Connect only
     }
     // Health Connect permission check
     private fun checkAndRequestPermissions() {
