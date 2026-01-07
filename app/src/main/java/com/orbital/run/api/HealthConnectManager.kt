@@ -382,14 +382,78 @@ object HealthConnectManager {
     }
     
     /**
-     * Sync recent activities from Health Connect.
+     * Sync recent activities from Health Connect with optional pagination and progress.
      */
-    suspend fun syncRecentActivities(context: Context, daysBack: Int = 30): List<Persistence.CompletedActivity> {
+    suspend fun syncRecentActivities(
+        context: Context, 
+        daysBack: Int = 30,
+        onProgress: ((Int, Int) -> Unit)? = null
+    ): List<Persistence.CompletedActivity> {
+        
+        // Use pagination for long periods (> 90 days)
+        if (daysBack > 90) {
+            return syncWithPagination(context, daysBack, onProgress)
+        }
+        
         val endTime = System.currentTimeMillis()
         val startTime = endTime - (daysBack * 24 * 60 * 60 * 1000L)
         
         val sessions = readExerciseSessions(context, startTime, endTime)
         
+        // Report progress for simple sync (1 step)
+        onProgress?.invoke(1, 1)
+        
+        return processSessions(context, sessions)
+    }
+
+    /**
+     * Syncs data using 30-day chunks to avoid memory/timeout issues.
+     */
+    private suspend fun syncWithPagination(
+        context: Context,
+        daysBack: Int,
+        onProgress: ((Int, Int) -> Unit)?
+    ): List<Persistence.CompletedActivity> {
+        val allActivities = mutableListOf<Persistence.CompletedActivity>()
+        val chunkSize = 30 // Sync chunks of 30 days
+        val totalChunks = (daysBack + chunkSize - 1) / chunkSize
+        
+        android.util.Log.d("SYNC", "Starting pagination sync: $daysBack days in $totalChunks chunks")
+        
+        for (i in 0 until totalChunks) {
+            val startDayOffset = i * chunkSize
+            val endDayOffset = minOf((i + 1) * chunkSize, daysBack)
+            
+            // Time logic is reversed (going back in time) or chunked from now.
+            // Let's implement chunking from Past to Present or Present to Past?
+            // Usually safest is Past to Present or simply independent chunks.
+            // Here implementation: Chunk 0 = Last 0-30 days, Chunk 1 = Last 30-60 days...
+            
+            val endTime = System.currentTimeMillis() - (startDayOffset * 24 * 60 * 60 * 1000L)
+            val startTime = System.currentTimeMillis() - (endDayOffset * 24 * 60 * 60 * 1000L)
+            
+            android.util.Log.d("SYNC", "Chunk ${i+1}/$totalChunks: ${java.util.Date(startTime)} -> ${java.util.Date(endTime)}")
+            
+            val sessions = readExerciseSessions(context, startTime, endTime)
+            val chunkActivities = processSessions(context, sessions)
+            allActivities.addAll(chunkActivities)
+            
+            onProgress?.invoke(i + 1, totalChunks)
+            
+            // Small delay to let system breathe
+            kotlinx.coroutines.delay(100)
+        }
+        
+        return allActivities
+    }
+
+    /**
+     * Helper to process a list of sessions into CompletedActivity objects.
+     */
+    private suspend fun processSessions(
+        context: Context,
+        sessions: List<ExerciseSessionRecord>
+    ): List<Persistence.CompletedActivity> {
         return sessions.mapNotNull { session ->
             try {
                 val sTime = session.startTime.toEpochMilli()
@@ -416,14 +480,11 @@ object HealthConnectManager {
                 val totalDistanceKm = aggregateResponse[DistanceRecord.DISTANCE_TOTAL]?.inKilometers ?: 0.0
                 val totalCalories = aggregateResponse[TotalCaloriesBurnedRecord.ENERGY_TOTAL]?.inKilocalories?.toInt()
                 
-                // Create dummy records for compatibility with mapToCompletedActivity if needed, 
-                // but let's update mapToCompletedActivity interface or just use these values.
-                
                 val speedRecords = client.readRecords(ReadRecordsRequest(SpeedRecord::class, timeFilter)).records
                 val powerRecords = client.readRecords(ReadRecordsRequest(PowerRecord::class, timeFilter)).records
                 val stepsRecords = client.readRecords(ReadRecordsRequest(StepsRecord::class, timeFilter)).records
                 
-                // Robust Route Retrieval (Directly from session property in alpha11+)
+                // Robust Route Retrieval
                 val routeResult = when (val result = session.exerciseRouteResult) {
                     is ExerciseRouteResult.Data -> result.exerciseRoute
                     else -> null
@@ -432,7 +493,7 @@ object HealthConnectManager {
                 mapToCompletedActivity(
                     session = session,
                     heartRateRecords = hrRecords,
-                    distanceRecord = null, // We'll pass totals separately or keep passing records
+                    distanceRecord = null,
                     caloriesRecord = null,
                     speedRecords = speedRecords,
                     powerRecords = powerRecords,

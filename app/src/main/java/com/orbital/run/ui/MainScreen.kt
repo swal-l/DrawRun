@@ -1364,6 +1364,31 @@ fun ProfileSettingsScreen(
 
 
         
+
+        
+        Spacer(modifier = Modifier.height(24.dp))
+        Text("Synchronisation", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = AppText)
+        Text("Période d'activités à récupérer", fontSize = 12.sp, color = AirTextLight)
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Sélecteur de période
+        var selectedPeriod by remember { 
+            mutableStateOf(SyncPreferences.getSyncPeriod(context)) 
+        }
+
+        SyncPreferences.SyncPeriod.values().forEach { period ->
+            SyncPeriodOption(
+                period = period,
+                isSelected = selectedPeriod == period,
+                onSelect = {
+                    selectedPeriod = period
+                    SyncPreferences.setSyncPeriod(context, period)
+                    android.widget.Toast.makeText(context, "Période mise à jour : ${period.label}", android.widget.Toast.LENGTH_SHORT).show()
+                }
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+        
         Spacer(modifier = Modifier.height(32.dp))
         Button(
             onClick = {
@@ -2077,6 +2102,48 @@ fun InternalConfetti(modifier: Modifier = Modifier) {
                     color = p.color,
                     topLeft = Offset(-p.size / 2, -p.size / 2),
                     size = androidx.compose.ui.geometry.Size(p.size, p.size * 0.6f) 
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun SyncPeriodOption(
+    period: SyncPreferences.SyncPeriod,
+    isSelected: Boolean,
+    onSelect: () -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth().clickable(onClick = onSelect),
+        colors = CardDefaults.cardColors(
+            containerColor = if (isSelected) AirPrimary.copy(alpha = 0.1f) else Color.White
+        ),
+        border = BorderStroke(
+            2.dp,
+            if (isSelected) AirPrimary else AirSurface
+        )
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            RadioButton(
+                selected = isSelected,
+                onClick = onSelect,
+                colors = RadioButtonDefaults.colors(selectedColor = AirPrimary)
+            )
+            Spacer(Modifier.width(12.dp))
+            Column {
+                Text(
+                    period.label,
+                    fontWeight = FontWeight.Bold,
+                    color = if (isSelected) AirPrimary else AppText
+                )
+                Text(
+                    " jours",
+                    fontSize = 12.sp,
+                    color = AirTextLight
                 )
             }
         }

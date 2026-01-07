@@ -210,8 +210,9 @@ Non, DrawRun nécessite Health Connect pour fonctionner. C'est la seule source d
 **R:** Oui! Une fois les activités synchronisées, vous pouvez les consulter hors ligne. La synchronisation nécessite une connexion internet.
 
 ### Q: Combien d'activités sont synchronisées?
-
-**R:** DrawRun synchronise les **30 dernières activités** par défaut. Cela couvre généralement le dernier mois d'entraînement.
+ 
+**R:** Par défaut, DrawRun synchronise les **30 derniers jours**.
+Vous pouvez augmenter cette limite (jusqu'à tout votre historique) dans les **Paramètres > Profil > Synchronisation**.
 
 ### Q: Health Connect consomme-t-il beaucoup de batterie?
 

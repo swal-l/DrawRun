@@ -14,35 +14,41 @@ object SyncManager {
     
     /**
      * Main entry point for synchronization.
-     * Syncs only from Health Connect.
+     * General function to sync ALL sources (currently only HC).
      */
-    suspend fun syncAll(context: Context): Int = withContext(Dispatchers.IO) {
+    suspend fun syncAll(context: Context, onProgress: ((Int, Int) -> Unit)? = null): Int {
         android.util.Log.d("SYNC", "=== Début syncAll (Health Connect uniquement) ===")
-        
+
         if (!HealthConnectManager.isAvailable(context)) {
             android.util.Log.w("SYNC", "Health Connect non disponible")
-            return@withContext 0
+            return 0
         }
-        
+
         if (!HealthConnectManager.hasAllPermissions(context)) {
             android.util.Log.w("SYNC", "Health Connect: permissions manquantes")
-            return@withContext 0
+            return 0
         }
+
+        // Strava check removed
+        // Only trigger manual Strava sync if connected
         
-        val count = syncHealthConnect(context)
+        val count = syncHealthConnect(context, onProgress)
         android.util.Log.d("SYNC", "=== FIN SYNC: $count nouvelles activités ===")
-        count
+        return count
     }
 
     /**
-     * Synchronizes Health Connect data.
+     * Synchronizes Health Connect data with optional progress.
      * Fetches all exercise sessions with detailed metrics.
      */
-    suspend fun syncHealthConnect(context: Context): Int = withContext(Dispatchers.IO) {
+    suspend fun syncHealthConnect(context: Context, onProgress: ((Int, Int) -> Unit)? = null): Int = withContext(Dispatchers.IO) {
         android.util.Log.d("SYNC", "--- Sync Health Connect START ---")
         
         try {
-            val hcActivities = HealthConnectManager.syncRecentActivities(context, 30)
+            val daysBack = com.orbital.run.logic.SyncPreferences.getDaysBack(context)
+            android.util.Log.d("SYNC", "Synchronisation des $daysBack derniers jours")
+            
+            val hcActivities = HealthConnectManager.syncRecentActivities(context, daysBack, onProgress)
             android.util.Log.d("SYNC", "✅ Health Connect a retourné ${hcActivities.size} activités")
             
             val history = Persistence.loadHistory(context)
