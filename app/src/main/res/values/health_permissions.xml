@@ -10,6 +10,7 @@
         <item>android.permission.health.READ_SPEED</item>
         <item>android.permission.health.READ_POWER</item>
         <item>android.permission.health.READ_SLEEP</item>
+        <item>android.permission.health.READ_RESPIRATORY_RATE</item>
         <item>android.permission.health.READ_EXERCISE_ROUTE</item>
     </string-array>
 </resources>

@@ -88,16 +88,112 @@
             document.getElementById('loginScreen').style.display = 'none';
         }
 
+        // Secret salt for signature (Client-side obfuscation)
+        const SECRET_SALT = "DRAWRUN_2026_SECURE_SALT";
+
+        function simpleHash(str) {
+            // Simple string hash for signature
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash; // Convert to 32bit integer
+            }
+            return Math.abs(hash).toString(36);
+        }
+
         function checkLogin() {
-            const username = document.getElementById('username').value;
+            const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
 
+            // 1. Standard Admin
             if (username === 'admin' && password === 'admin') {
-                sessionStorage.setItem('authenticated', 'true');
-                document.getElementById('loginScreen').style.display = 'none';
-            } else {
-                document.getElementById('error').style.display = 'block';
+                loginSuccess();
+                return;
             }
+
+            // 2. Temp Code (enter code as Username, password can be empty)
+            if (username.startsWith('TMP-')) {
+                if (verifyTempCode(username)) {
+                    loginSuccess();
+                    return;
+                }
+            }
+            // Also allow code in password field if user is confused
+            if (password.startsWith('TMP-')) {
+                if (verifyTempCode(password)) {
+                    loginSuccess();
+                    return;
+                }
+            }
+
+            document.getElementById('error').style.display = 'block';
+        }
+
+        function loginSuccess() {
+            sessionStorage.setItem('authenticated', 'true');
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('error').style.display = 'none';
+        }
+
+        // Verification Logic
+        function verifyTempCode(code) {
+            try {
+                const parts = code.split('-');
+                if (parts.length !== 3) return false;
+
+                const expiry = parseInt(parts[1]);
+                const signature = parts[2];
+
+                // 1. Check Expiry
+                if (Date.now() > expiry) {
+                    alert("Ce code a expired.");
+                    return false;
+                }
+
+                // 2. Check Signature
+                const expectedSign = simpleHash(expiry + SECRET_SALT);
+                if (signature !== expectedSign) return false;
+
+                // 3. Check 'One-Time' (Local Storage on specific device)
+                if (localStorage.getItem('used_' + code)) {
+                    alert("Ce code a déjà été utilisé sur cet appareil.");
+                    return false;
+                }
+
+                // Mark as used
+                localStorage.setItem('used_' + code, 'true');
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        // Admin Panel Functions
+        function showAdminPanel() {
+            if (sessionStorage.getItem('authenticated') === 'true') {
+                document.getElementById('adminPanel').style.display = 'flex';
+            } else {
+                alert("Veuillez vous connecter en tant qu'admin d'abord.");
+            }
+        }
+
+        function generateTempCode() {
+            const now = Date.now();
+            const expiry = now + 3600000; // 1 hour validity
+            const signature = simpleHash(expiry + SECRET_SALT);
+            const code = `TMP-${expiry}-${signature}`;
+
+            const display = document.getElementById('codeDisplay');
+            display.innerText = code;
+            display.style.display = 'block';
+
+            // Auto copy
+            navigator.clipboard.writeText(code).then(() => {
+                alert("Code copié dans le presse-papier ! (Valide 1h)");
+            }).catch(() => {
+                alert("Code généré (copie manuelle requise)");
+            });
         }
 
         // Allow Enter key to submit
@@ -419,13 +515,74 @@
         </section>
     </main>
 
+    <!-- Admin Panel Modal -->
+    <div id="adminPanel" style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.8);
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        backdrop-filter: blur(5px);
+    ">
+        <div style="
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        ">
+            <h2 style="margin-top: 0; color: #333;">Admin - Codes Temporaires</h2>
+            <p style="color: #666; margin-bottom: 20px;">Générez un code d'accès temporaire valide 1 heure.</p>
+
+            <button onclick="generateTempCode()" style="
+                width: 100%;
+                padding: 12px;
+                background: #00BFA5;
+                color: white;
+                border: none;
+                border-radius: 8px;
+                font-size: 16px;
+                font-weight: bold;
+                cursor: pointer;
+                margin-bottom: 20px;
+            ">Générer Code (1h)</button>
+
+            <div id="codeDisplay" style="
+                background: #f5f5f5;
+                padding: 15px;
+                border-radius: 8px;
+                font-family: monospace;
+                font-size: 18px;
+                letter-spacing: 2px;
+                display: none;
+                margin-bottom: 20px;
+                border: 1px dashed #ccc;
+            "></div>
+
+            <button onclick="document.getElementById('adminPanel').style.display='none'" style="
+                background: transparent;
+                border: 1px solid #ddd;
+                padding: 10px 20px;
+                border-radius: 8px;
+                cursor: pointer;
+            ">Fermer</button>
+        </div>
+    </div>
+
     <footer class="glass-footer">
         <div class="links">
             <a href="privacy.html">Confidentialité</a>
             <a href="terms.html">Conditions d'utilisation</a>
             <a href="https://github.com/swal-l/DrawRun" target="_blank">GitHub</a>
         </div>
-        <p>&copy; 2026 DrawRun. Fait avec ❤️ pour les athlètes.</p>
+        <p>&copy; 2026 <span onclick="showAdminPanel()" style="cursor: pointer;">DrawRun</span>. Fait avec ❤️ pour les
+            athlètes.</p>
         <p style="font-size: 12px; color: #999; margin-top: 10px;">Version 2.0 | Health Connect Only | Open Source</p>
     </footer>
 </body>
