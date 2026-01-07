@@ -159,11 +159,7 @@ fun ActivityDetailScreen(
             Spacer(Modifier.height(12.dp))
             
             // GPS Map (Health Connect) or Polyline fallback
-            if (!activity.gpsCoordinates.isNullOrEmpty()) {
-                GpsMapCard(activity) { showFullMap = true }
-            } else {
-                ActivityMapHero(activity) { showFullMap = true }
-            }
+            ActivityMapHero(activity) { showFullMap = true }
 
             // 2. Primary Metrics Banner (Below Map)
             PrimaryMetricsBanner(activity)
@@ -241,7 +237,7 @@ fun ActivityDetailScreen(
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteDialog = false }) {
-                    Text("AN NULER", color = AirTextLight)
+                    Text("ANNULER", color = AirTextLight)
                 }
             }
         )
