@@ -94,10 +94,18 @@ object HealthConnectManager {
         val granted = checkPermissions(context)
         android.util.Log.d("HC_PERMS", "Granted permissions: ${granted.size}/${PERMISSIONS.size}")
         granted.forEach { android.util.Log.d("HC_PERMS", "  ✓ $it") }
-        PERMISSIONS.filter { !granted.contains(it) }.forEach {
+        
+        // Exclude Background permission from the mandatory check
+        // It's often denied initially or requires separate flow, shouldn't block main usage
+        val mandatoryPermissions = PERMISSIONS.filter { 
+            !it.contains("READ_HEALTH_DATA_IN_BACKGROUND")
+        }
+
+        mandatoryPermissions.filter { !granted.contains(it) }.forEach {
             android.util.Log.w("HC_PERMS", "  ✗ MISSING: $it")
         }
-        val hasAll = PERMISSIONS.all { granted.contains(it) }
+        
+        val hasAll = mandatoryPermissions.all { granted.contains(it) }
         android.util.Log.d("HC_PERMS", "Has all permissions: $hasAll")
         return hasAll
     }
