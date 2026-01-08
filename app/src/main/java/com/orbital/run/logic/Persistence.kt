@@ -80,6 +80,46 @@ object Persistence {
         return prefs.getBoolean("hc_enabled", false)
     }
 
+    fun saveStravaEnabled(context: Context, enabled: Boolean) {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        prefs.edit().putBoolean("strava_enabled", enabled).apply()
+    }
+
+    fun loadStravaEnabled(context: Context): Boolean {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        return prefs.getBoolean("strava_enabled", false)
+    }
+
+    fun saveGarminEnabled(context: Context, enabled: Boolean) {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        prefs.edit().putBoolean("garmin_enabled", enabled).apply()
+    }
+
+    fun loadGarminEnabled(context: Context): Boolean {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        return prefs.getBoolean("garmin_enabled", false)
+    }
+
+    fun saveSuuntoEnabled(context: Context, enabled: Boolean) {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        prefs.edit().putBoolean("suunto_enabled", enabled).apply()
+    }
+
+    fun loadSuuntoEnabled(context: Context): Boolean {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        return prefs.getBoolean("suunto_enabled", false)
+    }
+
+    fun savePolarEnabled(context: Context, enabled: Boolean) {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        prefs.edit().putBoolean("polar_enabled", enabled).apply()
+    }
+
+    fun loadPolarEnabled(context: Context): Boolean {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        return prefs.getBoolean("polar_enabled", false)
+    }
+
     fun saveSwims(context: Context, workouts: List<Workout>) {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val jsonArray = org.json.JSONArray()
