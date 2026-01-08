@@ -47,8 +47,18 @@ object SyncManager {
 
     suspend fun syncHealthConnect(context: Context, onProgress: ((Int, Int) -> Unit)? = null): Int = withContext(Dispatchers.IO) {
         val daysBack = com.orbital.run.logic.SyncPreferences.getDaysBack(context)
-        val hcActivities = HealthConnectManager.syncRecentActivities(context, daysBack, onProgress)
-        return@withContext saveActivitiesIfNew(context, hcActivities, "HEALTH_CONNECT")
+        
+        var totalSaved = 0
+        
+        // Use streaming batch loader
+        HealthConnectManager.syncRecentActivities(context, daysBack, onProgress) { batch ->
+            // Save batch immediately
+            val savedCount = saveActivitiesIfNew(context, batch, "HEALTH_CONNECT")
+            totalSaved += savedCount
+            // Trigger partial UI update if needed? (Persistence handles file IO, UI needs to reload)
+        }
+        
+        return@withContext totalSaved
     }
     
     private fun saveActivitiesIfNew(context: Context, activities: List<Persistence.CompletedActivity>, source: String): Int {

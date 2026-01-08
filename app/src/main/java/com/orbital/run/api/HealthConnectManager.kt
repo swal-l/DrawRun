@@ -390,15 +390,19 @@ object HealthConnectManager {
     /**
      * Sync recent activities from Health Connect with optional pagination and progress.
      */
+    /**
+     * Sync recent activities from Health Connect with optional pagination and progress.
+     */
     suspend fun syncRecentActivities(
         context: Context, 
         daysBack: Int = 30,
-        onProgress: ((Int, Int) -> Unit)? = null
+        onProgress: ((Int, Int) -> Unit)? = null,
+        onBatchLoaded: (suspend (List<Persistence.CompletedActivity>) -> Unit)? = null // New Callback
     ): List<Persistence.CompletedActivity> {
         
         // Use pagination for long periods (> 90 days)
         if (daysBack > 90) {
-            return syncWithPagination(context, daysBack, onProgress)
+            return syncWithPagination(context, daysBack, onProgress, onBatchLoaded)
         }
         
         val endTime = System.currentTimeMillis()
@@ -412,9 +416,16 @@ object HealthConnectManager {
         }
         
         // Report detailed progress (X/Y activities)
-        return processSessions(context, sessions) { processed, total ->
+        val activities = processSessions(context, sessions) { processed, total ->
             onProgress?.invoke(processed, total)
         }
+        
+        // Emit batch if callback provided
+        if (onBatchLoaded != null && activities.isNotEmpty()) {
+            onBatchLoaded(activities)
+        }
+        
+        return activities
     }
 
     /**
@@ -423,7 +434,8 @@ object HealthConnectManager {
     private suspend fun syncWithPagination(
         context: Context,
         daysBack: Int,
-        onProgress: ((Int, Int) -> Unit)?
+        onProgress: ((Int, Int) -> Unit)?,
+        onBatchLoaded: (suspend (List<Persistence.CompletedActivity>) -> Unit)?
     ): List<Persistence.CompletedActivity> {
         val allActivities = mutableListOf<Persistence.CompletedActivity>()
         val chunkSize = 30 // Sync chunks of 30 days
@@ -447,8 +459,16 @@ object HealthConnectManager {
             // Let's stick to Batch progress for massive syncs to avoid flickering
             onProgress?.invoke(i + 1, totalChunks)
             
-            val chunkActivities = processSessions(context, sessions)
-            allActivities.addAll(chunkActivities)
+            if (sessions.isNotEmpty()) {
+                val chunkActivities = processSessions(context, sessions)
+                
+                // Emit batch immediately!
+                if (onBatchLoaded != null) {
+                    onBatchLoaded(chunkActivities)
+                }
+                
+                allActivities.addAll(chunkActivities)
+            }
             
             // Small delay to let system breathe
             kotlinx.coroutines.delay(100)

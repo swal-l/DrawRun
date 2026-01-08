@@ -605,8 +605,8 @@ object Persistence {
                 history.add(0, activity)
             }
         }
-        // Increase total history limit to 500 since we're using files now
-        val finalHistory = history.sortedByDescending { it.date }.take(500)
+        // Increase total history limit to 2000 (Approx 10 years of runs)
+        val finalHistory = history.sortedByDescending { it.date }.take(2000)
         saveHistoryList(context, finalHistory)
     }
 
