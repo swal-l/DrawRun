@@ -4,6 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import com.orbital.run.logic.Persistence
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
 
 object StravaManager {
     // Client ID/Secret are injected via BuildConfig from local.properties
@@ -51,10 +54,20 @@ object StravaManager {
             val error = uri.getQueryParameter("error")
             
             if (code != null) {
-                // Success!
-                Persistence.saveStravaEnabled(context, true)
-                android.widget.Toast.makeText(context, "Strava connecté avec succès !", android.widget.Toast.LENGTH_LONG).show()
-                Persistence.saveStravaAuthCode(context, code) // Save code if needed for future token exchange (though we are client-side here)
+                // Perform Immediate Token Exchange
+                kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
+                     val token = exchangeToken(context, code)
+                     withContext(kotlinx.coroutines.Dispatchers.Main) {
+                         if (token != null) {
+                             Persistence.saveStravaEnabled(context, true)
+                             Persistence.saveStravaAuthCode(context, code)
+                             android.widget.Toast.makeText(context, "Strava lié avec succès !", android.widget.Toast.LENGTH_LONG).show()
+                         } else {
+                             Persistence.saveStravaEnabled(context, false)
+                             android.widget.Toast.makeText(context, "Échec connexion Strava (Token)", android.widget.Toast.LENGTH_LONG).show()
+                         }
+                     }
+                }
             } else if (error != null) {
                 android.widget.Toast.makeText(context, "Erreur Strava: $error", android.widget.Toast.LENGTH_LONG).show()
             }
@@ -66,8 +79,12 @@ object StravaManager {
     }
 
     fun isConnected(context: Context): Boolean {
-        return Persistence.loadStravaEnabled(context)
+        // Must be enabled AND have tokens (or at least an auth code to exchange)
+        val enabled = Persistence.loadStravaEnabled(context)
+        val (access, refresh) = Persistence.loadStravaTokens(context)
+        return enabled && (access != null || refresh != null || Persistence.loadStravaAuthCode(context) != null)
     }
+
     // --- Token Management ---
     private fun exchangeToken(context: Context, code: String): String? {
         val clientId = com.orbital.run.BuildConfig.STRAVA_CLIENT_ID

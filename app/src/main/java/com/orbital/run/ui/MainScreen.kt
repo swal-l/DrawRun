@@ -97,13 +97,20 @@ fun MainScreen() {
                 // Trigger sync if Health Connect is connected
                 kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
                     val isHcConnected = com.orbital.run.api.HealthConnectManager.hasAllPermissions(context)
+                    val isStravaConnected = com.orbital.run.api.StravaManager.isConnected(context)
+                    
                     if (isHcConnected) {
                         com.orbital.run.api.SyncManager.syncAll(context)
                         Persistence.recalculateRecords(context)
-                        withContext(Dispatchers.Main) {
+                    }
+                    
+                    withContext(Dispatchers.Main) {
+                        if (isHcConnected) {
                             dataVersion++
                             connectedApps["Health Connect"] = true
                         }
+                        // Update Strava status reactively on resume
+                        connectedApps["Strava"] = isStravaConnected
                     }
                 }
             }
