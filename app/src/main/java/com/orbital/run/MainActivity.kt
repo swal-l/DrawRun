@@ -75,10 +75,11 @@ class MainActivity : ComponentActivity() {
     
     private fun handleIntent(intent: android.content.Intent?) {
         intent?.data?.let { uri ->
-            if (uri.toString().startsWith("drawrun://strava_callback")) {
+            val isStrava = (uri.scheme == "http" && uri.host == "localhost" && uri.path?.startsWith("/strava_callback") == true) ||
+                           (uri.toString().startsWith("drawrun://strava_callback"))
+            
+            if (isStrava) {
                 com.orbital.run.api.StravaManager.handleAuthCallback(this, uri)
-                // Clear intent to avoid re-triggering on rotate?
-                // intent.data = null 
             }
         }
     }
