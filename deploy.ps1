@@ -118,10 +118,14 @@ Write-Host "  ✓ Updated $indexFile" -ForegroundColor Green
 # Update version_info.json with AI-generated release notes
 Write-Host "  ⚙ Generating release notes..." -ForegroundColor Gray
 
-# Get recent git commits since last tag/version
-$gitLog = git log --pretty=format:"%s" --since="7 days ago" 2>$null
-if (-not $gitLog) {
-    $gitLog = git log --pretty=format:"%s" -n 10 2>$null
+# Get commits since last tag
+$lastTag = git describe --tags --abbrev=0 2>$null
+if ($lastTag) {
+    Write-Host "  Use commits from $lastTag to HEAD" -ForegroundColor Gray
+    $gitLog = git log "$lastTag..HEAD" --pretty=format:"%s" 2>$null
+} else {
+    Write-Host "  No tags found, using last 20 commits" -ForegroundColor Gray
+    $gitLog = git log -n 20 --pretty=format:"%s" 2>$null
 }
 
 # Analyze commits to categorize changes
@@ -131,33 +135,40 @@ $fixes = @()
 if ($gitLog) {
     $gitLog | ForEach-Object {
         $commit = $_
-        # Categorize based on commit message patterns
-        if ($commit -match "^(feat|feature|add|new|implement)" -or $commit -match "✨|🎉|⚡|🚀") {
-            $cleanMsg = $commit -replace "^(feat|feature|add|new|implement)[:\s]*", "" -replace "[✨🎉⚡🚀]", ""
-            if ($cleanMsg.Trim() -and $features.Count -lt 5) {
-                $features += $cleanMsg.Trim()
+        
+        # SKIP merge commits or automated version bumps
+        if ($commit -match "^Merge " -or $commit -match "^🚀 Deploy") { return }
+
+        # CLEANUP: Remove common prefixes to make it readable
+        $cleanMsg = $commit -replace "^(feat|feature|add|new|implement|ui|design|style|fix|bug|correct|resolve|patch|hotfix|perf|refactor|docs)(\([^)]+\))?[:\s]+", ""
+        $cleanMsg = $cleanMsg -replace "^[✨🎉⚡🚀🐛🔧✅🎨📝♻️]\s*", ""
+        $cleanMsg = $cleanMsg.Trim()
+        
+        if (-not $cleanMsg) { return }
+
+        # Categorize
+        if ($commit -match "^(feat|feature|add|new|implement|ui|design|style)" -or $commit -match "[✨🎉⚡🚀🎨]") {
+            if ($features.Count -lt 8 -and $features -notcontains $cleanMsg) {
+                $features += $cleanMsg
             }
         }
-        elseif ($commit -match "^(fix|bug|correct|resolve)" -or $commit -match "🐛|🔧|✅") {
-            $cleanMsg = $commit -replace "^(fix|bug|correct|resolve)[:\s]*", "" -replace "[🐛🔧✅]", ""
-            if ($cleanMsg.Trim() -and $fixes.Count -lt 5) {
-                $fixes += $cleanMsg.Trim()
+        elseif ($commit -match "^(fix|bug|correct|resolve|patch|hotfix)" -or $commit -match "[🐛🔧✅]") {
+            if ($fixes.Count -lt 8 -and $fixes -notcontains $cleanMsg) {
+                $fixes += $cleanMsg
+            }
+        }
+        # Default fallback for uncategorized but important-looking stuff (optional)
+        elseif ($commit -match "^(perf|refactor)" -or $commit -match "⚡|♻️") {
+             if ($fixes.Count -lt 8 -and $fixes -notcontains $cleanMsg) {
+                $fixes += $cleanMsg
             }
         }
     }
 }
 
-# If no categorized commits, use generic messages
-if ($features.Count -eq 0 -and $fixes.Count -eq 0) {
-    $features = @("Améliorations de performance", "Optimisations diverses")
-    $fixes = @("Corrections de bugs mineurs", "Améliorations de stabilité")
-}
-elseif ($features.Count -eq 0) {
-    $features = @("Améliorations de l'interface")
-}
-elseif ($fixes.Count -eq 0) {
-    $fixes = @("Corrections mineures")
-}
+# Fallbacks if empty
+if ($features.Count -eq 0) { $features = @("Améliorations diverses et optimisations") }
+if ($fixes.Count -eq 0) { $fixes = @("Corrections mineures de stabilité") }
 
 # Update version_info.json
 if (Test-Path $versionInfoFile) {

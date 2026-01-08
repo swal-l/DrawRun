@@ -64,35 +64,69 @@ fun RecapScreen(context: android.content.Context, dataVersion: Int = 0, onNaviga
 
     // Logic Calculation based on Filters
     // ... (Simplified for UI Demo)
-    val filteredHistory = history.filter { 
-        val matchesSport = when(sportFilter) {
-            "Run" -> it.type == WorkoutType.RUNNING
-            "Swim" -> it.type == WorkoutType.SWIMMING
-            else -> true
-        }
-        val cal = Calendar.getInstance()
-        val matchesTime = when(timeFilter) {
+    // Helper to filter by range
+    fun filterByRange(activities: List<Persistence.CompletedActivity>, start: Long, end: Long, sport: String): List<Persistence.CompletedActivity> {
+         return activities.filter { 
+            (it.date >= start && it.date < end) && (sport == "Tout" || (sport.contains("Run") && it.type == WorkoutType.RUNNING) || (sport.contains("Swim") && it.type == WorkoutType.SWIMMING))
+         }
+    }
+
+    val cal = Calendar.getInstance()
+    
+    // Define Current Range
+    val (curStart, curEnd) = remember(timeFilter) {
+        val c = Calendar.getInstance()
+        c.firstDayOfWeek = Calendar.MONDAY
+        when(timeFilter) {
             "Semaine" -> {
-                cal.firstDayOfWeek = Calendar.MONDAY
-                cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
-                cal.set(Calendar.HOUR_OF_DAY, 0)
-                cal.set(Calendar.MINUTE, 0)
-                cal.set(Calendar.SECOND, 0)
-                cal.set(Calendar.MILLISECOND, 0)
-                it.date >= cal.timeInMillis
+                c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
+                c.set(Calendar.HOUR_OF_DAY, 0); c.set(Calendar.MINUTE, 0); c.set(Calendar.SECOND, 0); c.set(Calendar.MILLISECOND, 0)
+                val start = c.timeInMillis
+                c.add(Calendar.DAY_OF_YEAR, 7)
+                start to c.timeInMillis
             }
             "Mois" -> {
-                cal.add(Calendar.MONTH, -1)
-                it.date >= cal.timeInMillis
+                c.set(Calendar.DAY_OF_MONTH, 1)
+                c.set(Calendar.HOUR_OF_DAY, 0); c.set(Calendar.MINUTE, 0); c.set(Calendar.SECOND, 0); c.set(Calendar.MILLISECOND, 0)
+                val start = c.timeInMillis
+                c.add(Calendar.MONTH, 1)
+                start to c.timeInMillis
             }
-            else -> true
+            else -> 0L to Long.MAX_VALUE // Tout (pas de comparaison pertinente affichée par défaut)
         }
-        matchesSport && matchesTime
     }
+    
+    // Define Previous Range
+    val (prevStart, prevEnd) = remember(timeFilter, curStart) {
+        val c = Calendar.getInstance()
+        c.timeInMillis = curStart
+        when(timeFilter) {
+            "Semaine" -> {
+                c.add(Calendar.DAY_OF_YEAR, -7)
+                val start = c.timeInMillis
+                c.add(Calendar.DAY_OF_YEAR, 7)
+                start to c.timeInMillis
+            }
+            "Mois" -> {
+                c.add(Calendar.MONTH, -1)
+                val start = c.timeInMillis
+                c.add(Calendar.MONTH, 1)
+                start to c.timeInMillis
+            }
+             else -> 0L to 0L 
+        }
+    }
+
+    val filteredHistory = filterByRange(history, curStart, curEnd, sportFilter)
+    val prevHistory = filterByRange(history, prevStart, prevEnd, sportFilter)
 
     val totalDist = filteredHistory.sumOf { it.distanceKm }
     val totalTime = filteredHistory.sumOf { it.durationMin }
     val totalElev = filteredHistory.sumOf { it.elevationGain ?: 0 }
+    
+    val prevDist = prevHistory.sumOf { it.distanceKm }
+    val pctChange = if (prevDist > 0) ((totalDist - prevDist) / prevDist) * 100 else 0.0 // 0 if previous was 0 to avoid +Inf display issues or handle separately
+    val showComparison = timeFilter != "Tout" && prevDist > 0
 
     Scaffold(
         containerColor = AirSurface,
@@ -154,7 +188,11 @@ fun RecapScreen(context: android.content.Context, dataVersion: Int = 0, onNaviga
                                 StatRow("Durée", "${totalTime / 60}h ${totalTime % 60}m")
                                 StatRow("Dénivelé", "${totalElev} m")
                                 Spacer(Modifier.height(8.dp))
-                                Text("▲ 10% vs période préc.", color = ZoneGreen, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                                if (showComparison) {
+                                    val symbol = if (pctChange >= 0) "▲" else "▼"
+                                    val color = if (pctChange >= 0) ZoneGreen else com.orbital.run.ui.theme.ZoneRed
+                                    Text("$symbol ${String.format("%.0f", kotlin.math.abs(pctChange))}% vs préc.", color = color, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                                }
                             }
                         }
                     }

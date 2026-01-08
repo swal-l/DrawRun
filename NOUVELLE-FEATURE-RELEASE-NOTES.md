@@ -1,3 +1,27 @@
+# 🚀 DrawRun v3.5 - Feedback & Connexions Startup
+
+> **Date :** 08 Janvier 2025
+> **Version Code :** 50
+> **Version Name :** 3.5
+
+Cette mise à jour améliore l'expérience utilisateur lors de la première installation et de la synchronisation.
+
+## ✨ Nouveautés v3.5
+
+### ⚡ Connexion Rapide (Onboarding)
+*   **Boutons d'accès direct :** Intégration des boutons de connexion pour **Strava, Garmin, Polar et Suunto** dès l'écran de bienvenue.
+*   Simplification du processus de premier démarrage.
+
+### 📊 Feedback Sync Amélioré (Analytics)
+*   **Progression détaillée :** Le bouton de synchronisation affiche maintenant la progression exacte (ex: "5/20 activités") en temps réel.
+*   **Indicateur visuel :** Cercle de progression plus grand et texte plus lisible pour un meilleur suivi.
+
+### 🐛 Corrections
+*   Correction de glitchs visuels lors de la mise à jour des jauges.
+*   Optimisation des performances de la synchronisation Health Connect.
+
+---
+
 # 🚀 DrawRun v3.0 - Intégration Strava Directe & Optimisations
 
 > **Date :** 08 Janvier 2025

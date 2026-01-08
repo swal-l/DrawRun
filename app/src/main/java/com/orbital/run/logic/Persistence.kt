@@ -24,6 +24,19 @@ object Persistence {
         }
     }
     
+    fun clearAllData(context: Context) {
+        // 1. Clear SharedPreferences
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        prefs.edit().clear().apply()
+        
+        // 2. Delete Files
+        try { File(context.filesDir, HISTORY_FILE).delete() } catch(e: Exception){}
+        try { File(context.filesDir, BLACKLIST_FILE).delete() } catch(e: Exception){}
+        
+        // 3. Clear JSON Caches (Plans, Swims) - these are in Prefs but if saved as files in future, delete them too.
+        // Currently plans/swims are in Prefs, so edit().clear() handles them.
+    }
+    
     fun loadProfile(context: Context): UserProfile? {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         if (!prefs.contains("age")) return null
@@ -89,6 +102,28 @@ object Persistence {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         return prefs.getBoolean("strava_enabled", false)
     }
+
+    fun saveFitbitEnabled(context: Context, enabled: Boolean) {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        prefs.edit().putBoolean("fitbit_enabled", enabled).apply()
+    }
+
+    fun loadFitbitEnabled(context: Context): Boolean {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        return prefs.getBoolean("fitbit_enabled", false)
+    }
+
+    fun saveWithingsEnabled(context: Context, enabled: Boolean) {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        prefs.edit().putBoolean("withings_enabled", enabled).apply()
+    }
+
+    fun loadWithingsEnabled(context: Context): Boolean {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        return prefs.getBoolean("withings_enabled", false)
+    }
+
+
 
     fun saveGarminEnabled(context: Context, enabled: Boolean) {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)

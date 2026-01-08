@@ -1,21 +1,13 @@
 {
-  "latestVersionCode": 50,
-  "latestVersionName": "3.5",
-  "downloadUrl": "https://swal-l.github.io/DrawRun/DrawRun_v3.5.apk",
+  "latestVersionCode": 53,
+  "latestVersionName": "3.8",
+  "downloadUrl": "https://swal-l.github.io/DrawRun/DrawRun_v3.8.apk",
   "releaseNotes": {
     "features": [
-      "GPS maps + HR derivative (ready for Android Studio test)",
-      "Heart Rate Derivative chart (dHR/dt)",
-      "password protection to website (admin/admin)",
-      "Render.com configuration",
-      "Implement initial DrawRun application with build setup, core UI, and public landing page including APK."
+      "GPS maps + HR derivative (ready for Android Studio test)"
     ],
     "fixes": [
-      "unclosed comment breaking build",
-      "Add explicit vercel.json rewrites",
-      "Remove vercel.json to use modern Vercel Zero-Config",
-      "requirements.txt: remove http.server (standard lib)",
-      "vercel.json: remove invalid runtime property"
+      "Corrections mineures de stabilité"
     ]
   }
 }

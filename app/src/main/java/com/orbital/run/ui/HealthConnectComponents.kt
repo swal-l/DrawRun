@@ -184,6 +184,26 @@ fun SimpleHealthConnectOnboarding(
              MiniAppBtn("Garmin", Color(0xFF007CC3)) { com.orbital.run.api.GarminManager.connect(context) }
              MiniAppBtn("Polar", Color(0xFFE2001A)) { com.orbital.run.api.PolarManager.connect(context) }
              MiniAppBtn("Suunto", Color(0xFF00D7D7)) { com.orbital.run.api.SuuntoManager.connect(context) }
+             MiniAppBtn("Samsung", Color(0xFF2196F3)) { 
+                 android.widget.Toast.makeText(context, "Via Health Connect", android.widget.Toast.LENGTH_SHORT).show()
+                 onConnectHealthConnect()
+             }
+             MiniAppBtn("Google", Color(0xFFEA4335)) {
+                 android.widget.Toast.makeText(context, "Via Health Connect", android.widget.Toast.LENGTH_SHORT).show()
+                 onConnectHealthConnect()
+             }
+             MiniAppBtn("Fitbit", Color(0xFF00B0B9)) {
+                 android.widget.Toast.makeText(context, "Via Google / HC", android.widget.Toast.LENGTH_SHORT).show()
+                 onConnectHealthConnect()
+             }
+             MiniAppBtn("Coros", Color(0xFF1C1C1E)) {
+                 android.widget.Toast.makeText(context, "Via Health Connect", android.widget.Toast.LENGTH_SHORT).show()
+                 onConnectHealthConnect()
+             }
+             MiniAppBtn("Withings", Color(0xFF00C5E0)) {
+                 android.widget.Toast.makeText(context, "Via Health Connect", android.widget.Toast.LENGTH_SHORT).show()
+                 onConnectHealthConnect()
+             }
         }
         Spacer(Modifier.height(24.dp))
     }

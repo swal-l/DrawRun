@@ -302,10 +302,11 @@ fun MainScreen() {
                                     generate(updated)
                                 },
                                 onResetData = {
-                                    com.orbital.run.logic.Persistence.clearHistory(context)
-                                    // Optionally clear state? MainScreen reload?
-                                    // For now, reload swims
-                                    savedSwims.clear()
+                                    com.orbital.run.logic.Persistence.clearAllData(context)
+                                    val intent = android.content.Intent(context, com.orbital.run.MainActivity::class.java).apply {
+                                        addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK or android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                                    }
+                                    context.startActivity(intent)
                                 },
                                 onCheckForUpdate = {
                                     kotlinx.coroutines.CoroutineScope(Dispatchers.IO).launch {
@@ -1332,7 +1333,7 @@ fun ProfileSettingsScreen(
         Spacer(modifier = Modifier.height(16.dp))
         
         
-        val apps = listOf("Health Connect", "Garmin", "Strava", "Polar", "Suunto")
+        val apps = listOf("Health Connect", "Garmin", "Strava", "Polar", "Suunto", "Samsung", "Google", "Fitbit", "Coros", "Withings")
         
         apps.forEach { appName ->
             // Health Connect handling
@@ -1374,7 +1375,13 @@ fun ProfileSettingsScreen(
                     isLinked = isConn,
                     isConfigured = isConn,
                     subtitle = "Connexion directe",
-                    onConnect = { com.orbital.run.api.StravaManager.connect(context) },
+                    onConnect = { 
+                        if (com.orbital.run.BuildConfig.STRAVA_CLIENT_ID.isEmpty()) {
+                             android.widget.Toast.makeText(context, "API Client ID manquant !", android.widget.Toast.LENGTH_LONG).show()
+                        } else {
+                            com.orbital.run.api.StravaManager.connect(context) 
+                        }
+                    },
                     onDisconnect = { com.orbital.run.api.StravaManager.disconnect(context) }
                 )
             } else if (appName == "Polar") {
@@ -1397,6 +1404,53 @@ fun ProfileSettingsScreen(
                     onConnect = { com.orbital.run.api.SuuntoManager.connect(context) },
                     onDisconnect = { com.orbital.run.api.SuuntoManager.disconnect(context) }
                 )
+            } else if (appName == "Samsung") {
+                 AppItem(
+                    name = "Samsung Health",
+                    isLinked = false, // Managed via Health Connect
+                    isConfigured = false,
+                    subtitle = "Via Health Connect",
+                    onConnect = { permissionLauncher.launch(com.orbital.run.api.HealthConnectManager.getPermissionsToRequest()) },
+                    onDisconnect = { }
+                )
+            } else if (appName == "Google") {
+                 AppItem(
+                    name = "Google Fit",
+                    isLinked = false,
+                    isConfigured = false,
+                    subtitle = "Via Health Connect",
+                    onConnect = { permissionLauncher.launch(com.orbital.run.api.HealthConnectManager.getPermissionsToRequest()) },
+                    onDisconnect = { }
+                )
+            } else if (appName == "Fitbit") {
+                 val isConn = com.orbital.run.api.FitbitManager.isConnected(context)
+                 AppItem(
+                    name = "Fitbit",
+                    isLinked = isConn,
+                    isConfigured = isConn,
+                    subtitle = if(isConn) "Connecté (API)" else "Connexion API",
+                    onConnect = { com.orbital.run.api.FitbitManager.connect(context) },
+                    onDisconnect = { com.orbital.run.api.FitbitManager.disconnect(context) }
+                )
+            } else if (appName == "Coros") {
+                 AppItem(
+                    name = "Coros",
+                    isLinked = false,
+                    isConfigured = false,
+                    subtitle = "Via Health Connect", // Coros closed API
+                    onConnect = { permissionLauncher.launch(com.orbital.run.api.HealthConnectManager.getPermissionsToRequest()) },
+                    onDisconnect = { }
+                )
+            } else if (appName == "Withings") {
+                 val isConn = com.orbital.run.api.WithingsManager.isConnected(context)
+                 AppItem(
+                    name = "Withings",
+                    isLinked = isConn,
+                    isConfigured = isConn,
+                    subtitle = if(isConn) "Connecté (API)" else "Connexion API",
+                    onConnect = { com.orbital.run.api.WithingsManager.connect(context) },
+                    onDisconnect = { com.orbital.run.api.WithingsManager.disconnect(context) }
+                )
             }
         }
         
@@ -1411,22 +1465,54 @@ fun ProfileSettingsScreen(
         Text("Période d'activités à récupérer", fontSize = 12.sp, color = AirTextLight)
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Sélecteur de période
+        // Foldable Sync Period
+        var isSyncExpanded by remember { mutableStateOf(false) }
         var selectedPeriod by remember { 
             mutableStateOf(SyncPreferences.getSyncPeriod(context)) 
         }
-
-        SyncPreferences.SyncPeriod.values().forEach { period ->
-            SyncPeriodOption(
-                period = period,
-                isSelected = selectedPeriod == period,
-                onSelect = {
-                    selectedPeriod = period
-                    SyncPreferences.setSyncPeriod(context, period)
-                    android.widget.Toast.makeText(context, "Période mise à jour : ${period.label}", android.widget.Toast.LENGTH_SHORT).show()
+        
+        Card(
+            modifier = Modifier.fillMaxWidth().clickable { isSyncExpanded = !isSyncExpanded },
+            colors = CardDefaults.cardColors(containerColor = AirWhite),
+            shape = RoundedCornerShape(12.dp),
+            border = BorderStroke(1.dp, AirSurface)
+        ) {
+            Column(Modifier.padding(16.dp)) {
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                    Column {
+                         Text(selectedPeriod.label, fontWeight = FontWeight.Bold, color = AppText)
+                         Text("Période de synchronisation", fontSize = 12.sp, color = AirTextLight)
+                    }
+                    Icon(if(isSyncExpanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore, null, tint = AirTextLight)
                 }
-            )
-            Spacer(modifier = Modifier.height(8.dp))
+                
+                AnimatedVisibility(visible = isSyncExpanded) {
+                    Column(Modifier.padding(top = 16.dp)) {
+                        SyncPreferences.SyncPeriod.values().forEach { period ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 8.dp)
+                                    .clickable {
+                                        selectedPeriod = period
+                                        SyncPreferences.setSyncPeriod(context, period)
+                                        isSyncExpanded = false
+                                        android.widget.Toast.makeText(context, "Période : ${period.label}", android.widget.Toast.LENGTH_SHORT).show()
+                                    },
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                RadioButton(
+                                    selected = selectedPeriod == period,
+                                    onClick = null, // Handled by Row
+                                    colors = RadioButtonDefaults.colors(selectedColor = AirPrimary)
+                                )
+                                Spacer(Modifier.width(12.dp))
+                                Text(period.label, color = AppText)
+                            }
+                        }
+                    }
+                }
+            }
         }
         
         Spacer(modifier = Modifier.height(32.dp))
@@ -1524,6 +1610,11 @@ fun AppItem(
         name.contains("Polar") -> Color(0xFFE2001A)   // Polar red
         name.contains("Suunto") -> Color(0xFF00D7D7)  // Suunto cyan
         name.contains("Health") -> Color(0xFF34C759)  // Health green
+        name.contains("Samsung") -> Color(0xFF2196F3) // Samsung Blue
+        name.contains("Google") -> Color(0xFFEA4335)  // Google Red
+        name.contains("Fitbit") -> Color(0xFF00B0B9)  // Fitbit Teal
+        name.contains("Coros") -> Color(0xFF1C1C1E)   // Coros Dark
+        name.contains("Withings") -> Color(0xFF00C5E0)// Withings Cyan
         else -> AirPrimary
     }
     
@@ -1532,6 +1623,11 @@ fun AppItem(
         name.contains("Strava") -> Icons.Default.DirectionsRun
         name.contains("Polar") -> Icons.Default.FavoriteBorder
         name.contains("Suunto") -> Icons.Default.Explore
+        name.contains("Health") -> Icons.Default.Phone
+        else -> Icons.Default.Apps
+    }
+    
+    val fallbackIcon = when {
         name.contains("Health") -> Icons.Default.Phone
         else -> Icons.Default.Apps
     }
