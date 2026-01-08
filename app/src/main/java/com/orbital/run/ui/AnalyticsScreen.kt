@@ -166,16 +166,25 @@ fun AnalyticsScreen(
             // HISTORY SECTION
             item {
                 Column {
+                    // FILTERS (Hoisted to be available for count)
+                    var selectedFilter by remember { mutableStateOf("Tout") }
+                
+                    // GROUPING LOGIC
+                    val filteredList = history.filter { 
+                        when(selectedFilter) {
+                            "Course" -> it.type == WorkoutType.RUNNING
+                            "Natation" -> it.type == WorkoutType.SWIMMING
+                            else -> true
+                        }
+                    }
+
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text("Historique", style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold), color = AirTextPrimary)
                         Spacer(Modifier.weight(1f))
-                        Text("${history.size} séances", fontSize = 12.sp, color = AirTextLight)
+                        Text("${filteredList.size} séances", fontSize = 12.sp, color = AirTextLight)
                     }
                     Spacer(Modifier.height(12.dp))
                     
-                    // FILTERS
-                    var selectedFilter by remember { mutableStateOf("Tout") }
-                
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         listOf("Tout", "Course", "Natation").forEach { filter ->
                             val isSelected = selectedFilter == filter
@@ -197,15 +206,6 @@ fun AnalyticsScreen(
                     }
                     
                     Spacer(Modifier.height(16.dp))
-                    
-                    // GROUPING LOGIC
-                    val filteredList = history.filter { 
-                        when(selectedFilter) {
-                            "Course" -> it.type == WorkoutType.RUNNING
-                            "Natation" -> it.type == WorkoutType.SWIMMING
-                            else -> true
-                        }
-                    }
                     
                     val groupedHistory = remember(filteredList) {
                         filteredList.groupBy { activity ->
