@@ -1528,59 +1528,8 @@ fun ProfileSettingsScreen(
 
         
         Spacer(modifier = Modifier.height(24.dp))
-        Text("Synchronisation", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = AppText)
-        Text("Période d'activités à récupérer", fontSize = 12.sp, color = AirTextLight)
-        Spacer(modifier = Modifier.height(16.dp))
+        // Sync preference removed - defaulting to ALL_TIME
 
-        // Foldable Sync Period
-        var isSyncExpanded by remember { mutableStateOf(false) }
-        var selectedPeriod by remember { 
-            mutableStateOf(SyncPreferences.getSyncPeriod(context)) 
-        }
-        
-        Card(
-            modifier = Modifier.fillMaxWidth().clickable { isSyncExpanded = !isSyncExpanded },
-            colors = CardDefaults.cardColors(containerColor = AirWhite),
-            shape = RoundedCornerShape(12.dp),
-            border = BorderStroke(1.dp, AirSurface)
-        ) {
-            Column(Modifier.padding(16.dp)) {
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                    Column {
-                         Text(selectedPeriod.label, fontWeight = FontWeight.Bold, color = AppText)
-                         Text("Période de synchronisation", fontSize = 12.sp, color = AirTextLight)
-                    }
-                    Icon(if(isSyncExpanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore, null, tint = AirTextLight)
-                }
-                
-                AnimatedVisibility(visible = isSyncExpanded) {
-                    Column(Modifier.padding(top = 16.dp)) {
-                        SyncPreferences.SyncPeriod.values().forEach { period ->
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 8.dp)
-                                    .clickable {
-                                        selectedPeriod = period
-                                        SyncPreferences.setSyncPeriod(context, period)
-                                        isSyncExpanded = false
-                                        android.widget.Toast.makeText(context, "Période : ${period.label}", android.widget.Toast.LENGTH_SHORT).show()
-                                    },
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                RadioButton(
-                                    selected = selectedPeriod == period,
-                                    onClick = null, // Handled by Row
-                                    colors = RadioButtonDefaults.colors(selectedColor = AirPrimary)
-                                )
-                                Spacer(Modifier.width(12.dp))
-                                Text(period.label, color = AppText)
-                            }
-                        }
-                    }
-                }
-            }
-        }
         
         Spacer(modifier = Modifier.height(32.dp))
         Button(

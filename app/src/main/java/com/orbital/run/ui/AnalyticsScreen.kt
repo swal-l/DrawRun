@@ -102,10 +102,18 @@ fun AnalyticsScreen(
                             }
                             
                             val hasHc = HealthConnectManager.hasAllPermissions(context)
+                            val sources = mutableListOf<String>()
+                            if (count > 0) {
+                                if (HealthConnectManager.hasAllPermissions(context)) sources.add("Santé")
+                                if (com.orbital.run.api.StravaManager.isConnected(context)) sources.add("Strava")
+                                if (com.orbital.run.api.FitbitManager.isConnected(context)) sources.add("Fitbit")
+                                if (com.orbital.run.api.WithingsManager.isConnected(context)) sources.add("Withings")
+                            }
+                            
                             val message = when {
-                                count > 0 -> "✅ $count nouvelles activités synchronisées !"
+                                count > 0 -> "✅ $count activités (Sources: ${sources.joinToString(", ")})"
                                 !hasHc -> "⚠️ Connectez Health Connect dans les paramètres"
-                                else -> "ℹ️ Déjà à jour - 0 nouvelles"
+                                else -> "ℹ️ Vos données sont à jour (Sources vérifiées: ${sources.size})"
                             }
                             android.widget.Toast.makeText(context, message, android.widget.Toast.LENGTH_LONG).show()
                             

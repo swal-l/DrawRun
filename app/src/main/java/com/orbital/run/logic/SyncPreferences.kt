@@ -22,9 +22,10 @@ object SyncPreferences {
      */
     fun getSyncPeriod(context: Context): SyncPeriod {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        val days = prefs.getInt(KEY_DAYS_BACK, SyncPeriod.LAST_30_DAYS.days)
+        // Default to ALL_TIME as requested
+        val days = prefs.getInt(KEY_DAYS_BACK, SyncPeriod.ALL_TIME.days)
         
-        return SyncPeriod.values().find { it.days == days } ?: SyncPeriod.LAST_30_DAYS
+        return SyncPeriod.values().find { it.days == days } ?: SyncPeriod.ALL_TIME
     }
 
     /**
