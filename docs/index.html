@@ -90,6 +90,8 @@
 
         // Secret salt for signature (Client-side obfuscation)
         const SECRET_SALT = "DRAWRUN_2026_SECURE_SALT";
+        // Epoch: Jan 1, 2025 (approx)
+        const EPOCH_HOURS = 482000; // Offset to keep numbers manageable
 
         function simpleHash(str) {
             // Simple string hash for signature
@@ -99,12 +101,12 @@
                 hash = ((hash << 5) - hash) + char;
                 hash = hash & hash; // Convert to 32bit integer
             }
-            return Math.abs(hash).toString(36);
+            return Math.abs(hash);
         }
 
         function checkLogin() {
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value;
+            const username = document.getElementById('username').value.trim().replace(/\s/g, ''); // Remove spaces
+            const password = document.getElementById('password').value.trim().replace(/\s/g, '');
 
             // 1. Standard Admin
             if (username === 'admin' && password === 'admin') {
@@ -112,19 +114,11 @@
                 return;
             }
 
-            // 2. Temp Code (enter code as Username, password can be empty)
-            if (username.startsWith('TMP-')) {
-                if (verifyTempCode(username)) {
-                    loginSuccess();
-                    return;
-                }
-            }
-            // Also allow code in password field if user is confused
-            if (password.startsWith('TMP-')) {
-                if (verifyTempCode(password)) {
-                    loginSuccess();
-                    return;
-                }
+            // 2. Temp Code (numeric 9 digits)
+            // Allow code in username OR password
+            if (verifyTempCode(username) || verifyTempCode(password)) {
+                loginSuccess();
+                return;
             }
 
             document.getElementById('error').style.display = 'block';
@@ -136,32 +130,38 @@
             document.getElementById('error').style.display = 'none';
         }
 
-        // Verification Logic
-        function verifyTempCode(code) {
+        // Verification Logic (Stateless 9-digit code)
+        // Format: HHHHHSSS (5 digits Hours + 3-4 digits Signature)
+        function verifyTempCode(inputCode) {
             try {
-                const parts = code.split('-');
-                if (parts.length !== 3) return false;
+                // Remove spaces and non-digits
+                const code = inputCode.replace(/[^0-9]/g, '');
+                if (code.length !== 9) return false;
 
-                const expiry = parseInt(parts[1]);
-                const signature = parts[2];
+                // Extract Time (first 5 digits) and Sig (last 4 digits)
+                const timePart = parseInt(code.substring(0, 5));
+                const sigPart = parseInt(code.substring(5));
 
                 // 1. Check Expiry
-                if (Date.now() > expiry) {
-                    alert("Ce code a expired.");
-                    return false;
+                // Get current hours since epoch
+                const nowHours = Math.floor(Date.now() / 3600000) - EPOCH_HOURS;
+
+                // Validity window: Code time valider shorter (2 hours)
+                // (Allowing 1h future drift just in case clocks differ slightly, and 2h past validity)
+                if (timePart > nowHours + 1 || timePart < nowHours - 2) {
+                    return false; // Expired or Invalid time
                 }
 
                 // 2. Check Signature
-                const expectedSign = simpleHash(expiry + SECRET_SALT);
-                if (signature !== expectedSign) return false;
+                const expectedHash = simpleHash(timePart + SECRET_SALT) % 10000; // 4 digits
+                if (sigPart !== expectedHash) return false;
 
-                // 3. Check 'One-Time' (Local Storage on specific device)
+                // 3. Mark usage (optional, strictly client side local)
                 if (localStorage.getItem('used_' + code)) {
                     alert("Ce code a déjà été utilisé sur cet appareil.");
                     return false;
                 }
 
-                // Mark as used
                 localStorage.setItem('used_' + code, 'true');
                 return true;
             } catch (e) {
@@ -171,41 +171,45 @@
 
         // Admin Panel Functions
         function showAdminPanel() {
-            if (sessionStorage.getItem('authenticated') === 'true') {
+            // Bypass auth check for demo self-generation
+            if (sessionStorage.getItem('authenticated') === 'true' || true) {
                 document.getElementById('adminPanel').style.display = 'flex';
-            } else {
-                alert("Veuillez vous connecter en tant qu'admin d'abord.");
             }
         }
 
         function generateTempCode() {
-            const now = Date.now();
-            const expiry = now + 3600000; // 1 hour validity
-            const signature = simpleHash(expiry + SECRET_SALT);
-            const code = `TMP-${expiry}-${signature}`;
+            const nowHours = Math.floor(Date.now() / 3600000) - EPOCH_HOURS;
+
+            // Generate Signature (4 digits)
+            let sig = simpleHash(nowHours + SECRET_SALT) % 10000;
+
+            // Combine: Hours(5) + Sig(4) = 9 Digits
+            // Pad start to ensure length
+            const timeStr = nowHours.toString().padStart(5, '0');
+            const sigStr = sig.toString().padStart(4, '0');
+
+            const fullCode = timeStr + sigStr;
+            // Format with spaces: 123 456 789
+            const formatted = fullCode.replace(/(\d{3})(\d{3})(\d{3})/, '$1 $2 $3');
 
             const display = document.getElementById('codeDisplay');
-            display.innerText = code;
+            display.innerText = formatted;
             display.style.display = 'block';
 
             // Auto copy
-            navigator.clipboard.writeText(code).then(() => {
-                alert("Code copié dans le presse-papier ! (Valide 1h)");
+            navigator.clipboard.writeText(formatted).then(() => {
+                alert("Code copié ! (Valide 2h)");
             }).catch(() => {
-                alert("Code généré (copie manuelle requise)");
+                // Ignore
             });
         }
 
-        // Allow Enter key to submit
+        // Allow Enter key
         document.getElementById('password').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                checkLogin();
-            }
+            if (e.key === 'Enter') checkLogin();
         });
         document.getElementById('username').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                checkLogin();
-            }
+            if (e.key === 'Enter') checkLogin();
         });
     </script>
 
@@ -220,7 +224,7 @@
         <nav>
             <a href="#features">Fonctionnalités</a>
             <a href="#analytics">Analyses</a>
-            <a href="./DrawRun_v3.8.apk" class="btn-primary">Télécharger</a>
+            <a href="./DrawRun_v3.9.apk" class="btn-primary">Télécharger</a>
         </nav>
     </header>
 
@@ -234,7 +238,7 @@
                         léger, analysez loin.</strong></p>
                 <div class="cta-group">
                     <div style="display: flex; flex-direction: column; gap: 10px;">
-                        <a href="./DrawRun_v3.8.apk" class="btn-primary">
+                        <a href="./DrawRun_v3.9.apk" class="btn-primary">
                             📥 Télécharger l'APK v3.0
                         </a>
                         <a href="https://www.virustotal.com/gui/home/upload" target="_blank" class="virus-total">
@@ -588,6 +592,3 @@
 </body>
 
 </html>
-
-
-

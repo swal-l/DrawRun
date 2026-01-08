@@ -1,10 +1,10 @@
 {
-  "latestVersionCode": 53,
-  "latestVersionName": "3.8",
-  "downloadUrl": "https://swal-l.github.io/DrawRun/DrawRun_v3.8.apk",
+  "latestVersionCode": 54,
+  "latestVersionName": "3.9",
+  "downloadUrl": "https://swal-l.github.io/DrawRun/DrawRun_v3.9.apk",
   "releaseNotes": {
     "features": [
-      "GPS maps + HR derivative (ready for Android Studio test)"
+      "Améliorations diverses et optimisations"
     ],
     "fixes": [
       "Corrections mineures de stabilité"
