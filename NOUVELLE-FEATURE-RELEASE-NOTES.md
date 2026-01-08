@@ -50,11 +50,11 @@ Pour les synchronisations massives (ex: Tout l'historique):
 
 ## 🚀 Comment Tester
 
-1. Installez l'APK v2.0
-2. Allez dans **Profil > Synchronisation**
-3. Sélectionnez "Tout l'historique"
-4. Lancez la synchronisation via le bouton dans l'onglet Analyse
-5. Observez la progression et le résultat !
+1. Installez l'APK v3.0
+2. Allez dans **Profil > Applications & Montres**
+3. Cliquez sur **Strava** pour tester la nouvelle connexion native.
+4. Si l'application Strava est installée, elle s'ouvrira directement pour l'autorisation.
+5. Vérifiez que le statut passe à "Connecté".
 
 ---
 
