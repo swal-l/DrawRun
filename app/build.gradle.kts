@@ -14,8 +14,8 @@ android {
         applicationId = "com.orbital.run"
         minSdk = 26
         targetSdk = 35
-        versionCode = 47
-        versionName = "3.2"
+        versionCode = 50
+        versionName = "3.5"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         
@@ -135,6 +135,9 @@ dependencies {
 tasks.register("testClasses") {
     dependsOn("compileDebugUnitTestSources")
 }
+
+
+
 
 
 

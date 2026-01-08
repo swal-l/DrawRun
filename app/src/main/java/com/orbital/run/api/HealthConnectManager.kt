@@ -406,10 +406,15 @@ object HealthConnectManager {
         
         val sessions = readExerciseSessions(context, startTime, endTime)
         
-        // Report progress for simple sync (1 step)
-        onProgress?.invoke(1, 1)
+        if (sessions.isEmpty()) {
+            onProgress?.invoke(1, 1)
+            return emptyList()
+        }
         
-        return processSessions(context, sessions)
+        // Report detailed progress (X/Y activities)
+        return processSessions(context, sessions) { processed, total ->
+            onProgress?.invoke(processed, total)
+        }
     }
 
     /**
@@ -430,21 +435,20 @@ object HealthConnectManager {
             val startDayOffset = i * chunkSize
             val endDayOffset = minOf((i + 1) * chunkSize, daysBack)
             
-            // Time logic is reversed (going back in time) or chunked from now.
-            // Let's implement chunking from Past to Present or Present to Past?
-            // Usually safest is Past to Present or simply independent chunks.
-            // Here implementation: Chunk 0 = Last 0-30 days, Chunk 1 = Last 30-60 days...
-            
+            // Chunk 0 = Last 0-30 days
             val endTime = System.currentTimeMillis() - (startDayOffset * 24 * 60 * 60 * 1000L)
             val startTime = System.currentTimeMillis() - (endDayOffset * 24 * 60 * 60 * 1000L)
             
             android.util.Log.d("SYNC", "Chunk ${i+1}/$totalChunks: ${java.util.Date(startTime)} -> ${java.util.Date(endTime)}")
             
             val sessions = readExerciseSessions(context, startTime, endTime)
+            
+            // For pagination, we report "Batch X/Y" generally, or could do sub-progress
+            // Let's stick to Batch progress for massive syncs to avoid flickering
+            onProgress?.invoke(i + 1, totalChunks)
+            
             val chunkActivities = processSessions(context, sessions)
             allActivities.addAll(chunkActivities)
-            
-            onProgress?.invoke(i + 1, totalChunks)
             
             // Small delay to let system breathe
             kotlinx.coroutines.delay(100)
@@ -458,9 +462,18 @@ object HealthConnectManager {
      */
     private suspend fun processSessions(
         context: Context,
-        sessions: List<ExerciseSessionRecord>
+        sessions: List<ExerciseSessionRecord>,
+        onProgress: ((Int, Int) -> Unit)? = null
     ): List<Persistence.CompletedActivity> {
+        val total = sessions.size
+        var processed = 0
+        
         return sessions.mapNotNull { session ->
+            processed++
+            if (processed % 2 == 0 || processed == total) { // Update every 2 items to reduce spam
+                 onProgress?.invoke(processed, total)
+            }
+            
             try {
                 val sTime = session.startTime.toEpochMilli()
                 val eTime = session.endTime.toEpochMilli()

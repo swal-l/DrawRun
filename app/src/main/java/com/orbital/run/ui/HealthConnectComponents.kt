@@ -144,6 +144,48 @@ fun SimpleHealthConnectOnboarding(
                 textAlign = TextAlign.Center
             )
         }
+        
+        Spacer(Modifier.height(32.dp))
+        
+        // Legacy Apps Grid
+        Text(
+            "Ou connectez directement (Legacy)",
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Bold,
+            color = AirTextSecondary
+        )
+        Spacer(Modifier.height(12.dp))
+        
+        val context = androidx.compose.ui.platform.LocalContext.current
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+             // Helper for mini buttons
+             @Composable
+             fun MiniAppBtn(name: String, color: Color, onClick: () -> Unit) {
+                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                     Button(
+                         onClick = onClick,
+                         shape = androidx.compose.foundation.shape.CircleShape,
+                         colors = ButtonDefaults.buttonColors(containerColor = color.copy(alpha=0.1f), contentColor = color),
+                         contentPadding = PaddingValues(0.dp),
+                         modifier = Modifier.size(50.dp),
+                         border = BorderStroke(1.dp, color.copy(alpha=0.3f))
+                     ) {
+                         Text(name.take(1), fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                     }
+                     Spacer(Modifier.height(4.dp))
+                     Text(name, fontSize = 10.sp, color = AirTextSecondary)
+                 }
+             }
+             
+             MiniAppBtn("Strava", Color(0xFFFC4C02)) { com.orbital.run.api.StravaManager.connect(context) }
+             MiniAppBtn("Garmin", Color(0xFF007CC3)) { com.orbital.run.api.GarminManager.connect(context) }
+             MiniAppBtn("Polar", Color(0xFFE2001A)) { com.orbital.run.api.PolarManager.connect(context) }
+             MiniAppBtn("Suunto", Color(0xFF00D7D7)) { com.orbital.run.api.SuuntoManager.connect(context) }
+        }
+        Spacer(Modifier.height(24.dp))
     }
 }
 

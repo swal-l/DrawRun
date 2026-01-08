@@ -1,10 +1,4 @@
-WARNING: A restricted method in java.lang.System has been called
-WARNING: java.lang.System::load has been called by net.rubygrapefruit.platform.internal.NativeLibraryLoader in an unnamed module (file:/C:/Users/lomic/.gradle/wrapper/dists/gradle-8.11.1-bin/bpt9gzteqjrbo1mjrsomdt32c/gradle-8.11.1/lib/native-platform-0.22-milestone-26.jar)
-WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
-WARNING: Restricted methods will be blocked in a future release unless native access is enabled
-
-To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.11.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
-Daemon will be stopped at the end of the build 
+> Task :app:buildKotlinToolingMetadata UP-TO-DATE
 > Task :app:checkKotlinGradlePluginConfigurationErrors
 > Task :app:preBuild UP-TO-DATE
 > Task :app:preReleaseBuild UP-TO-DATE
@@ -22,13 +16,72 @@ Daemon will be stopped at the end of the build
 > Task :app:processReleaseManifest UP-TO-DATE
 > Task :app:processReleaseManifestForPackage UP-TO-DATE
 > Task :app:processReleaseResources UP-TO-DATE
-
-> Task :app:compileReleaseKotlin
-e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/api/SyncManager.kt:33:47 Unresolved reference: loadStravaToken
-e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/api/SyncManager.kt:40:5 A 'return' expression required in a function with a block body ('{...}')
-e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/MainScreen.kt:1419:1 Expecting a top level declaration
+> Task :app:javaPreCompileRelease UP-TO-DATE
+> Task :app:extractProguardFiles UP-TO-DATE
+> Task :app:mergeReleaseJniLibFolders UP-TO-DATE
+> Task :app:mergeReleaseNativeLibs UP-TO-DATE
+> Task :app:stripReleaseDebugSymbols UP-TO-DATE
+> Task :app:extractReleaseNativeSymbolTables UP-TO-DATE
+> Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
+> Task :app:checkReleaseDuplicateClasses UP-TO-DATE
+> Task :app:desugarReleaseFileDependencies UP-TO-DATE
+> Task :app:mergeReleaseStartupProfile UP-TO-DATE
+> Task :app:mergeExtDexRelease UP-TO-DATE
+> Task :app:mergeReleaseArtProfile UP-TO-DATE
+> Task :app:mergeReleaseShaders UP-TO-DATE
+> Task :app:compileReleaseShaders NO-SOURCE
+> Task :app:generateReleaseAssets UP-TO-DATE
+> Task :app:mergeReleaseAssets UP-TO-DATE
+> Task :app:compressReleaseAssets UP-TO-DATE
+> Task :app:extractReleaseVersionControlInfo UP-TO-DATE
+> Task :app:optimizeReleaseResources UP-TO-DATE
+> Task :app:collectReleaseDependencies UP-TO-DATE
+> Task :app:sdkReleaseDependencyData UP-TO-DATE
+> Task :app:validateSigningRelease UP-TO-DATE
+> Task :app:writeReleaseAppMetadata UP-TO-DATE
+> Task :app:writeReleaseSigningConfigVersions UP-TO-DATE
 
 > Task :app:compileReleaseKotlin FAILED
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:132:13 Expecting an element
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:152:5 Expecting an element
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:262:2 Expecting ','
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:297:2 Expecting ','
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:417:2 Expecting ','
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:436:2 Expecting ','
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:445:2 Expecting ','
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:477:2 Expecting ','
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:507:2 Expecting ')'
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:136:24 @Composable invocations can only happen from the context of a @Composable function
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:146:24 @Composable invocations can only happen from the context of a @Composable function
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:149:22 @Composable invocations can only happen from the context of a @Composable function
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:152:9 Cannot infer a type for this parameter. Please specify it explicitly.
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:153:9 @Composable invocations can only happen from the context of a @Composable function
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:154:47 Overload resolution ambiguity: 
+public fun Modifier.padding(paddingValues: PaddingValues): Modifier defined in androidx.compose.foundation.layout
+public fun Modifier.padding(all: Dp): Modifier defined in androidx.compose.foundation.layout
+public fun Modifier.padding(horizontal: Dp = ..., vertical: Dp = ...): Modifier defined in androidx.compose.foundation.layout
+public fun Modifier.padding(start: Dp = ..., top: Dp = ..., end: Dp = ..., bottom: Dp = ...): Modifier defined in androidx.compose.foundation.layout
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:163:20 Unresolved reference: PerformanceTrendSection
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:163:74 Unresolved reference: it
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:164:20 Unresolved reference: SportBreakdownSection
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:243:28 Unresolved reference: ActivityRow
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:264:1 Mixing named and positioned arguments is not allowed
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:265:5 Anonymous functions with names are prohibited
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:301:1 Mixing named and positioned arguments is not allowed
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:302:5 Anonymous functions with names are prohibited
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:324:21 Unresolved reference: PMCMetricCard
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:327:21 Unresolved reference: PMCMetricCard
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:336:21 Unresolved reference: PMCMetricCard
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:419:1 Mixing named and positioned arguments is not allowed
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:420:5 Anonymous functions with names are prohibited
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:420:98 An anonymous function is not allowed to specify default values for its parameters
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:438:1 Mixing named and positioned arguments is not allowed
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:439:5 Anonymous functions with names are prohibited
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:447:1 Mixing named and positioned arguments is not allowed
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:448:5 Anonymous functions with names are prohibited
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:480:1 Mixing named and positioned arguments is not allowed
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:481:5 Anonymous functions with names are prohibited
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/MainScreen.kt:842:9 Unresolved reference: CoachInsightSection
 
 FAILURE: Build failed with an exception.
 
@@ -43,5 +96,5 @@ Execution failed for task ':app:compileReleaseKotlin'.
 > Run with --scan to get full insights.
 > Get more help at https://help.gradle.org.
 
-BUILD FAILED in 39s
-16 actionable tasks: 2 executed, 14 up-to-date
+BUILD FAILED in 23s
+38 actionable tasks: 2 executed, 36 up-to-date

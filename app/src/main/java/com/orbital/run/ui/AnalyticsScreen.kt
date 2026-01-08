@@ -129,12 +129,18 @@ fun AnalyticsScreen(
                 contentColor = Color.White,
                 shape = RoundedCornerShape(16.dp)
             ) {
+
                 if (isSyncing) {
                    if (syncProgress != null) {
                        val (current, total) = syncProgress!!
-                       Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-                           CircularProgressIndicator(modifier = Modifier.size(16.dp), color = Color.White, strokeWidth = 2.dp)
-                           Text("$current/$total", fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                       Box(contentAlignment = Alignment.Center) {
+                           CircularProgressIndicator(modifier = Modifier.size(40.dp), color = Color.White.copy(alpha=0.5f), strokeWidth = 3.dp)
+                           Text(
+                               "$current/$total", 
+                               fontSize = 13.sp, 
+                               fontWeight = FontWeight.ExtraBold,
+                               color = Color.White
+                           )
                        }
                    } else {
                        CircularProgressIndicator(modifier = Modifier.size(24.dp), color = Color.White, strokeWidth = 2.dp)
