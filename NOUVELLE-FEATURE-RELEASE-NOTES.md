@@ -1,23 +1,22 @@
-# ✅ Nouvelle Version v2.0 - Health Connect & Sync Config
+# 🚀 DrawRun v3.0 - Intégration Strava Directe & Optimisations
 
-**Date:** 2026-01-07 18:50
-**Version:** v2.0
+> **Date :** 08 Janvier 2025
+> **Version Code :** 45
+> **Version Name :** 3.0
 
----
+Cette mise à jour majeure marque l'arrivée de l'**intégration native Strava** et de nombreuses améliorations de stabilité.
 
-## 🎯 Résumé
+## ✨ Nouveautés Principales
 
-Cette version majeure marque une simplification drastique de l'application et l'ajout de fonctionnalités de synchronisation avancées.
+### 🟠 Intégration Strava Directe
+*   **Connexion Native :** Connectez votre compte Strava directement depuis l'application.
+*   **Auth Simplifiée :** Si l'application Strava est installée, l'authentification se fait sans passer par le navigateur !
+*   **Confidentialité :** Vos identifiants sont gérés de manière sécurisée et ne transitent que vers Strava.
 
----
-
-## ✨ Nouveautés
-
-### 🔗 Health Connect Uniquement
-Simplification de l'architecture de synchronisation:
-- **Suppression** des connexions Strava, Garmin, Polar, Suunto.
-- **Health Connect** devient la source unique et universelle.
-- **Avantages:** Plus léger, plus rapide, plus sécurisé, plus simple à configurer.
+### 🔌 Autres Services (Legacy Support)
+*   Retour des boutons pour **Garmin**, **Polar**, et **Suunto** dans le menu Paramètres.
+*   Possibilité de définir manuellement l'état de connexion pour ces services.
+*   *Note : L'intégration complète Health Connect reste le standard recommandé.*
 
 ### ⚙️ Configuration de la Synchronisation
 Nouveau menu dans **Profil > Synchronisation**:
