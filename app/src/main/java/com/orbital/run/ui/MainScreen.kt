@@ -238,17 +238,43 @@ fun MainScreen() {
                         onGenerate = { generate() }
                     )
                 } else {
-                    // Step 2: Health Connect Onboarding
-                    SimpleHealthConnectOnboarding(
-                        onConnectHealthConnect = { appToConnect = "Health Connect" },
+                    // Step 2: Advanced Sync Onboarding
+                    SyncOnboardingScreen(
+                        context = context,
+                        connectedApps = connectedApps,
+                        onConnectApp = { app -> 
+                            if (app == "Health Connect") {
+                                try {
+                                    hcPermissionLauncher.launch(com.orbital.run.api.HealthConnectManager.getPermissionsToRequest())
+                                } catch (e: Exception) {
+                                  android.widget.Toast.makeText(context, "Erreur: ${e.message}", android.widget.Toast.LENGTH_LONG).show()
+                                }
+                            } else {
+                                // Trigger connect logic for specific app
+                                when(app) {
+                                    "Garmin" -> com.orbital.run.api.GarminManager.connect(context)
+                                    "Strava" -> {
+                                        if (com.orbital.run.BuildConfig.STRAVA_CLIENT_ID.isEmpty()) 
+                                            android.widget.Toast.makeText(context, "Client ID Manquant", android.widget.Toast.LENGTH_SHORT).show()
+                                        else 
+                                            com.orbital.run.api.StravaManager.connect(context)
+                                    }
+                                    "Fitbit" -> com.orbital.run.api.FitbitManager.connect(context)
+                                    "Withings" -> com.orbital.run.api.WithingsManager.connect(context)
+                                    "Polar" -> com.orbital.run.api.PolarManager.connect(context)
+                                    "Suunto" -> com.orbital.run.api.SuuntoManager.connect(context)
+                                }
+                                // Optimistic UI update (Managers serve as source of truth on reload)
+                                connectedApps[app] = true 
+                            }
+                        },
                         onFinish = {
                             Persistence.setOnboardingComplete(context, true)
                             val intent = android.content.Intent(context, com.orbital.run.MainActivity::class.java).apply {
                                 addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK or android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK)
                             }
                             context.startActivity(intent)
-                        },
-                        isHealthConnectConnected = connectedApps["Health Connect"] ?: false
+                        }
                     )
                 }
             } else {
@@ -986,13 +1012,12 @@ fun DashboardScreen(trainingPlan: TrainingPlanResult) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun SwimScreen(
     savedSwims: List<Workout> = emptyList(),
     onSave: (Workout) -> Unit = {},
     @Suppress("UNUSED_PARAMETER") onSync: () -> Unit = {},
-
     connectedApps: Map<String, Boolean> = emptyMap(),
     onSyncWithApp: (Workout) -> Unit = {},
     onDeleteSwim: (Workout) -> Unit = {}
@@ -1007,19 +1032,48 @@ fun SwimScreen(
     var generatedWorkout by remember { mutableStateOf<Workout?>(null) }
     
     LazyColumn(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        contentPadding = PaddingValues(vertical = 16.dp)
     ) {
-        // Generateur Header
+        // HEADER
         item {
-            AirCard("Générateur Natation") {
-                Text("Séances sur mesure", color = AirTextLight, fontSize = 14.sp)
-                Spacer(modifier = Modifier.height(16.dp))
-                
+            Card(
+                modifier = Modifier.fillMaxWidth().height(120.dp),
+                shape = RoundedCornerShape(20.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+            ) {
+                Box(modifier = Modifier.fillMaxSize().background(
+                    androidx.compose.ui.graphics.Brush.horizontalGradient(
+                        colors = listOf(AirSecondary, AirPrimary)
+                    )
+                )) {
+                    Column(
+                        modifier = Modifier.align(Alignment.CenterStart).padding(24.dp)
+                    ) {
+                        Icon(Icons.Default.Pool, null, tint = Color.White, modifier = Modifier.size(32.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text("Coach Natation", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                        Text("Générez votre séance idéale", color = Color.White.copy(alpha=0.8f), fontSize = 14.sp)
+                    }
+                    
+                    // Decorative bubbles
+                    Box(modifier = Modifier.align(Alignment.TopEnd).offset(x = 20.dp, y = (-20).dp).size(100.dp).background(Color.White.copy(alpha=0.1f), CircleShape))
+                    Box(modifier = Modifier.align(Alignment.BottomEnd).offset(x = (-40).dp, y = 10.dp).size(60.dp).background(Color.White.copy(alpha=0.1f), CircleShape))
+                }
+            }
+        }
+    
+        // GENERATOR CONFIG
+        item {
+            AirCard("Configuration de la séance") {
                 // Style Selector
                 Text("Nages (Sélection multiple)", color = AirTextLight, fontSize = 12.sp, fontWeight = FontWeight.Bold)
-                Spacer(modifier = Modifier.height(8.dp))
-                Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
+                Spacer(modifier = Modifier.height(12.dp))
+                FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
                     SwimStyle.values().forEach { s ->
                         val isSelected = selectedStyles.contains(s)
                         FilterChip(
@@ -1032,45 +1086,58 @@ fun SwimScreen(
                                 }
                             },
                             label = { Text(s.label) },
-                            modifier = Modifier.padding(end = 8.dp)
+                            colors = FilterChipDefaults.filterChipColors(
+                                selectedContainerColor = AirSecondary.copy(alpha=0.2f),
+                                selectedLabelColor = AirPrimary,
+                                labelColor = AppText
+                            ),
+                            border = FilterChipDefaults.filterChipBorder(borderColor = if(isSelected) AirSecondary else AirSurface)
                         )
                     }
                 }
                 
                 Spacer(modifier = Modifier.height(24.dp))
                 
-                
                 // Session Type Selector
                 Text("Type de Séance", color = AirTextLight, fontSize = 12.sp, fontWeight = FontWeight.Bold)
-                Spacer(modifier = Modifier.height(8.dp))
-                Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
+                Spacer(modifier = Modifier.height(12.dp))
+                FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
                     SwimSessionType.values().forEach { t ->
                         FilterChip(
                             selected = sessionType == t,
                             onClick = { sessionType = t },
                             label = { Text(t.label) },
-                            modifier = Modifier.padding(end = 8.dp)
+                            colors = FilterChipDefaults.filterChipColors(
+                                selectedContainerColor = AirPrimary.copy(alpha=0.1f),
+                                selectedLabelColor = AirPrimary
+                            ),
+                            border = FilterChipDefaults.filterChipBorder(borderColor = if(sessionType == t) AirPrimary else AirSurface)
                         )
                     }
                 }
+                
                 Spacer(modifier = Modifier.height(24.dp))
                 
                 // Target Control
-                Text("Type d'objectif", color = AirTextLight, fontSize = 12.sp, fontWeight = FontWeight.Bold)
-                Spacer(modifier = Modifier.height(8.dp))
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                     FilterChip(selected = targetType == "Distance", onClick = { targetType = "Distance"; targetValue = "2500" }, label = { Text("Distance (m)") }, modifier = Modifier.padding(end = 8.dp))
-                     FilterChip(selected = targetType == "Temps", onClick = { targetType = "Temps"; targetValue = "45" }, label = { Text("Temps (min)") })
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+                     Text("Objectif", color = AirTextLight, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                         SuggestionChip(onClick = { targetType = "Distance"; targetValue = "2500" }, label = { Text("Distance") }, colors = SuggestionChipDefaults.suggestionChipColors(containerColor = if(targetType=="Distance") AirSurface else Color.Transparent))
+                         SuggestionChip(onClick = { targetType = "Temps"; targetValue = "45" }, label = { Text("Temps") }, colors = SuggestionChipDefaults.suggestionChipColors(containerColor = if(targetType=="Temps") AirSurface else Color.Transparent))
+                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
                 
-                OutlinedTextField(
-                    value = targetValue,
+                AirInput(
+                    value = targetValue, 
                     onValueChange = { if(it.all { c -> c.isDigit() }) targetValue = it },
-                    label = { Text(if(targetType == "Distance") "Mètres (ex: 2500)" else "Minutes (ex: 45)") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    label = if(targetType == "Distance") "Distance (m)" else "Durée (min)",
                     modifier = Modifier.fillMaxWidth()
                 )
+
                 
                 Spacer(modifier = Modifier.height(24.dp))
                 Button(

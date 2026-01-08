@@ -42,46 +42,37 @@
 > Task :app:writeReleaseSigningConfigVersions UP-TO-DATE
 
 > Task :app:compileReleaseKotlin FAILED
-e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:132:13 Expecting an element
-e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:152:5 Expecting an element
-e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:262:2 Expecting ','
-e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:297:2 Expecting ','
-e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:417:2 Expecting ','
-e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:436:2 Expecting ','
-e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:445:2 Expecting ','
-e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:477:2 Expecting ','
-e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:507:2 Expecting ')'
-e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:136:24 @Composable invocations can only happen from the context of a @Composable function
-e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:146:24 @Composable invocations can only happen from the context of a @Composable function
-e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:149:22 @Composable invocations can only happen from the context of a @Composable function
-e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:152:9 Cannot infer a type for this parameter. Please specify it explicitly.
-e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:153:9 @Composable invocations can only happen from the context of a @Composable function
-e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:154:47 Overload resolution ambiguity: 
-public fun Modifier.padding(paddingValues: PaddingValues): Modifier defined in androidx.compose.foundation.layout
-public fun Modifier.padding(all: Dp): Modifier defined in androidx.compose.foundation.layout
-public fun Modifier.padding(horizontal: Dp = ..., vertical: Dp = ...): Modifier defined in androidx.compose.foundation.layout
-public fun Modifier.padding(start: Dp = ..., top: Dp = ..., end: Dp = ..., bottom: Dp = ...): Modifier defined in androidx.compose.foundation.layout
-e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:163:20 Unresolved reference: PerformanceTrendSection
-e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:163:74 Unresolved reference: it
-e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:164:20 Unresolved reference: SportBreakdownSection
-e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:243:28 Unresolved reference: ActivityRow
-e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:264:1 Mixing named and positioned arguments is not allowed
-e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:265:5 Anonymous functions with names are prohibited
-e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:301:1 Mixing named and positioned arguments is not allowed
-e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:302:5 Anonymous functions with names are prohibited
-e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:324:21 Unresolved reference: PMCMetricCard
-e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:327:21 Unresolved reference: PMCMetricCard
-e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:336:21 Unresolved reference: PMCMetricCard
-e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:419:1 Mixing named and positioned arguments is not allowed
-e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:420:5 Anonymous functions with names are prohibited
-e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:420:98 An anonymous function is not allowed to specify default values for its parameters
-e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:438:1 Mixing named and positioned arguments is not allowed
-e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:439:5 Anonymous functions with names are prohibited
-e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:447:1 Mixing named and positioned arguments is not allowed
-e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:448:5 Anonymous functions with names are prohibited
-e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:480:1 Mixing named and positioned arguments is not allowed
-e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:481:5 Anonymous functions with names are prohibited
-e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/MainScreen.kt:842:9 Unresolved reference: CoachInsightSection
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/HealthConnectComponents.kt:1:1 Expecting a top level declaration
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/HealthConnectComponents.kt:1:2 Expecting a top level declaration
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/HealthConnectComponents.kt:1:3 Expecting a top level declaration
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/HealthConnectComponents.kt:1:4 Expecting a top level declaration
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/HealthConnectComponents.kt:2:1 Expecting a top level declaration
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/HealthConnectComponents.kt:2:9 Expecting a top level declaration
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/HealthConnectComponents.kt:2:12 Expecting a top level declaration
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/HealthConnectComponents.kt:2:13 Expecting a top level declaration
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/HealthConnectComponents.kt:2:20 Expecting a top level declaration
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/HealthConnectComponents.kt:2:21 Expecting a top level declaration
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/HealthConnectComponents.kt:2:24 Expecting a top level declaration
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/HealthConnectComponents.kt:2:25 Expecting a top level declaration
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/HealthConnectComponents.kt:2:27 imports are only allowed in the beginning of file
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/HealthConnectComponents.kt:39:25 Unresolved reference: AppBg
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/HealthConnectComponents.kt:62:21 Unresolved reference: AppText
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/HealthConnectComponents.kt:91:95 Unresolved reference: AppText
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/HealthConnectComponents.kt:132:130 Unresolved reference: AppText
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/MainScreen.kt:243:25 Cannot find a parameter with this name: context
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/MainScreen.kt:244:25 Cannot find a parameter with this name: connectedApps
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/MainScreen.kt:245:25 Cannot find a parameter with this name: onConnectApp
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/MainScreen.kt:245:42 Cannot infer a type for this parameter. Please specify it explicitly.
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/MainScreen.kt:271:25 No value passed for parameter 'onConnectStrava'
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/MainScreen.kt:271:25 No value passed for parameter 'onConnectHealthConnect'
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/MainScreen.kt:271:25 No value passed for parameter 'onConnectGarmin'
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/MainScreen.kt:271:25 No value passed for parameter 'onConnectPolar'
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/MainScreen.kt:271:25 No value passed for parameter 'onConnectSuunto'
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/MainScreen.kt:271:25 No value passed for parameter 'isStravaConnected'
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/MainScreen.kt:271:25 No value passed for parameter 'isHealthConnectConnected'
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/MainScreen.kt:271:25 No value passed for parameter 'isGarminConnected'
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/MainScreen.kt:271:25 No value passed for parameter 'isPolarConnected'
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/MainScreen.kt:271:25 No value passed for parameter 'isSuuntoConnected'
 
 FAILURE: Build failed with an exception.
 
@@ -96,5 +87,5 @@ Execution failed for task ':app:compileReleaseKotlin'.
 > Run with --scan to get full insights.
 > Get more help at https://help.gradle.org.
 
-BUILD FAILED in 23s
+BUILD FAILED in 24s
 38 actionable tasks: 2 executed, 36 up-to-date

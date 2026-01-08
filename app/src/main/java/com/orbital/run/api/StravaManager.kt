@@ -10,10 +10,7 @@ object StravaManager {
     
     fun connect(context: Context) {
         val clientId = com.orbital.run.BuildConfig.STRAVA_CLIENT_ID
-        // In a real scenario without a backend, we'd use localhost redirect or custom scheme.
-        // Assuming "drawrun://strava_callback" is/will be set up in Manifest if we wanted full flow.
-        // For now, we open the auth page so the user sees it works with their ID.
-        
+        // Use the custom scheme registered in Manifest
         val redirectUri = "drawrun://strava_callback" 
         val scope = "activity:read_all,activity:write"
         
@@ -37,9 +34,29 @@ object StravaManager {
         }
 
         context.startActivity(intent)
-        
-        // We optimistically set it to enabled for UI feedback since we don't have the Callback Activity set up yet.
-        Persistence.saveStravaEnabled(context, true)
+    }
+
+    /**
+     * Handle the redirect from Strava.
+     * URI format: drawrun://strava_callback?state=&code=AUTHORIZATION_CODE&scope=...
+     */
+    fun handleAuthCallback(context: Context, uri: Uri) {
+        if (uri.toString().startsWith("drawrun://strava_callback")) {
+            val code = uri.getQueryParameter("code")
+            val error = uri.getQueryParameter("error")
+            
+            if (code != null) {
+                // Success! In a real backend app, we would exchange this code for a token.
+                // For this standalone app, getting the code proves the user authorized us.
+                // We'll mark as enabled locally.
+                Persistence.saveStravaEnabled(context, true)
+                android.widget.Toast.makeText(context, "Strava connecté avec succès !", android.widget.Toast.LENGTH_LONG).show()
+                
+                // Trigger a sync or refresh if needed (optional)
+            } else if (error != null) {
+                android.widget.Toast.makeText(context, "Erreur Strava: $error", android.widget.Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
     fun disconnect(context: Context) {

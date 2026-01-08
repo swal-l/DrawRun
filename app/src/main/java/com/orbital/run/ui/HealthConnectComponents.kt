@@ -2,11 +2,14 @@ package com.orbital.run.ui
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -20,27 +23,30 @@ import androidx.compose.ui.unit.sp
 import com.orbital.run.api.SyncManager
 import com.orbital.run.ui.theme.*
 
-// Simplified Health Connect Onboarding Component
+// Advanced Sync Onboarding Component
 @Composable
-fun SimpleHealthConnectOnboarding(
-    onConnectHealthConnect: () -> Unit,
-    onFinish: () -> Unit,
-    isHealthConnectConnected: Boolean
+fun SyncOnboardingScreen(
+    context: android.content.Context,
+    connectedApps: MutableMap<String, Boolean>,
+    onConnectApp: (String) -> Unit,
+    onFinish: () -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(AppBg)
+            .background(AirBackground)
             .padding(24.dp)
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        Spacer(Modifier.height(20.dp))
+        
         // Icon
         Icon(
-            Icons.Rounded.Favorite,
+            Icons.Rounded.Sync, // Was Favorite
             contentDescription = null,
-            modifier = Modifier.size(80.dp),
+            modifier = Modifier.size(64.dp),
             tint = AirPrimary
         )
         
@@ -48,162 +54,107 @@ fun SimpleHealthConnectOnboarding(
         
         // Title
         Text(
-            "Connectez Health Connect",
-            fontSize = 28.sp,
+            "Connectez vos Services",
+            fontSize = 26.sp,
             fontWeight = FontWeight.Bold,
-            color = AppText,
+            color = AirTextPrimary,
             textAlign = TextAlign.Center
         )
         
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(12.dp))
         
         // Description
         Text(
-            "DrawRun utilise Health Connect pour synchroniser vos activités depuis Garmin, Strava, et autres applications de sport.",
-            fontSize = 16.sp,
+            "Pour une analyse complète, centralisez vos données via Health Connect ou connectez vos comptes directement.",
+            fontSize = 15.sp,
             color = AirTextSecondary,
             textAlign = TextAlign.Center,
-            lineHeight = 24.sp
+            lineHeight = 22.sp
         )
         
         Spacer(Modifier.height(32.dp))
         
-        // Health Connect Card
+        // 1. PRIMARY OPTION: HEALTH CONNECT
+        val isHcConnected = connectedApps["Health Connect"] == true
         Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(
-                containerColor = if (isHealthConnectConnected) AirPrimary.copy(alpha = 0.1f) else Color.White
-            ),
-            shape = RoundedCornerShape(16.dp),
-            border = BorderStroke(
-                2.dp,
-                if (isHealthConnectConnected) AirPrimary else AirSurface
-            )
+            modifier = Modifier.fillMaxWidth().clickable { onConnectApp("Health Connect") },
+            colors = CardDefaults.cardColors(containerColor = if(isHcConnected) ZoneGreen.copy(alpha=0.1f) else AirSurface),
+            border = if(isHcConnected) BorderStroke(1.dp, ZoneGreen) else null,
+            shape = RoundedCornerShape(16.dp)
         ) {
-            Row(
-                modifier = Modifier.padding(20.dp).fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        Icons.Rounded.Favorite,
-                        contentDescription = null,
-                        tint = if (isHealthConnectConnected) AirPrimary else AirTextSecondary,
-                        modifier = Modifier.size(32.dp)
-                    )
-                    Spacer(Modifier.width(16.dp))
-                    Column {
-                        Text(
-                            "Health Connect",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 18.sp,
-                            color = AppText
-                        )
-                        Text(
-                            if (isHealthConnectConnected) "✓ Connecté" else "Non connecté",
-                            fontSize = 14.sp,
-                            color = if (isHealthConnectConnected) AirPrimary else AirTextSecondary
-                        )
-                    }
+            Row(Modifier.padding(20.dp), verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Filled.Phone, null, tint = if(isHcConnected) ZoneGreen else AirPrimary, modifier = Modifier.size(32.dp))
+                Spacer(Modifier.width(16.dp))
+                Column(Modifier.weight(1f)) {
+                    Text("Health Connect (Recommandé)", fontWeight = FontWeight.Bold, color = AirTextPrimary, fontSize = 16.sp)
+                    Text("Synchronise Garmin, Google Fit, Samsung...", fontSize = 12.sp, color = AirTextSecondary)
                 }
-                
-                if (!isHealthConnectConnected) {
-                    Button(
-                        onClick = onConnectHealthConnect,
-                        colors = ButtonDefaults.buttonColors(containerColor = AirPrimary)
-                    ) {
-                        Text("Connecter")
-                    }
-                }
+                if(isHcConnected) Icon(Icons.Filled.CheckCircle, null, tint = ZoneGreen)
             }
         }
         
-        Spacer(Modifier.height(32.dp))
+        Spacer(Modifier.height(24.dp))
         
+        // 2. DIRECT CONNECTIONS GRID
+        Text(
+            "Autres connexions directes :", 
+            fontSize = 14.sp, 
+            fontWeight = FontWeight.Bold, 
+            color = AirTextLight, 
+            modifier = Modifier.align(Alignment.Start)
+        )
+        Spacer(Modifier.height(12.dp))
+        
+        val apps = listOf("Garmin", "Strava", "Fitbit", "Polar")
+        
+        // Grid Layout (2 columns)
+        val chunked = apps.chunked(2)
+        chunked.forEach { rowApps ->
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                rowApps.forEach { appName ->
+                    val isConnected = connectedApps[appName] == true
+                    val color = when(appName) {
+                       "Garmin" -> Color(0xFF007CC3)
+                       "Strava" -> Color(0xFFFC4C02)
+                       else -> AirTextSecondary
+                    }
+                    
+                    Card(
+                        modifier = Modifier.weight(1f).clickable { onConnectApp(appName) },
+                        colors = CardDefaults.cardColors(containerColor = AirWhite),
+                        border = if(isConnected) BorderStroke(2.dp, color.copy(alpha=0.6f)) else BorderStroke(1.dp, AirSurface),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Column(Modifier.padding(12.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(appName, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = if(isConnected) color else AirTextPrimary)
+                            }
+                            if(isConnected) {
+                                Text("Connecté", fontSize = 10.sp, color = color)
+                            }
+                        }
+                    }
+                }
+                if(rowApps.size == 1) Spacer(Modifier.weight(1f))
+            }
+            Spacer(Modifier.height(12.dp))
+        }
+
+        Spacer(Modifier.height(24.dp))
+
         // Finish Button
         Button(
             onClick = onFinish,
             modifier = Modifier.fillMaxWidth().height(56.dp),
             colors = ButtonDefaults.buttonColors(containerColor = AirPrimary),
-            enabled = isHealthConnectConnected
+            shape = RoundedCornerShape(16.dp)
         ) {
             Text(
-                if (isHealthConnectConnected) "Commencer" else "Connectez Health Connect pour continuer",
+                "TERMINER & ANALYSER",
                 fontSize = 16.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 1.sp
             )
-        }
-        
-        if (!isHealthConnectConnected) {
-            Spacer(Modifier.height(16.dp))
-            Text(
-                "Vous pourrez toujours connecter Health Connect plus tard dans les paramètres",
-                fontSize = 12.sp,
-                color = AirTextLight,
-                textAlign = TextAlign.Center
-            )
-        }
-        
-        Spacer(Modifier.height(32.dp))
-        
-        // Legacy Apps Grid
-        Text(
-            "Ou connectez directement (Legacy)",
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Bold,
-            color = AirTextSecondary
-        )
-        Spacer(Modifier.height(12.dp))
-        
-        val context = androidx.compose.ui.platform.LocalContext.current
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-             // Helper for mini buttons
-             @Composable
-             fun MiniAppBtn(name: String, color: Color, onClick: () -> Unit) {
-                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                     Button(
-                         onClick = onClick,
-                         shape = androidx.compose.foundation.shape.CircleShape,
-                         colors = ButtonDefaults.buttonColors(containerColor = color.copy(alpha=0.1f), contentColor = color),
-                         contentPadding = PaddingValues(0.dp),
-                         modifier = Modifier.size(50.dp),
-                         border = BorderStroke(1.dp, color.copy(alpha=0.3f))
-                     ) {
-                         Text(name.take(1), fontWeight = FontWeight.Bold, fontSize = 20.sp)
-                     }
-                     Spacer(Modifier.height(4.dp))
-                     Text(name, fontSize = 10.sp, color = AirTextSecondary)
-                 }
-             }
-             
-             MiniAppBtn("Strava", Color(0xFFFC4C02)) { com.orbital.run.api.StravaManager.connect(context) }
-             MiniAppBtn("Garmin", Color(0xFF007CC3)) { com.orbital.run.api.GarminManager.connect(context) }
-             MiniAppBtn("Polar", Color(0xFFE2001A)) { com.orbital.run.api.PolarManager.connect(context) }
-             MiniAppBtn("Suunto", Color(0xFF00D7D7)) { com.orbital.run.api.SuuntoManager.connect(context) }
-             MiniAppBtn("Samsung", Color(0xFF2196F3)) { 
-                 android.widget.Toast.makeText(context, "Via Health Connect", android.widget.Toast.LENGTH_SHORT).show()
-                 onConnectHealthConnect()
-             }
-             MiniAppBtn("Google", Color(0xFFEA4335)) {
-                 android.widget.Toast.makeText(context, "Via Health Connect", android.widget.Toast.LENGTH_SHORT).show()
-                 onConnectHealthConnect()
-             }
-             MiniAppBtn("Fitbit", Color(0xFF00B0B9)) {
-                 android.widget.Toast.makeText(context, "Via Google / HC", android.widget.Toast.LENGTH_SHORT).show()
-                 onConnectHealthConnect()
-             }
-             MiniAppBtn("Coros", Color(0xFF1C1C1E)) {
-                 android.widget.Toast.makeText(context, "Via Health Connect", android.widget.Toast.LENGTH_SHORT).show()
-                 onConnectHealthConnect()
-             }
-             MiniAppBtn("Withings", Color(0xFF00C5E0)) {
-                 android.widget.Toast.makeText(context, "Via Health Connect", android.widget.Toast.LENGTH_SHORT).show()
-                 onConnectHealthConnect()
-             }
         }
         Spacer(Modifier.height(24.dp))
     }

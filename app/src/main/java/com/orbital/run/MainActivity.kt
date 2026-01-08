@@ -74,7 +74,13 @@ class MainActivity : ComponentActivity() {
     }
     
     private fun handleIntent(intent: android.content.Intent?) {
-        // No external OAuth callbacks needed - Health Connect only
+        intent?.data?.let { uri ->
+            if (uri.toString().startsWith("drawrun://strava_callback")) {
+                com.orbital.run.api.StravaManager.handleAuthCallback(this, uri)
+                // Clear intent to avoid re-triggering on rotate?
+                // intent.data = null 
+            }
+        }
     }
     // Health Connect permission check
     private fun checkAndRequestPermissions() {
