@@ -22,6 +22,7 @@
     <!-- Required for Android 11+ to detect apps -->
     <queries>
         <package android:name="com.garmin.android.apps.connectmobile" />
+        <package android:name="com.strava" />
     </queries>
     
     <application

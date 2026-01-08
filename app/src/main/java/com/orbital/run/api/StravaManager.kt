@@ -25,6 +25,17 @@ object StravaManager {
                 "&scope=$scope"
 
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        
+        // Try to force opening in the Strava app if installed
+        val stravaPackage = "com.strava"
+        val pm = context.packageManager
+        try {
+            pm.getPackageInfo(stravaPackage, 0) // Check if installed
+            intent.setPackage(stravaPackage)
+        } catch (e: Exception) {
+            // Strava not installed, fallback to browser (default behavior)
+        }
+
         context.startActivity(intent)
         
         // We optimistically set it to enabled for UI feedback since we don't have the Callback Activity set up yet.
