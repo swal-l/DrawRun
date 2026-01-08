@@ -99,18 +99,27 @@ object Persistence {
     }
 
     fun loadStravaEnabled(context: Context): Boolean {
-        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        return prefs.getBoolean("strava_enabled", false)
+        return context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).getBoolean("strava_enabled", false)
     }
-
+    
     fun saveStravaAuthCode(context: Context, code: String) {
-        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        prefs.edit().putString("strava_auth_code", code).apply()
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit().putString("strava_code", code).apply()
     }
-
+    
     fun loadStravaAuthCode(context: Context): String? {
+        return context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).getString("strava_code", null)
+    }
+    
+    fun saveStravaTokens(context: Context, accessToken: String, refreshToken: String) {
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit()
+            .putString("strava_access_token", accessToken)
+            .putString("strava_refresh_token", refreshToken)
+            .apply()
+    }
+    
+    fun loadStravaTokens(context: Context): Pair<String?, String?> {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        return prefs.getString("strava_auth_code", null)
+        return Pair(prefs.getString("strava_access_token", null), prefs.getString("strava_refresh_token", null))
     }
 
     fun saveFitbitEnabled(context: Context, enabled: Boolean) {
@@ -615,8 +624,8 @@ object Persistence {
                 history.add(0, activity)
             }
         }
-        // Increase total history limit to 2000 (Approx 10 years of runs)
-        val finalHistory = history.sortedByDescending { it.date }.take(2000)
+        // Increase total history limit to 50000 as requested
+        val finalHistory = history.sortedByDescending { it.date }.take(50000)
         saveHistoryList(context, finalHistory)
     }
 

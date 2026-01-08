@@ -73,7 +73,7 @@ object StravaManager {
         val clientId = com.orbital.run.BuildConfig.STRAVA_CLIENT_ID
         val clientSecret = com.orbital.run.BuildConfig.STRAVA_CLIENT_SECRET
         
-        try {
+        return try {
             val url = java.net.URL("https://www.strava.com/oauth/token")
             val conn = url.openConnection() as java.net.HttpURLConnection
             conn.requestMethod = "POST"
@@ -82,12 +82,51 @@ object StravaManager {
             val params = "client_id=$clientId&client_secret=$clientSecret&code=$code&grant_type=authorization_code"
             conn.outputStream.write(params.toByteArray())
             
-            val response = conn.inputStream.bufferedReader().readText()
-            val json = org.json.JSONObject(response)
-            return json.getString("access_token")
+            if (conn.responseCode == 200) {
+                val response = conn.inputStream.bufferedReader().readText()
+                val json = org.json.JSONObject(response)
+                val access = json.getString("access_token")
+                val refresh = json.getString("refresh_token")
+                Persistence.saveStravaTokens(context, access, refresh)
+                access
+            } else {
+                null
+            }
         } catch (e: Exception) {
             e.printStackTrace()
-            return null
+            null
+        }
+    }
+    
+    private fun refreshToken(context: Context): String? {
+        val (_, refreshToken) = Persistence.loadStravaTokens(context)
+        if (refreshToken == null) return null
+        
+        val clientId = com.orbital.run.BuildConfig.STRAVA_CLIENT_ID
+        val clientSecret = com.orbital.run.BuildConfig.STRAVA_CLIENT_SECRET
+        
+        return try {
+            val url = java.net.URL("https://www.strava.com/oauth/token")
+            val conn = url.openConnection() as java.net.HttpURLConnection
+            conn.requestMethod = "POST"
+            conn.doOutput = true
+            
+            val params = "client_id=$clientId&client_secret=$clientSecret&refresh_token=$refreshToken&grant_type=refresh_token"
+            conn.outputStream.write(params.toByteArray())
+            
+            if (conn.responseCode == 200) {
+                val response = conn.inputStream.bufferedReader().readText()
+                val json = org.json.JSONObject(response)
+                val access = json.getString("access_token")
+                val refresh = json.getString("refresh_token") // Strava might rotate refresh tokens
+                Persistence.saveStravaTokens(context, access, refresh)
+                access
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
         }
     }
 
@@ -95,36 +134,61 @@ object StravaManager {
     fun syncActivities(context: Context): Int {
         if (!isConnected(context)) return 0
         
-        val code = Persistence.loadStravaAuthCode(context) ?: return 0
-        // Ideally we should manage refresh tokens, but for now we exchange code (if valid) or need a stored token.
-        // Simplification for prototype: If we have a code, try to get a token. 
-        // Real app should store Refresh Token in Persistence.
+        // 1. Get Valid Token
+        var (accessToken, _) = Persistence.loadStravaTokens(context)
         
-        val accessToken = exchangeToken(context, code) ?: return 0
+        // Initial Exchange (if no token but we have a code)
+        if (accessToken == null) {
+            val code = Persistence.loadStravaAuthCode(context) ?: return 0
+            accessToken = exchangeToken(context, code)
+        }
         
-        try {
-            // Fetch last 30 activities
-            val url = java.net.URL("https://www.strava.com/api/v3/athlete/activities?per_page=30")
-            val conn = url.openConnection() as java.net.HttpURLConnection
-            conn.setRequestProperty("Authorization", "Bearer $accessToken")
-            
-            if (conn.responseCode == 200) {
-                val response = conn.inputStream.bufferedReader().readText()
-                val jsonArray = org.json.JSONArray(response)
-                val activities = mutableListOf<Persistence.CompletedActivity>()
+        if (accessToken == null) return 0
+        
+        fun doFetch(token: String): Int {
+            try {
+                // Fetch last 200 activities (Strava max per page)
+                val url = java.net.URL("https://www.strava.com/api/v3/athlete/activities?per_page=200")
+                val conn = url.openConnection() as java.net.HttpURLConnection
+                conn.setRequestProperty("Authorization", "Bearer $token")
                 
-                for (i in 0 until jsonArray.length()) {
-                    val item = jsonArray.getJSONObject(i)
-                    activities.add(mapStravaActivity(item))
+                if (conn.responseCode == 401) {
+                    return -1 // Signal to refresh
                 }
                 
-                Persistence.saveHistoryBatch(context, activities)
-                return activities.size
+                if (conn.responseCode == 200) {
+                    val response = conn.inputStream.bufferedReader().readText()
+                    val jsonArray = org.json.JSONArray(response)
+                    val activities = mutableListOf<Persistence.CompletedActivity>()
+                    
+                    for (i in 0 until jsonArray.length()) {
+                        val item = jsonArray.getJSONObject(i)
+                        activities.add(mapStravaActivity(item))
+                    }
+                    
+                    Persistence.saveHistoryBatch(context, activities)
+                    return activities.size
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
+            return 0
         }
-        return 0
+
+        // 2. Attempt Fetch
+        var result = doFetch(accessToken)
+        
+        // 3. Handle Expiration (401)
+        if (result == -1) {
+            val newToken = refreshToken(context)
+            if (newToken != null) {
+                result = doFetch(newToken)
+            } else {
+                return 0 // Failed to refresh
+            }
+        }
+        
+        return if (result == -1) 0 else result
     }
 
     private fun mapStravaActivity(json: org.json.JSONObject): Persistence.CompletedActivity {
