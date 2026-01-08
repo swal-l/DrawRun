@@ -10,8 +10,8 @@ object StravaManager {
     
     fun connect(context: Context) {
         val clientId = com.orbital.run.BuildConfig.STRAVA_CLIENT_ID
-        // Use the custom scheme registered in Manifest
-        val redirectUri = "drawrun://strava_callback" 
+        // Use localhost as recommended for mobile apps to pass Strava's domain validation
+        val redirectUri = "http://localhost/strava_callback" 
         val scope = "activity:read_all,activity:write"
         
         val url = "https://www.strava.com/oauth/mobile/authorize" +
@@ -38,21 +38,23 @@ object StravaManager {
 
     /**
      * Handle the redirect from Strava.
-     * URI format: drawrun://strava_callback?state=&code=AUTHORIZATION_CODE&scope=...
+     * URI format: http://localhost/strava_callback?state=&code=AUTHORIZATION_CODE&scope=...
+     * OR drawrun://strava_callback (legacy)
      */
     fun handleAuthCallback(context: Context, uri: Uri) {
-        if (uri.toString().startsWith("drawrun://strava_callback")) {
+        // Accept both localhost (standard) and custom scheme (backup)
+        val isStravaCallback = (uri.scheme == "http" && uri.host == "localhost" && uri.path?.startsWith("/strava_callback") == true) ||
+                               (uri.toString().startsWith("drawrun://strava_callback"))
+
+        if (isStravaCallback) {
             val code = uri.getQueryParameter("code")
             val error = uri.getQueryParameter("error")
             
             if (code != null) {
-                // Success! In a real backend app, we would exchange this code for a token.
-                // For this standalone app, getting the code proves the user authorized us.
-                // We'll mark as enabled locally.
+                // Success!
                 Persistence.saveStravaEnabled(context, true)
                 android.widget.Toast.makeText(context, "Strava connecté avec succès !", android.widget.Toast.LENGTH_LONG).show()
-                
-                // Trigger a sync or refresh if needed (optional)
+                Persistence.saveStravaAuthCode(context, code) // Save code if needed for future token exchange (though we are client-side here)
             } else if (error != null) {
                 android.widget.Toast.makeText(context, "Erreur Strava: $error", android.widget.Toast.LENGTH_LONG).show()
             }

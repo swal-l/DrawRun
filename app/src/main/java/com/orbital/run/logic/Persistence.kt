@@ -103,6 +103,16 @@ object Persistence {
         return prefs.getBoolean("strava_enabled", false)
     }
 
+    fun saveStravaAuthCode(context: Context, code: String) {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        prefs.edit().putString("strava_auth_code", code).apply()
+    }
+
+    fun loadStravaAuthCode(context: Context): String? {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        return prefs.getString("strava_auth_code", null)
+    }
+
     fun saveFitbitEnabled(context: Context, enabled: Boolean) {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         prefs.edit().putBoolean("fitbit_enabled", enabled).apply()

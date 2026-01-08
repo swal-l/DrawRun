@@ -173,87 +173,101 @@ object SwimAlgorithm {
     }
 
     fun generateSession(styles: List<SwimStyle>, targetType: String, targetValue: Int, sessionType: SwimSessionType): Workout {
-        val isDistance = targetType == "Distance" // targetValue in meters
-        val targetMin = if (isDistance) (targetValue / 1000.0 * 25).toInt() else targetValue 
+        val isDistance = targetType == "Distance" 
+        // If target is Time (min), estimate distance: 2:30/100m avg pace -> 150 min -> 6000m? No.
+        // 1 hour = 60 min. 2.5 min/100m -> 2400m/hr.
+        val targetDistMeters = if (isDistance) targetValue else (targetValue / 2.5 * 100).toInt()
         
         val steps = mutableListOf<WorkoutStep>()
-        var currentMin = 0
+        var currentDist = 0
+        var currentDuration = 0
         
-        // 1. Warmup (7-12 min)
-        val warmups = listOf(
-            listOf(WorkoutStep("Échauffement: 200m souple au choix", "5 min", 1), WorkoutStep("150m (50m Dos / 50m Brasse / 50m Crawl)", "4 min", 1)),
-            listOf(WorkoutStep("Échauffement: 300m Crawl bilatéral", "6 min", 1), WorkoutStep("4x 50m Progressif 1 à 4", "5 min", 3)),
-            listOf(WorkoutStep("Échauffement: 200m Choix", "4 min", 1), WorkoutStep("200m avec Pull-bouoy (Respir 3/5/7)", "5 min", 2))
-        )
-        val warmup = warmups.random()
-        steps.addAll(warmup)
-        currentMin += warmup.sumOf { parseDuration(it.durationOrDist) }
-
-        // 2. Technique / Drills (8-15 min)
-        val drillPool = mapOf(
-            SwimStyle.CRAWL to listOf("Catch-up", "Poings fermés", "Toucher épaule", "Frôlement cuisse", "Jambes côté"),
-            SwimStyle.BREASTSTROKE to listOf("2 battements/1 bras", "Brasse avec battements crawl", "Coulées longues", "Ciseaux sur le dos"),
-            SwimStyle.BACKSTROKE to listOf("Un bras", "Roulis accentué", "Jambes sans bras", "Dos à deux bras"),
-            SwimStyle.BUTTERFLY to listOf("Ondulations côté", "Papillon 2xG, 2xD, 2x complet", "Jambes papillon profond")
-        )
+        // --- 1. WARMUP (15-20%) ---
+        val warmupDist = (targetDistMeters * 0.15).coerceIn(200.0, 600.0).roundTo(50)
+        val warmupTime = (warmupDist / 100 * 2.5).toInt() + 2 // +2 rest
+        
+        steps.add(WorkoutStep("Échauffement mixte (Nage complète / Educatif)", "${warmupDist}m", 1))
+        currentDist += warmupDist
+        currentDuration += warmupTime
+        
+        // --- 2. PRE-SET / DRILLS (10%) ---
+        // Constant 200-400m of drills
+        val drillDist = (targetDistMeters * 0.10).coerceIn(100.0, 400.0).roundTo(50)
+        val drillTime = (drillDist / 100 * 3.0).toInt() // Slower
         
         val techStyle = if (styles.contains(SwimStyle.MIXED)) SwimStyle.CRAWL else styles.random()
-        val drills = drillPool[techStyle] ?: drillPool[SwimStyle.CRAWL]!!
-        val selectedDrills = drills.shuffled().take(2)
+        steps.add(WorkoutStep("Educatifs Techique (${techStyle.label})", "${drillDist}m", 2))
+        currentDist += drillDist
+        currentDuration += drillTime
+
+        // --- 3. MAIN SET (60-65%) ---
+        val cooldownDist = (targetDistMeters * 0.10).coerceIn(100.0, 300.0).roundTo(50)
+        val mainSetTarget = targetDistMeters - currentDist - cooldownDist
         
-        steps.add(WorkoutStep("Educatif 1: 4x 50m ${selectedDrills[0]}", "6 min", 2))
-        steps.add(WorkoutStep("Educatif 2: 4x 50m ${selectedDrills[1]}", "6 min", 2))
-        currentMin += 12
+        // Round to nearest 50 or 100 depending on distance
+        val usableMainDist = (mainSetTarget / 50).toInt() * 50
+        
+        // Generate Pattern based on Session Type
+        val mainSteps = when(sessionType) {
+            SwimSessionType.ENDURANCE -> {
+                // Long reps: 200s, 400s, 800s
+                val repDist = if(usableMainDist >= 1500) 400 else 200
+                val reps = usableMainDist / repDist
+                val remainder = usableMainDist % repDist
+                
+                val subSteps = mutableListOf<WorkoutStep>()
+                if (reps > 0) subSteps.add(WorkoutStep("${reps}x ${repDist}m Régulier (Repos 20s)", "${(reps*repDist)/100*2 + reps} min", 3))
+                if (remainder > 0) subSteps.add(WorkoutStep("${remainder}m Souple", "${(remainder/100*2.5).toInt()} min", 2))
+                subSteps
+            }
+            SwimSessionType.SPEED -> {
+                // Short reps: 25s, 50s, 100s
+                val repDist = 50
+                val reps = usableMainDist / repDist
+                // Break into sets of max 8-10 reps
+                val setSize = 8
+                val sets = reps / setSize
+                val extraReps = reps % setSize
+                
+                val subSteps = mutableListOf<WorkoutStep>()
+                if (sets > 0) subSteps.add(WorkoutStep("${sets} séries de ${setSize}x ${repDist}m Vite !! (R: 45s / R_Set: 2min)", "${sets*12} min", 5))
+                if (extraReps > 0) subSteps.add(WorkoutStep("${extraReps}x ${repDist}m Progressif 1-$extraReps", "${extraReps*2} min", 4))
+                subSteps
+            }
+            SwimSessionType.TECHNIQUE -> {
+               // Medium reps with focus
+               val repDist = 100
+               val reps = usableMainDist / repDist
+               listOf(WorkoutStep("${reps}x ${repDist}m (Focus Glisse/Amplitude)", "${(reps*repDist)/100*2.5 + reps} min", 2))
+            }
+            else -> listOf(WorkoutStep("Nage continue en endurance", "${usableMainDist}m", 2))
+        }
+        steps.addAll(mainSteps)
+        currentDist += usableMainDist
+        currentDuration += (usableMainDist / 100 * 2.2).toInt() // approx
 
-        // 3. Main Set (The core)
-        data class MainSetTemplate(val name: String, val type: SwimSessionType, val style: SwimStyle, val innerSteps: List<WorkoutStep>)
-        val templates = listOf(
-            // ENDURANCE
-            MainSetTemplate("Pyramide", SwimSessionType.ENDURANCE, SwimStyle.CRAWL, listOf(WorkoutStep("Pyramide: 100-200-300-200-100m Crawl (Tempo)", "16 min", 3))),
-            MainSetTemplate("Blocs longs", SwimSessionType.ENDURANCE, SwimStyle.CRAWL, listOf(WorkoutStep("3x 400m Crawl avec Pull (Gérer fatigue)", "18 min", 3))),
-            MainSetTemplate("Mixte Endurance", SwimSessionType.ENDURANCE, SwimStyle.MIXED, listOf(WorkoutStep("400m 4N / 400m Crawl / 400m Spé", "22 min", 3))),
-            
-            // SPEED
-            MainSetTemplate("Sprint Lactique", SwimSessionType.SPEED, SwimStyle.CRAWL, listOf(WorkoutStep("12x 50m Crawl MAX (Repos 45s)", "15 min", 5))),
-            MainSetTemplate("Vitesse Mixte", SwimSessionType.SPEED, SwimStyle.MIXED, listOf(WorkoutStep("16x 25m Vite (Ordre IM)", "12 min", 5))),
-            MainSetTemplate("Puissance", SwimSessionType.SPEED, SwimStyle.BUTTERFLY, listOf(WorkoutStep("8x 25m Papillon dynamique", "8 min", 5))),
-
-            // TECHNIQUE
-            MainSetTemplate("Distance Efficiency", SwimSessionType.TECHNIQUE, SwimStyle.CRAWL, listOf(WorkoutStep("10x 100m Crawl (Focus sur le nombre de coups de bras)", "18 min", 2))),
-            MainSetTemplate("Amplitude Brasse", SwimSessionType.TECHNIQUE, SwimStyle.BREASTSTROKE, listOf(WorkoutStep("5x 100m Brasse (Glisse maximale)", "15 min", 2)))
-        )
-
-        val validTemplates = templates.filter { 
-            (styles.contains(SwimStyle.MIXED) || styles.contains(it.style)) && (it.type == sessionType)
-        }.ifEmpty { 
-            templates.filter { it.type == sessionType } 
-        }.ifEmpty { templates }
-
-        val mainSet = validTemplates.random()
-        steps.addAll(mainSet.innerSteps)
-        currentMin += mainSet.innerSteps.sumOf { parseDuration(it.durationOrDist) }
-
-        // Fill remaining time if needed
-        if (currentMin < targetMin - 8) {
-            steps.add(WorkoutStep("Série de jambes (avec planche): 200m", "6 min", 4))
-            currentMin += 6
+        // --- 4. COOLDOWN ---
+        val finalCooldown = targetDistMeters - currentDist // Absorb rounding errors
+        if (finalCooldown > 0) {
+             val cdTime = (finalCooldown / 100 * 2.5).toInt()
+             steps.add(WorkoutStep("Retour au calme (Dos double bras / Brasse)", "${finalCooldown}m", 1))
+             currentDist += finalCooldown
+             currentDuration += cdTime
         }
 
-        // 4. Cooldown
-        steps.add(WorkoutStep("Retour au calme: 100m Dos/Brasse", "4 min", 1))
-        steps.add(WorkoutStep("100m Nage souple", "3 min", 1))
-        currentMin += 7
-
-        val finalTitle = "Natation ${sessionType.label} - ${mainSet.name}"
-        val totalDist = steps.sumOf { parseDist(it.description) }
-
+        val finalTitle = "Natation ${sessionType.label} ($currentDist m)"
+        
         return Workout(
             type = WorkoutType.SWIMMING,
             title = finalTitle,
-            totalDistanceKm = totalDist,
-            totalDurationMin = currentMin,
+            totalDistanceKm = currentDist / 1000.0,
+            totalDurationMin = currentDuration,
             steps = steps
         )
+    }
+
+    private fun Double.roundTo(step: Int): Int {
+        return (this / step).roundToInt() * step
     }
 }
 
