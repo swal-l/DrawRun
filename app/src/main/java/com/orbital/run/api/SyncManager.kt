@@ -38,10 +38,14 @@ object SyncManager {
             totalNew += saveActivitiesIfNew(context, withingsActivities, "WITHINGS")
         }
         
-        // 4. Strava / Garmin / Suunto / Polar (Existing or future)
-        // ...
+        // 4. Strava Sync
+        if (com.orbital.run.api.StravaManager.isConnected(context)) {
+            val stravaCount = com.orbital.run.api.StravaManager.syncActivities(context)
+            totalNew += stravaCount
+            android.util.Log.d("SYNC", "Strava: $stravaCount activiés récupérées")
+        }
         
-        android.util.Log.d("SYNC", "=== FIN SYNC: $totalNew nouvelles activités ===")
+        android.util.Log.d("SYNC", "=== FIN SYNC: $totalNew activités traitées ===")
         return totalNew
     }
 
@@ -55,42 +59,53 @@ object SyncManager {
             // Save batch immediately
             val savedCount = saveActivitiesIfNew(context, batch, "HEALTH_CONNECT")
             totalSaved += savedCount
-            // Trigger partial UI update if needed? (Persistence handles file IO, UI needs to reload)
         }
         
         return@withContext totalSaved
     }
     
+    // Core of "The Cake": Merging Data
     private fun saveActivitiesIfNew(context: Context, activities: List<Persistence.CompletedActivity>, source: String): Int {
-        val history = Persistence.loadHistory(context)
-        val toSave = mutableListOf<Persistence.CompletedActivity>()
+        val history = Persistence.loadHistory(context).toMutableList()
+        var newCount = 0
+        var mergedCount = 0
         
         activities.forEach { act ->
-            // Update source if empty (HC usually sets it, but direct managers might not)
-             // simplified logic: if generic ID, append source to avoid collision
-            
             if (Persistence.isBlacklisted(context, act.id)) return@forEach
             
-            // Deduplication Logic
-            val existing = history.find { 
+            // Deduplication Logic: Find existing matching activity
+            val index = history.indexOfFirst { 
                 it.externalId == act.externalId || 
                 it.id == act.id ||
                 (kotlin.math.abs(it.date - act.date) < 300000 && // 5 min window
                  kotlin.math.abs(it.distanceKm - act.distanceKm) < 0.2) // 200m diff
             }
             
-            if (existing == null) {
-                toSave.add(act)
+            if (index == -1) {
+                // New Activity
+                history.add(0, act)
+                newCount++
                 android.util.Log.d("SYNC", "  → Nouvelle ($source): ${act.title}")
             } else {
-                android.util.Log.d("SYNC", "  ↔ Doublon détecté ($source vs Existant): ${act.title}")
+                // Merge Data (The Cake)
+                // Existing activity + New Data -> Richer Activity
+                val existing = history[index]
+                val merged = Persistence.mergeActivities(existing, act)
+                
+                if (merged != existing) {
+                    history[index] = merged
+                    mergedCount++
+                    android.util.Log.d("SYNC", "  ⊕ Fusion ($source): ${act.title}")
+                }
             }
         }
         
-        if (toSave.isNotEmpty()) {
-            Persistence.saveHistoryBatch(context, toSave)
+        if (newCount > 0 || mergedCount > 0) {
+            // Sort by date descending
+            history.sortByDescending { it.date }
+            Persistence.saveHistoryList(context, history) // Assuming this is public or we use saveHistoryBatch
         }
-        return toSave.size
+        return newCount // Return new count for UI notification
     }
 
     /**

@@ -68,4 +68,103 @@ object StravaManager {
     fun isConnected(context: Context): Boolean {
         return Persistence.loadStravaEnabled(context)
     }
+    // --- Token Management ---
+    private fun exchangeToken(context: Context, code: String): String? {
+        val clientId = com.orbital.run.BuildConfig.STRAVA_CLIENT_ID
+        val clientSecret = com.orbital.run.BuildConfig.STRAVA_CLIENT_SECRET
+        
+        try {
+            val url = java.net.URL("https://www.strava.com/oauth/token")
+            val conn = url.openConnection() as java.net.HttpURLConnection
+            conn.requestMethod = "POST"
+            conn.doOutput = true
+            
+            val params = "client_id=$clientId&client_secret=$clientSecret&code=$code&grant_type=authorization_code"
+            conn.outputStream.write(params.toByteArray())
+            
+            val response = conn.inputStream.bufferedReader().readText()
+            val json = org.json.JSONObject(response)
+            return json.getString("access_token")
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return null
+        }
+    }
+
+    // --- Sync Logic ---
+    fun syncActivities(context: Context): Int {
+        if (!isConnected(context)) return 0
+        
+        val code = Persistence.loadStravaAuthCode(context) ?: return 0
+        // Ideally we should manage refresh tokens, but for now we exchange code (if valid) or need a stored token.
+        // Simplification for prototype: If we have a code, try to get a token. 
+        // Real app should store Refresh Token in Persistence.
+        
+        val accessToken = exchangeToken(context, code) ?: return 0
+        
+        try {
+            // Fetch last 30 activities
+            val url = java.net.URL("https://www.strava.com/api/v3/athlete/activities?per_page=30")
+            val conn = url.openConnection() as java.net.HttpURLConnection
+            conn.setRequestProperty("Authorization", "Bearer $accessToken")
+            
+            if (conn.responseCode == 200) {
+                val response = conn.inputStream.bufferedReader().readText()
+                val jsonArray = org.json.JSONArray(response)
+                val activities = mutableListOf<Persistence.CompletedActivity>()
+                
+                for (i in 0 until jsonArray.length()) {
+                    val item = jsonArray.getJSONObject(i)
+                    activities.add(mapStravaActivity(item))
+                }
+                
+                Persistence.saveHistoryBatch(context, activities)
+                return activities.size
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return 0
+    }
+
+    private fun mapStravaActivity(json: org.json.JSONObject): Persistence.CompletedActivity {
+        val id = json.getLong("id").toString()
+        val name = json.optString("name", "Activité Strava")
+        val distance = json.optDouble("distance", 0.0) / 1000.0
+        val movingTime = json.optInt("moving_time", 0) / 60
+        val typeStr = json.optString("type", "Run")
+        
+        // Date parsing (ISO 8601)
+        val dateStr = json.optString("start_date")
+        // Simple approximation or verify needed format
+        val date = try {
+            java.time.Instant.parse(dateStr).toEpochMilli()
+        } catch (e: Exception) { System.currentTimeMillis() }
+
+        val type = when {
+            typeStr.contains("Swim", true) -> com.orbital.run.logic.WorkoutType.SWIMMING
+            typeStr.contains("Ride", true) || typeStr.contains("Cycle", true) -> com.orbital.run.logic.WorkoutType.CYCLING
+            else -> com.orbital.run.logic.WorkoutType.RUNNING
+        }
+        
+        val map = json.optJSONObject("map")
+        val polyline = map?.optString("summary_polyline")
+
+        return Persistence.CompletedActivity(
+            id = "strava_$id", // Prefix to avoid collision unless we merge by externalId
+            date = date,
+            durationMin = movingTime,
+            distanceKm = distance,
+            type = type,
+            title = name,
+            source = "Strava",
+            externalId = id,
+            summaryPolyline = polyline,
+            // Additional Metrics
+            avgHeartRate = json.optDouble("average_heartrate").takeIf { !it.isNaN() }?.toInt(),
+            maxHeartRate = json.optDouble("max_heartrate").takeIf { !it.isNaN() }?.toInt(),
+            elevationGain = json.optDouble("total_elevation_gain").toInt(),
+            avgWatts = json.optDouble("average_watts").takeIf { !it.isNaN() }?.toInt()
+        )
+    }
 }

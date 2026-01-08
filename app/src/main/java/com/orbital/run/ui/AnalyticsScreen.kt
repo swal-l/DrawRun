@@ -182,7 +182,7 @@ fun AnalyticsScreen(
                         when(selectedFilter) {
                             "Course" -> it.type == WorkoutType.RUNNING
                             "Natation" -> it.type == WorkoutType.SWIMMING
-                            else -> true
+                            else -> it.type == WorkoutType.RUNNING || it.type == WorkoutType.SWIMMING // "Tout" = Only Run & Swim
                         }
                     }
 
@@ -496,9 +496,25 @@ fun ActivityRow(activity: Persistence.CompletedActivity, onClick: () -> Unit) {
     ) {
         Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
             Box(
-                modifier = Modifier.size(48.dp).background(if(activity.type == WorkoutType.SWIMMING) AirSecondary.copy(alpha=0.1f) else AirPrimary.copy(alpha=0.1f), RoundedCornerShape(14.dp)),
+                modifier = Modifier.size(48.dp).background(
+                    when(activity.type) {
+                        WorkoutType.SWIMMING -> AirSecondary.copy(alpha=0.1f)
+                        WorkoutType.CYCLING -> Color(0xFFE91E63).copy(alpha=0.1f)
+                        else -> AirPrimary.copy(alpha=0.1f)
+                    }, 
+                    RoundedCornerShape(14.dp)
+                ),
                 contentAlignment = Alignment.Center
-            ) { Text(if(activity.type == WorkoutType.SWIMMING) "🏊" else "🏃", fontSize = 22.sp) }
+            ) { 
+                Text(
+                    when(activity.type) {
+                        WorkoutType.SWIMMING -> "🏊"
+                        WorkoutType.CYCLING -> "🚴"
+                        else -> "🏃"
+                    }, 
+                    fontSize = 22.sp
+                ) 
+            }
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(activity.title, fontWeight = FontWeight.Bold, color = AirTextPrimary, fontSize = 15.sp)

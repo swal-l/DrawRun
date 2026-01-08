@@ -620,7 +620,7 @@ object Persistence {
         saveHistoryList(context, finalHistory)
     }
 
-    private fun saveHistoryList(context: Context, list: List<CompletedActivity>) {
+    fun saveHistoryList(context: Context, list: List<CompletedActivity>) {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val jsonArray = org.json.JSONArray()
         

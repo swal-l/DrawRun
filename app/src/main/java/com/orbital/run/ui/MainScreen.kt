@@ -153,14 +153,12 @@ fun MainScreen() {
     LaunchedEffect(onboardingComplete) {
         if (onboardingComplete) {
             withContext(Dispatchers.IO) {
-                // Trigger sync if Health Connect is available
-                if (com.orbital.run.api.HealthConnectManager.hasAllPermissionsSync(context)) {
-                    val count = com.orbital.run.api.SyncManager.syncAll(context)
-                    if (count > 0) {
-                        Persistence.recalculateRecords(context)
-                        withContext(Dispatchers.Main) {
-                            dataVersion++
-                        }
+                // Trigger generic sync (Manager handles checks for HC, Strava, etc.)
+                val count = com.orbital.run.api.SyncManager.syncAll(context)
+                if (count > 0) {
+                    Persistence.recalculateRecords(context)
+                    withContext(Dispatchers.Main) {
+                        dataVersion++
                     }
                 }
             }
