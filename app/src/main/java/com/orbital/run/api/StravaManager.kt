@@ -148,7 +148,7 @@ object StravaManager {
     }
 
     // --- Sync Logic ---
-    fun syncActivities(context: Context): Int {
+    fun syncActivities(context: Context, daysBack: Int = 30): Int {
         if (!isConnected(context)) return 0
         
         // 1. Get Valid Token
@@ -162,10 +162,19 @@ object StravaManager {
         
         if (accessToken == null) return 0
         
-        fun doFetch(token: String): Int {
+        val afterTime = (System.currentTimeMillis() - (daysBack * 24L * 60 * 60 * 1000)) / 1000
+        var page = 1
+        var totalFetched = 0
+        val maxPages = 50 // Safety limit (10,000 activities)
+        
+        fun doFetch(token: String, p: Int): Int {
             try {
-                // Fetch last 200 activities (Strava max per page)
-                val url = java.net.URL("https://www.strava.com/api/v3/athlete/activities?per_page=200")
+                // Fetch 200 activities per page
+                // FILTER: after=TIMESTAMP to only get relevant history
+                val urlStr = "https://www.strava.com/api/v3/athlete/activities?per_page=200&page=$p&after=$afterTime"
+                android.util.Log.d("STRAVA_SYNC", "Fetching page $p... (After: $afterTime)")
+                
+                val url = java.net.URL(urlStr)
                 val conn = url.openConnection() as java.net.HttpURLConnection
                 conn.setRequestProperty("Authorization", "Bearer $token")
                 
@@ -176,6 +185,9 @@ object StravaManager {
                 if (conn.responseCode == 200) {
                     val response = conn.inputStream.bufferedReader().readText()
                     val jsonArray = org.json.JSONArray(response)
+                    
+                    if (jsonArray.length() == 0) return 0 // End of list
+                    
                     val activities = mutableListOf<Persistence.CompletedActivity>()
                     
                     for (i in 0 until jsonArray.length()) {
@@ -192,20 +204,30 @@ object StravaManager {
             return 0
         }
 
-        // 2. Attempt Fetch
-        var result = doFetch(accessToken)
-        
-        // 3. Handle Expiration (401)
-        if (result == -1) {
-            val newToken = refreshToken(context)
-            if (newToken != null) {
-                result = doFetch(newToken)
-            } else {
-                return 0 // Failed to refresh
+        // 2. Loop Pages
+        while (page <= maxPages) {
+            var count = doFetch(accessToken!!, page)
+            
+            // 3. Handle Expiration (401)
+            if (count == -1) {
+                val newToken = refreshToken(context)
+                if (newToken != null) {
+                    accessToken = newToken
+                    count = doFetch(newToken, page)
+                } else {
+                    break // Failed to refresh
+                }
             }
+            
+            if (count <= 0) break // No more activities or error
+            
+            totalFetched += count
+            if (count < 200) break // Last page was partial
+            
+            page++
         }
         
-        return if (result == -1) 0 else result
+        return totalFetched
     }
 
     private fun mapStravaActivity(json: org.json.JSONObject): Persistence.CompletedActivity {

@@ -40,7 +40,8 @@ object SyncManager {
         
         // 4. Strava Sync
         if (com.orbital.run.api.StravaManager.isConnected(context)) {
-            val stravaCount = com.orbital.run.api.StravaManager.syncActivities(context)
+            val daysBack = com.orbital.run.logic.SyncPreferences.getDaysBack(context)
+            val stravaCount = com.orbital.run.api.StravaManager.syncActivities(context, daysBack)
             totalNew += stravaCount
             android.util.Log.d("SYNC", "Strava: $stravaCount activiés récupérées")
         }
@@ -74,11 +75,23 @@ object SyncManager {
             if (Persistence.isBlacklisted(context, act.id)) return@forEach
             
             // Deduplication Logic: Find existing matching activity
+            // RELAXED MATCHING (V2): 
+            // - Window: 30 minutes (was 5) to account for "Elapsed" vs "Moving" start times
+            // - Distance: 500m or 10% tolerance (GPS drift + auto-pause differences)
             val index = history.indexOfFirst { 
-                it.externalId == act.externalId || 
-                it.id == act.id ||
-                (kotlin.math.abs(it.date - act.date) < 300000 && // 5 min window
-                 kotlin.math.abs(it.distanceKm - act.distanceKm) < 0.2) // 200m diff
+                if (it.externalId == act.externalId || it.id == act.id) return@indexOfFirst true
+                
+                val timeDiff = kotlin.math.abs(it.date - act.date)
+                val distDiff = kotlin.math.abs(it.distanceKm - act.distanceKm)
+                
+                val isTimeClose = timeDiff < 30 * 60 * 1000 // 30 min window
+                val isDistClose = distDiff < 0.5 || (act.distanceKm > 0 && distDiff / act.distanceKm < 0.1) // 500m or 10%
+                
+                // Extra check: If time is close and duration is also very similar, it's a match even if distance is off (e.g. indoor mode)
+                val durDiff = kotlin.math.abs(it.durationMin - act.durationMin)
+                val isDurationClose = durDiff < 5 
+                
+                isTimeClose && (isDistClose || isDurationClose)
             }
             
             if (index == -1) {
