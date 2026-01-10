@@ -88,20 +88,14 @@ fun MapLibreHero(
                         mapLibreMap = map
                         
                         // Use OpenFreeMap Liberty Style (Free, No Key, Nice OSM Data)
-                        map.setStyle("https://tiles.openfreemap.org/styles/liberty") { style ->
+                        map.setStyle("asset://liberty_3d.json") { style ->
                             
                             // 1. Setup 3D Territory (Relief/Topography)
-                            // DISABLED: 3D Terrain build errors (Unresolved reference: Terrain)
-                            // Will restore in future update.
+                            // Using local JSON style with Terrain embedded to bypass API issues
+                            // See assets/liberty_3d.json
                             /*
-                            try {
-                                val terrainSourceId = "aws-terrain-source"
-                                // ... source setup ...
-                                // style.addSource(terrainSource)
-                                // style.terrain = terrain
-                            } catch (e: Exception) {
-                                android.util.Log.e("MAP_TERRAIN", "Error setting up terrain", e)
-                            }
+                             The style is loaded via setStyle("asset://liberty_3d.json") below.
+                             No manual Java setup needed for terrain!
                             */
                             
                             // 2. Draw Track Polyline
