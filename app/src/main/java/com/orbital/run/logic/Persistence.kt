@@ -617,10 +617,37 @@ object Persistence {
         if (activities.isEmpty()) return
         val history = loadHistory(context).toMutableList()
         activities.forEach { activity ->
-            val index = history.indexOfFirst { it.id == activity.id || (activity.externalId != null && it.externalId == activity.externalId) }
+            // GLOBAL DEDUPLICATION LOGIC (V3)
+            // Can be called by StravaManager, HealthConnectManager, etc.
+            val index = history.indexOfFirst { 
+                // 1. Strict ID Match
+                if (it.id == activity.id || (activity.externalId != null && it.externalId == activity.externalId)) return@indexOfFirst true
+                
+                // 2. Smart Time Match
+                val timeDiff = kotlin.math.abs(it.date - activity.date)
+                
+                // Case A: Strong Time Match (< 5 mins)
+                // Different sources for the same real-world event
+                if (timeDiff < 5 * 60 * 1000) return@indexOfFirst true
+                
+                // Case B: Weak Match (5-30 mins) with Distance Check
+                if (timeDiff < 30 * 60 * 1000) {
+                     val distDiff = kotlin.math.abs(it.distanceKm - activity.distanceKm)
+                     val isDistClose = distDiff < 0.5 || (activity.distanceKm > 0 && distDiff / activity.distanceKm < 0.1)
+                     
+                     val durDiff = kotlin.math.abs(it.durationMin - activity.durationMin)
+                     val isDurationClose = durDiff < 5 
+                     
+                     return@indexOfFirst (isDistClose || isDurationClose)
+                }
+                false
+            }
+
             if (index >= 0) {
+                // Merge with existing
                 history[index] = mergeActivities(history[index], activity)
             } else {
+                // Add new
                 history.add(0, activity)
             }
         }
