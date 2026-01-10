@@ -4,10 +4,14 @@
   "downloadUrl": "https://swal-l.github.io/DrawRun/DrawRun_v3.43.apk",
   "releaseNotes": {
     "features": [
-      "Améliorations diverses et optimisations"
+      "Édition du titre de l'activité",
+      "Analyses HRV (Variabilité Cardiaque)",
+      "Carte 3D (Terrain)"
     ],
     "fixes": [
-      "Corrections mineures de stabilité"
+      "Correction duplication graphiques Volume",
+      "Affichage Cadence (PPM)",
+      "Logs de natation dynamiques"
     ]
   }
 }
