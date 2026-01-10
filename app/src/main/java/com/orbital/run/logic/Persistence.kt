@@ -1343,16 +1343,18 @@ object Persistence {
         val secondary = if (priorityOther) base else other
 
         return primary.copy(
-            // Detailed data merging
+            // Detailed data merging - Additive Strategy (Keep Non-Null)
             avgHeartRate = primary.avgHeartRate ?: secondary.avgHeartRate,
             maxHeartRate = primary.maxHeartRate ?: secondary.maxHeartRate,
             calories = primary.calories ?: secondary.calories,
             elevationGain = primary.elevationGain ?: secondary.elevationGain,
             avgWatts = primary.avgWatts ?: secondary.avgWatts,
+            avgCadence = primary.avgCadence ?: secondary.avgCadence, // Added
             
             // Keep the best summary polyline
             summaryPolyline = primary.summaryPolyline ?: secondary.summaryPolyline,
             
+            // Samples: Keep the one with MORE data points
             heartRateSamples = if (primary.heartRateSamples.size > secondary.heartRateSamples.size) 
                                primary.heartRateSamples else secondary.heartRateSamples,
             
@@ -1367,8 +1369,15 @@ object Persistence {
 
             elevationSamples = if (primary.elevationSamples.size > secondary.elevationSamples.size)
                                primary.elevationSamples else secondary.elevationSamples,
-
+                               
+            // Important: Splits might be better in secondary (e.g. Strava splits vs partial HC splits)
             splits = if (primary.splits.size > secondary.splits.size) primary.splits else secondary.splits,
+            
+            // Merge Scientific Metrics (Additive)
+            efficiencyFactor = primary.efficiencyFactor ?: secondary.efficiencyFactor,
+            runningEffectiveness = primary.runningEffectiveness ?: secondary.runningEffectiveness,
+            avgGctMs = primary.avgGctMs ?: secondary.avgGctMs,
+            avgRespiratoryRate = primary.avgRespiratoryRate ?: secondary.avgRespiratoryRate,
             
             // Source tracking
             source = if (primary.source == secondary.source) primary.source else "${primary.source} + ${secondary.source}"
