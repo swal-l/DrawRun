@@ -78,8 +78,12 @@ class AnalysisViewModel(application: Application) : AndroidViewModel(application
             val points = AdvancedAnalytics.calculateDailyPMC(history)
             _pmcPoints.value = points
             
-            val breakdown = history.groupBy { it.type }
-                .mapValues { it.value.sumOf { act -> act.distanceKm } }
+            // Group by type and sum distance
+            // Use groupingBy to be efficient and ensure no duplicates in Map keys
+            val breakdown = history
+                .groupingBy { it.type }
+                .fold(0.0) { sum, element -> sum + element.distanceKm }
+            
             _sportBreakdown.value = breakdown
             
             // COACH INSIGHT ENGINE

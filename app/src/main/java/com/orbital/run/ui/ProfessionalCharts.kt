@@ -1896,6 +1896,20 @@ fun HeartRateDerivativeChart(samples: List<Persistence.HeartRateSample>, state: 
         val avgDerivative = derivatives.map { it.second }.average()
         
         Column {
+            // Context Header
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                 Icon(Icons.Rounded.Info, null, modifier = Modifier.size(14.dp), tint = AirTextLight)
+                 Spacer(Modifier.width(6.dp))
+                 Text(
+                     "Indique la vitesse d'adaptation du cœur. Une variation élevée (>1.5) signifie une forte réactivité ou fatigue.", 
+                     fontSize = 10.sp, 
+                     color = AirTextSecondary,
+                     lineHeight = 14.sp
+                 )
+            }
             StreamCanvas(
                 height = chartHeight,
                 _dataSize = derivatives.size,

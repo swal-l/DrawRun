@@ -422,7 +422,9 @@ fun SecondaryDataGrid(activity: Persistence.CompletedActivity, trainingPlan: com
         Spacer(Modifier.height(10.dp))
         
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            DataGridItem("Cadence", "${activity.avgCadence ?: "--"}", "SPM", Icons.Rounded.DirectionsRun, AirSecondary, Modifier.weight(1f)) { onMetricClick("CADENCE") }
+            val rawCadence = activity.avgCadence
+            val displayCadence = if (rawCadence != null && rawCadence < 120) rawCadence * 2 else rawCadence
+            DataGridItem("Cadence", "${displayCadence?.toInt() ?: "--"}", "PPM", Icons.Rounded.DirectionsRun, AirSecondary, Modifier.weight(1f)) { onMetricClick("CADENCE") }
             
             if (activity.type == WorkoutType.SWIMMING && activity.swolf != null) {
                 DataGridItem("SWOLF", "${activity.swolf}", "score", Icons.Rounded.Speed, AirAccent, Modifier.weight(1f))
