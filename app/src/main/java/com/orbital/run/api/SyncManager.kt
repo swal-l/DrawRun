@@ -75,23 +75,30 @@ object SyncManager {
             if (Persistence.isBlacklisted(context, act.id)) return@forEach
             
             // Deduplication Logic: Find existing matching activity
-            // RELAXED MATCHING (V2): 
-            // - Window: 30 minutes (was 5) to account for "Elapsed" vs "Moving" start times
-            // - Distance: 500m or 10% tolerance (GPS drift + auto-pause differences)
+            // REFINED MATCHING (V3):
+            // 1. Strong Match: Within 5 minutes -> ALWAYS MATCH (ignore distance/duration diffs caused by GPS/Sensor errors)
+            // 2. Weak Match: Within 30 minutes -> Check distance/duration to avoid merging sequential activities
             val index = history.indexOfFirst { 
                 if (it.externalId == act.externalId || it.id == act.id) return@indexOfFirst true
                 
                 val timeDiff = kotlin.math.abs(it.date - act.date)
-                val distDiff = kotlin.math.abs(it.distanceKm - act.distanceKm)
                 
-                val isTimeClose = timeDiff < 30 * 60 * 1000 // 30 min window
-                val isDistClose = distDiff < 0.5 || (act.distanceKm > 0 && distDiff / act.distanceKm < 0.1) // 500m or 10%
+                // Case 1: Strong Time Match (< 5 mins)
+                // We assume user cannot do two different activities within 5 mins start difference that aren't the same real-world event
+                if (timeDiff < 5 * 60 * 1000) return@indexOfFirst true
                 
-                // Extra check: If time is close and duration is also very similar, it's a match even if distance is off (e.g. indoor mode)
-                val durDiff = kotlin.math.abs(it.durationMin - act.durationMin)
-                val isDurationClose = durDiff < 5 
+                // Case 2: Weak Match (5-30 mins) - e.g. "Elapsed" vs "Moving" time discrepancies
+                if (timeDiff < 30 * 60 * 1000) {
+                     val distDiff = kotlin.math.abs(it.distanceKm - act.distanceKm)
+                     val isDistClose = distDiff < 0.5 || (act.distanceKm > 0 && distDiff / act.distanceKm < 0.1)
+                     
+                     val durDiff = kotlin.math.abs(it.durationMin - act.durationMin)
+                     val isDurationClose = durDiff < 5 
+                     
+                     return@indexOfFirst (isDistClose || isDurationClose)
+                }
                 
-                isTimeClose && (isDistClose || isDurationClose)
+                false
             }
             
             if (index == -1) {
