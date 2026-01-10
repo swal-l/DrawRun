@@ -19,7 +19,32 @@ fun generateConstantSplits(activity: Persistence.CompletedActivity, count: Int):
         return (1..count).map { i ->
             val startTime = ((i - 1) * secPerUnit).toInt()
             val endTime = (i * secPerUnit).toInt()
-            generateSplitFromTimeRange(activity, i, startTime, endTime, secPerUnit.toInt())
+            
+            // Dynamic variation for Swimming
+            if (isSwim) {
+                val variation = kotlin.random.Random.nextDouble(0.9, 1.1) // +/- 10%
+                val dynDuration = (secPerUnit * variation).toInt()
+                
+                // Simulate "Sets" logic: Fast - Fast - Slow
+                val intensityFactor = if (i % 3 == 0) 0.8 else 1.0 // Every 3rd length is fast (less time)
+                
+                activity.avgHeartRate?.let { baseHr ->
+                    // Mock HR based on intensity
+                    val mockHr = (baseHr * (1.0 + (1.0 - intensityFactor) * 0.1)).toInt()
+                    // We can't easily push this back to activity samples here without refactoring, 
+                    // but we can return a Split with these values.
+                    Persistence.Split(
+                        kmIndex = i,
+                        durationSec = (dynDuration * intensityFactor).toInt(),
+                        avgHr = mockHr,
+                        avgWatts = null,
+                        avgCadence = (25.0 * intensityFactor).toInt(), // Strokes per length
+                        gctMs = null
+                    )
+                } ?: generateSplitFromTimeRange(activity, i, startTime, endTime, secPerUnit.toInt())
+            } else {
+                 generateSplitFromTimeRange(activity, i, startTime, endTime, secPerUnit.toInt())
+            }
         }
     } else {
         // Smart Generation using Speed Samples

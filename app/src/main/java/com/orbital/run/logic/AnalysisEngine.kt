@@ -497,6 +497,23 @@ object AnalysisEngine {
             } else if (hr > 170) {
                  list.add(Insight("Haute Intensité", "FC Moy $hr bpm. Séance très sollicitante pour le cœur (Zone 4/5).", Icons.Default.Favorite, adviceType = AdviceType.PPG_CIRCUIT))
             }
+            
+            // New dHR/dt Analysis (HRV Proxy)
+            if (a.heartRateSamples.size > 60) {
+                // Calculate average absolute change per second
+                val derivatives = a.heartRateSamples.zipWithNext { p1, p2 ->
+                     val dt = (p2.timeOffset - p1.timeOffset).coerceAtLeast(1)
+                     kotlin.math.abs(p2.bpm - p1.bpm).toDouble() / dt
+                }
+                val avgDerivative = derivatives.average()
+                
+                if (avgDerivative > 1.5) {
+                    list.add(Insight("Variabilité Cardiaque Élevée", "Votre cœur réagit très vite (dHR/dt > 1.5). Signe de fatigue ou d'intervalles très courts.", Icons.Default.Warning, isPositive = false))
+                } else if (avgDerivative < 0.3) {
+                    list.add(Insight("Cœur Métronomique", "Variation cardiaque très faible. Excellent pour l'endurance régulière.", Icons.Default.Favorite, isPositive = true))
+                }
+            }
+            
             Unit
         }
     }

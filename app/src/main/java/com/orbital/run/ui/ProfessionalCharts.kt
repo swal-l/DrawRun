@@ -1873,7 +1873,7 @@ fun HeartRateDerivativeChart(samples: List<Persistence.HeartRateSample>, state: 
     if (samples.size < 2) return
     
     ChartContainer("Dérivée Cardiaque (dHR/dt)") { isExpanded ->
-        val chartHeight = if (isExpanded) 300.dp else 180.dp
+        val chartHeight = if (isExpanded) 240.dp else 120.dp
         
         // Calculate derivatives (BPM change per second)
         val derivatives = remember(samples) {

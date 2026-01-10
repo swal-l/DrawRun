@@ -108,7 +108,8 @@ fun ActivityDetailScreen(
                                 text = activity.title,
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold,
-                                color = AirTextPrimary
+                                color = AirTextPrimary,
+                                modifier = Modifier.clickable { isEditing = true }
                             )
                         }
                         Text(

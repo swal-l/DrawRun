@@ -467,7 +467,15 @@ fun SportBreakdownSection(breakdown: Map<WorkoutType, Double>) {
                 val percent = (dist / total).toFloat()
                 Column(Modifier.padding(bottom = 12.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(if(type == WorkoutType.SWIMMING) "🏊 Natation" else "🏃 Course", fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
+                        Text(
+                            when(type) {
+                                WorkoutType.SWIMMING -> "🏊 Natation"
+                                WorkoutType.CYCLING -> "🚴 Cyclisme"
+                                WorkoutType.RUNNING -> "🏃 Course"
+                                else -> "🏃 ${type.name.lowercase().replaceFirstChar { it.uppercase() }}"
+                            }, 
+                            fontSize = 13.sp, fontWeight = FontWeight.SemiBold
+                        )
                         Spacer(Modifier.weight(1f))
                         Text(String.format("%.1f km", dist), fontSize = 13.sp, color = AirTextSecondary, fontWeight = FontWeight.Bold)
                     }
@@ -475,7 +483,11 @@ fun SportBreakdownSection(breakdown: Map<WorkoutType, Double>) {
                     LinearProgressIndicator(
                         progress = percent,
                         modifier = Modifier.fillMaxWidth().height(8.dp).clip(RoundedCornerShape(4.dp)),
-                        color = if(type == WorkoutType.SWIMMING) AirSecondary else AirPrimary,
+                        color = when(type) {
+                            WorkoutType.SWIMMING -> AirSecondary
+                            WorkoutType.CYCLING -> Color(0xFFE91E63)
+                            else -> AirPrimary
+                        },
                         trackColor = Color.White
                     )
                 }
