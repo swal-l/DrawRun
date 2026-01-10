@@ -26,15 +26,15 @@ if ($content -match 'versionCode\s*=\s*(\d+)') {
 }
 
 # Increment versionName
-if ($content -match 'versionName\s*=\s*"([\d\.]+)"') {
-    $currentName = $matches[1]
-    $parts = $currentName.Split('.')
-    $lastIndex = $parts.Length - 1
-    $parts[$lastIndex] = [int]$parts[$lastIndex] + 1
-    $newName = $parts -join '.'
-    $content = $content -replace "versionName\s*=\s*""$currentName""", "versionName = ""$newName"""
-    Write-Host "  Name: $currentName -> $newName"
-}
+# if ($content -match 'versionName\s*=\s*"([\d\.]+)"') {
+#     $currentName = $matches[1]
+#     $parts = $currentName.Split('.')
+#     $lastIndex = $parts.Length - 1
+#     $parts[$lastIndex] = [int]$parts[$lastIndex] + 1
+#     $newName = $parts -join '.'
+#     $content = $content -replace "versionName\s*=\s*""$currentName""", "versionName = ""$newName"""
+#     Write-Host "  Name: $currentName -> $newName"
+# }
 
 Set-Content -Path $gradleFile -Value $content
 

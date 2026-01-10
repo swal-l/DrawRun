@@ -1,17 +1,13 @@
 {
-  "latestVersionCode": 88,
-  "latestVersionName": "3.43",
-  "downloadUrl": "https://swal-l.github.io/DrawRun/DrawRun_v3.43.apk",
+  "latestVersionCode": 89,
+  "latestVersionName": "3.0",
+  "downloadUrl": "https://swal-l.github.io/DrawRun/DrawRun_v3.0.apk",
   "releaseNotes": {
     "features": [
-      "Édition du titre de l'activité",
-      "Analyses HRV (Variabilité Cardiaque)",
-      "Carte 3D (Terrain)"
+      "Améliorations diverses et optimisations"
     ],
     "fixes": [
-      "Correction duplication graphiques Volume",
-      "Affichage Cadence (PPM)",
-      "Logs de natation dynamiques"
+      "Corrections mineures de stabilité"
     ]
   }
 }
