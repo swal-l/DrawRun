@@ -91,25 +91,16 @@ fun MapLibreHero(
                         map.setStyle("https://tiles.openfreemap.org/styles/liberty") { style ->
                             
                             // 1. Setup 3D Territory (Relief/Topography)
-                            // Using AWS Terrarium (Free global DEM)
+                            // DISABLED: 3D Terrain build errors (Unresolved reference: Terrain)
+                            // Will restore in future update.
                             /*
                             try {
                                 val terrainSourceId = "aws-terrain-source"
-                                val terrainSource = org.maplibre.android.style.sources.RasterDemSource(
-                                    terrainSourceId,
-                                    "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png"
-                                ).apply {
-                                    // withTileSize(256) // Method missing?
-                                    // withEncoding(org.maplibre.android.style.sources.RasterDemSource.ENCODING_TERRARIUM)
-                                }
-                                style.addSource(terrainSource)
-                                
-                                // Enable Terrain
-                                // val terrain = org.maplibre.android.style.layers.Terrain(terrainSourceId)
-                                // terrain.exaggeration = 1.2f // Slight exaggeration for better effect
+                                // ... source setup ...
+                                // style.addSource(terrainSource)
                                 // style.terrain = terrain
                             } catch (e: Exception) {
-                                e.printStackTrace()
+                                android.util.Log.e("MAP_TERRAIN", "Error setting up terrain", e)
                             }
                             */
                             
