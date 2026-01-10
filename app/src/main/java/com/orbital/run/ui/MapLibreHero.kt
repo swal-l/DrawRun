@@ -83,65 +83,89 @@ fun MapLibreHero(
         AndroidView(
             factory = { ctx ->
                 MapView(ctx).also { mv ->
-                    mv.onCreate(null) // Bundle?
+                    mv.onCreate(null)
                     mv.getMapAsync { map ->
                         mapLibreMap = map
-                        // Use Demo Tiles (no key required for testing 3D)
-                        // This style includes terrain DEM for 3D
-                        map.setStyle("https://demotiles.maplibre.org/style.json") { style ->
+                        
+                        // Use OpenFreeMap Liberty Style (Free, No Key, Nice OSM Data)
+                        map.setStyle("https://tiles.openfreemap.org/styles/liberty") { style ->
                             
-                            // 1. Draw Polyline
-                            // Using Annotation Plugin would be best, but robust manual add works too?
-                            // Let's use standard addPolyline for simplicity if available or LineManager
+                            // 1. Setup 3D Territory (Relief/Topography)
+                            // Using AWS Terrarium (Free global DEM)
+                            /*
+                            try {
+                                val terrainSourceId = "aws-terrain-source"
+                                val terrainSource = org.maplibre.android.style.sources.RasterDemSource(
+                                    terrainSourceId,
+                                    "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png"
+                                ).apply {
+                                    // withTileSize(256) // Method missing?
+                                    // withEncoding(org.maplibre.android.style.sources.RasterDemSource.ENCODING_TERRARIUM)
+                                }
+                                style.addSource(terrainSource)
+                                
+                                // Enable Terrain
+                                // val terrain = org.maplibre.android.style.layers.Terrain(terrainSourceId)
+                                // terrain.exaggeration = 1.2f // Slight exaggeration for better effect
+                                // style.terrain = terrain
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+                            */
                             
-                            // Add Track Source & Layer (Manual GeoJSON)
-                            // For simplicity in Composable, we often use LineManager (part of plugins)
-                            // But standard SDK has addPolyline on Map object for simple cases
-                            
-                            // Draw Track
+                            // 2. Draw Track Polyline
                             val points = decodedPoints.map { LatLng(it.first, it.second) }
                             
+                            // Using standard addPolyline for simplicity and reliability
                             map.addPolyline(
                                 org.maplibre.android.annotations.PolylineOptions()
                                     .addAll(points)
-                                    .color(android.graphics.Color.BLUE) // Fix: Use Int Color
-                                    .width(5f)
+                                    .color(android.graphics.Color.parseColor("#007AFF")) // Electric Blue
+                                    .width(6f)
                             )
                             
-                            // 2. Camera Position (3D tilted)
-                            val bounds = LatLngBounds.Builder().includes(points).build()
-                            
-                            // Animate to bounds first
-                            map.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100), 1000, object : MapLibreMap.CancelableCallback {
-                                override fun onFinish() {
-                                    // Then Tilt
-                                    val currentTarget = map.cameraPosition.target
-                                    val currentZoom = map.cameraPosition.zoom
-                                    
-                                    val tiltedPos = CameraPosition.Builder()
-                                        .target(currentTarget)
-                                        .zoom(currentZoom) // Keep zoom fitting bounds
-                                        .tilt(60.0) // 60 degrees tilt for 3D effect
-                                        .bearing(0.0)
-                                        .build()
+                            // 3. Camera Animation (3D Flyover)
+                            if (points.isNotEmpty()) {
+                                val bounds = LatLngBounds.Builder().includes(points).build()
+                                
+                                // Reset camera
+                                map.cameraPosition = CameraPosition.Builder()
+                                    .target(bounds.center)
+                                    .zoom(10.0)
+                                    .tilt(0.0)
+                                    .build()
+                                
+                                // Smooth animation sequence
+                                map.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 150), 1000, object : MapLibreMap.CancelableCallback {
+                                    override fun onFinish() {
+                                        // Then tilt and rotate slightly for 3D effect
+                                        val currentTarget = map.cameraPosition.target
+                                        val currentZoom = map.cameraPosition.zoom
                                         
-                                    map.animateCamera(CameraUpdateFactory.newCameraPosition(tiltedPos), 1000)
-                                }
-                                override fun onCancel() {}
-                            })
+                                        val tiltedPos = CameraPosition.Builder()
+                                            .target(currentTarget)
+                                            .zoom(currentZoom + 0.5) // Zoom in slightly
+                                            .tilt(60.0) // Deep tilt to see mountains
+                                            .bearing(45.0) // Diagonal angle
+                                            .build()
+                                            
+                                        map.animateCamera(CameraUpdateFactory.newCameraPosition(tiltedPos), 2000)
+                                    }
+                                    override fun onCancel() {}
+                                })
+                            }
                             
-                            // Enable 3D Terrain if supported by style
-                            // The demo style usually has 3D buildings or terrain enabled
+                            // UI Settings
+                            map.uiSettings.isAttributionEnabled = true // Keep attribution for generic OpenFreeMap/OSM
+                            map.uiSettings.attributionGravity = android.view.Gravity.BOTTOM or android.view.Gravity.START
+                            map.uiSettings.setAttributionMargins(16, 0, 0, 16)
+                            map.uiSettings.isLogoEnabled = false
+                            map.uiSettings.isCompassEnabled = false
+                            map.uiSettings.isTiltGesturesEnabled = isInteractive
+                            map.uiSettings.isRotateGesturesEnabled = isInteractive
+                            map.uiSettings.isZoomGesturesEnabled = isInteractive
+                            map.uiSettings.isScrollGesturesEnabled = isInteractive
                         }
-                        
-                        // UI Settings
-                        map.uiSettings.isAttributionEnabled = false
-                        map.uiSettings.isLogoEnabled = false
-                        map.uiSettings.isCompassEnabled = false
-                        map.uiSettings.isTiltGesturesEnabled = isInteractive
-                        map.uiSettings.isRotateGesturesEnabled = isInteractive
-                        map.uiSettings.isZoomGesturesEnabled = isInteractive
-                        map.uiSettings.isScrollGesturesEnabled = isInteractive
                     }
                     mapView = mv
                 }

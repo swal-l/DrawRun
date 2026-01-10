@@ -190,9 +190,21 @@ object StravaManager {
                     
                     val activities = mutableListOf<Persistence.CompletedActivity>()
                     
-                    for (i in 0 until jsonArray.length()) {
+                for (i in 0 until jsonArray.length()) {
                         val item = jsonArray.getJSONObject(i)
-                        activities.add(mapStravaActivity(item))
+                        var activity = mapStravaActivity(item)
+                        
+                        // ENRICH: Fetch Streams for detailed charts & splits
+                        // Only fetch if we suspect missing data (or always for quality?)
+                        // To avoid rate limits, maybe only if we are on the first page?
+                        // User complained about defaults, so let's fetch for ALL.
+                        try {
+                            activity = enrichWithStreams(activity, token)
+                        } catch (e: Exception) {
+                            android.util.Log.e("STRAVA_STREAMS", "Failed to enrich ${activity.id}", e)
+                        }
+                        
+                        activities.add(activity)
                     }
                     
                     Persistence.saveHistoryBatch(context, activities)
@@ -269,5 +281,76 @@ object StravaManager {
             elevationGain = json.optDouble("total_elevation_gain").toInt(),
             avgWatts = json.optDouble("average_watts").takeIf { !it.isNaN() }?.toInt()
         )
+    }
+
+    private fun enrichWithStreams(activity: Persistence.CompletedActivity, token: String): Persistence.CompletedActivity {
+        // Fetch streams: time, heartrate, watts, velocity_smooth, cadence, altitude
+        val streamUrl = "https://www.strava.com/api/v3/activities/${activity.externalId}/streams?keys=time,heartrate,watts,velocity_smooth,cadence,altitude,temp&key_by_type=true"
+        
+        val url = java.net.URL(streamUrl)
+        val conn = url.openConnection() as java.net.HttpURLConnection
+        conn.setRequestProperty("Authorization", "Bearer $token")
+        
+        if (conn.responseCode == 200) {
+            val response = conn.inputStream.bufferedReader().readText()
+            val json = org.json.JSONObject(response)
+            
+            // Helpers to safely get int/float arrays
+            fun getIntList(key: String): List<Int> {
+                 val arr = json.optJSONObject(key)?.optJSONArray("data") ?: return emptyList()
+                 val list = mutableListOf<Int>()
+                 for (i in 0 until arr.length()) list.add(arr.optInt(i))
+                 return list
+            }
+            fun getDoubleList(key: String): List<Double> {
+                 val arr = json.optJSONObject(key)?.optJSONArray("data") ?: return emptyList()
+                 val list = mutableListOf<Double>()
+                 for (i in 0 until arr.length()) list.add(arr.optDouble(i))
+                 return list
+            }
+            
+            val time = getIntList("time")
+            if (time.isEmpty()) return activity // No data to map
+            
+            // Map Streams to Samples
+            val hrData = getIntList("heartrate")
+            val wattsData = getIntList("watts") // Note: Strava 'watts' can be missing if estimate=false? No, if present it is here
+            val velocityData = getDoubleList("velocity_smooth")
+            val cadenceData = getIntList("cadence")
+            val altitudeData = getDoubleList("altitude")
+            
+            // Create Sample Lists
+            val hrSamples = mutableListOf<Persistence.HeartRateSample>()
+            val powerSamples = mutableListOf<Persistence.PowerSample>()
+            val speedSamples = mutableListOf<Persistence.SpeedSample>()
+            val cadenceSamples = mutableListOf<Persistence.CadenceSample>()
+            val elevationSamples = mutableListOf<Persistence.ElevationSample>()
+            
+            // Iterate and sync by index (assuming aligned arrays)
+            // Time is the master index
+            for (i in time.indices) {
+                val t = time[i] // seconds from start
+                
+                if (i < hrData.size) hrSamples.add(Persistence.HeartRateSample(t, hrData[i]))
+                if (i < wattsData.size) powerSamples.add(Persistence.PowerSample(t, wattsData[i].toDouble()))
+                if (i < velocityData.size) speedSamples.add(Persistence.SpeedSample(t, velocityData[i])) // m/s
+                if (i < cadenceData.size) cadenceSamples.add(Persistence.CadenceSample(t, cadenceData[i].toDouble())) // rpm
+                if (i < altitudeData.size) elevationSamples.add(Persistence.ElevationSample(t, altitudeData[i]))
+            }
+            
+            // Update Activity
+            return activity.copy(
+                heartRateSamples = hrSamples,
+                powerSamples = powerSamples,
+                speedSamples = speedSamples,
+                cadenceSamples = cadenceSamples,
+                elevationSamples = elevationSamples,
+                
+                // If summary data was missing, maybe update it?
+                avgWatts = activity.avgWatts ?: if(powerSamples.isNotEmpty()) powerSamples.map { it.watts }.average().toInt() else null,
+                avgCadence = activity.avgCadence ?: if(cadenceSamples.isNotEmpty()) cadenceSamples.map { it.rpm }.average().toInt() else null
+            )
+        }
+        return activity
     }
 }

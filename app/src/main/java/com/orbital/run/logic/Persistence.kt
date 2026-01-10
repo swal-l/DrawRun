@@ -1406,8 +1406,8 @@ object Persistence {
             avgGctMs = primary.avgGctMs ?: secondary.avgGctMs,
             avgRespiratoryRate = primary.avgRespiratoryRate ?: secondary.avgRespiratoryRate,
             
-            // Source tracking
-            source = if (primary.source == secondary.source) primary.source else "${primary.source} + ${secondary.source}"
+            // Source tracking (Keep primary, do not concatenate)
+            source = primary.source
         )
     }
 }
