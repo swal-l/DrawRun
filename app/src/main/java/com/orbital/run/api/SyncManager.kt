@@ -51,7 +51,10 @@ object SyncManager {
     }
 
     suspend fun syncHealthConnect(context: Context, onProgress: ((Int, Int) -> Unit)? = null): Int = withContext(Dispatchers.IO) {
-        val daysBack = com.orbital.run.logic.SyncPreferences.getDaysBack(context)
+        // PER USER REQUEST: Health Connect should sync "20 or 50 years" (All Time).
+        // Since it's local aggregation, we can afford a longer history scan (50 years)
+        // without hitting API rate limits like Strava.
+        val daysBack = maxOf(com.orbital.run.logic.SyncPreferences.getDaysBack(context), 365 * 50)
         
         var totalSaved = 0
         
