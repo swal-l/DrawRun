@@ -351,44 +351,121 @@ fun ActivityMapHero(activity: Persistence.CompletedActivity, onMapClick: () -> U
 
 @Composable
 fun PrimaryMetricsBanner(activity: Persistence.CompletedActivity) {
+    val aiType = remember(activity) { AnalysisEngine.detectWorkoutType(activity) }
+    
     Card(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         shape = RoundedCornerShape(20.dp),
         border = BorderStroke(1.dp, AirSurface)
     ) {
-        Row(
-            modifier = Modifier.padding(16.dp).fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceAround
-        ) {
-            val pace = if (activity.distanceKm > 0) activity.durationMin / activity.distanceKm else 0.0
+        Column(Modifier.padding(16.dp)) {
+            // AI Type Header -> Type de Séance
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 12.dp)) {
+                Surface(
+                    color = AirPrimary.copy(alpha = 0.1f),
+                    shape = CircleShape,
+                    modifier = Modifier.size(20.dp)
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        // Changed form AutoAwesome (AI) to FitnessCenter (Workout)
+                        Icon(Icons.Rounded.FitnessCenter, null, tint = AirPrimary, modifier = Modifier.size(12.dp))
+                    }
+                }
+                Spacer(Modifier.width(8.dp))
+                Text(
+                    text = aiType.uppercase(), 
+                    style = MaterialTheme.typography.labelSmall, 
+                    fontWeight = FontWeight.Bold, 
+                    color = AirPrimary,
+                    letterSpacing = 1.sp
+                )
+            }
             
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("DISTANCE", style = MaterialTheme.typography.labelSmall, color = AirTextSecondary)
-                Text("${String.format("%.2f", activity.distanceKm)} km", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Black, color = AirPrimary)
+            Divider(color = AirSurface, modifier = Modifier.padding(bottom = 12.dp))
+
+            // ZONE DISTRIBUTION (Moved from Dashboard to here per user request)
+            val science = remember(activity) { AnalysisEngine.calculateScience(activity) }
+            val zones = science.zoneDistribution
+            if (zones.isNotEmpty()) {
+                Column(Modifier.padding(vertical = 8.dp)) {
+                    Text("RÉPARTITION DE L'EFFORT", style = MaterialTheme.typography.labelSmall, color = AirTextSecondary, fontSize = 9.sp)
+                    Spacer(Modifier.height(8.dp))
+                    
+                    zones.forEachIndexed { i, pct ->
+                        if (pct > 0.01) { // Only show significant zones
+                            val zoneId = i + 1
+                             // Reusing ZoneBar layout logic locally or simplified
+                            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 6.dp)) {
+                                Text("Z$zoneId", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = AirTextSecondary, modifier = Modifier.width(20.dp))
+                                
+                                Box(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .height(6.dp)
+                                        .clip(RoundedCornerShape(3.dp))
+                                        .background(AirSurface)
+                                ) {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth(pct)
+                                            .fillMaxHeight()
+                                            .clip(RoundedCornerShape(3.dp))
+                                            .background(
+                                                when(zoneId) {
+                                                    1 -> Color(0xFF9E9E9E)
+                                                    2 -> Color(0xFF03A9F4)
+                                                    3 -> Color(0xFF4CAF50)
+                                                    4 -> Color(0xFFFFC107)
+                                                    5 -> Color(0xFFFF5252)
+                                                    else -> AirPrimary
+                                                }
+                                            )
+                                    )
+                                }
+                                
+                                Spacer(Modifier.width(8.dp))
+                                Text("${(pct * 100).toInt()}%", fontSize = 10.sp, color = AirTextSecondary, modifier = Modifier.width(30.dp), textAlign = TextAlign.End)
+                            }
+                        }
+                    }
+                }
+                Divider(color = AirSurface, modifier = Modifier.padding(vertical = 12.dp))
             }
-            Divider(modifier = Modifier.height(40.dp).width(1.dp), color = AirSurface)
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("TEMPS", style = MaterialTheme.typography.labelSmall, color = AirTextSecondary)
-                Text(formatDurationRefined(activity.durationMin), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Black, color = AirPrimary)
-            }
-            Divider(modifier = Modifier.height(40.dp).width(1.dp), color = AirSurface)
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("ALLURE", style = MaterialTheme.typography.labelSmall, color = AirTextSecondary)
-                // Compute Pace or Speed depending on type (e.g. Swim vs Run)
-                if (activity.type == WorkoutType.SWIMMING) {
-                    // For swimming, speed is m/s. 
-                    // Calculate min/100m.
-                    // Wait, pace is min/km. Pace/10 is min/100m. 
-                    // formatDurationRefined takes minutes as Double? No, it takes Double minutes.
-                    // But 1:30/100m is 1.5 min. 
-                    // Let's manually format.
-                    val pMin = pace / 10.0
-                    val min = pMin.toInt()
-                    val sec = ((pMin - min) * 60).toInt()
-                    Text(String.format("%d:%02d/100m", min, sec), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Black, color = AirPrimary)
-                } else {
-                    Text(formatPaceClean(pace), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Black, color = AirPrimary)
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
+                val pace = if (activity.distanceKm > 0) activity.durationMin / activity.distanceKm else 0.0
+                
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text("DISTANCE", style = MaterialTheme.typography.labelSmall, color = AirTextSecondary)
+                    Text("${String.format("%.2f", activity.distanceKm)} km", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Black, color = AirPrimary)
+                }
+                Divider(modifier = Modifier.height(40.dp).width(1.dp), color = AirSurface)
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text("TEMPS", style = MaterialTheme.typography.labelSmall, color = AirTextSecondary)
+                    Text(formatDurationRefined(activity.durationMin), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Black, color = AirPrimary)
+                }
+                Divider(modifier = Modifier.height(40.dp).width(1.dp), color = AirSurface)
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text("ALLURE", style = MaterialTheme.typography.labelSmall, color = AirTextSecondary)
+                    // Compute Pace or Speed depending on type (e.g. Swim vs Run)
+                    if (activity.type == WorkoutType.SWIMMING) {
+                        // For swimming, speed is m/s. 
+                        // Calculate min/100m.
+                        // Wait, pace is min/km. Pace/10 is min/100m. 
+                        // formatDurationRefined takes minutes as Double? No, it takes Double minutes.
+                        // But 1:30/100m is 1.5 min. 
+                        // Let's manually format.
+                        val pMin = pace / 10.0
+                        val min = pMin.toInt()
+                        val sec = ((pMin - min) * 60).toInt()
+                        Text(String.format("%d:%02d/100m", min, sec), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Black, color = AirPrimary)
+                    } else {
+                        Text(formatPaceClean(pace), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Black, color = AirPrimary)
+                    }
                 }
             }
         }

@@ -424,7 +424,7 @@ fun ChartContainer(
     }
 
     Card(
-        modifier = Modifier.fillMaxWidth().padding(16.dp),
+        modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
@@ -797,7 +797,7 @@ fun QuadrantAnalysisChart(points: List<QuadrantPoint>, onInfoClick: (String) -> 
         val chartSize = if (isExpanded) 350.dp else 240.dp
         
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Box(Modifier.size(chartSize)) {
+            Box(Modifier.fillMaxWidth().height(chartSize)) {
                 Canvas(modifier = Modifier.fillMaxSize().background(AirBackground.copy(alpha = 0.2f))) {
                     val w = size.width
                     val h = size.height
@@ -993,7 +993,7 @@ fun SwimEfficiencyChart(si: Double, speedMs: Double) {
     ChartContainer("Efficacité vs Allure (Swim)") { isExpanded ->
         val chartSize = if (isExpanded) 350.dp else 240.dp
         Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
-            Box(Modifier.size(chartSize).clip(RoundedCornerShape(12.dp)).background(AirBackground.copy(alpha = 0.3f))) {
+            Box(Modifier.fillMaxWidth().height(chartSize).clip(RoundedCornerShape(12.dp)).background(AirBackground.copy(alpha = 0.3f))) {
                 Canvas(Modifier.fillMaxSize()) {
                     val w = size.width
                     val h = size.height
@@ -1876,12 +1876,27 @@ fun HeartRateDerivativeChart(samples: List<Persistence.HeartRateSample>, state: 
         val chartHeight = if (isExpanded) 240.dp else 120.dp
         
         // Calculate derivatives (BPM change per second)
-        val derivatives = remember(samples) {
+        // Calculate derivatives (BPM change per second)
+        val rawDerivatives = remember(samples) {
             samples.zipWithNext { a, b ->
                 val timeDiff = (b.timeOffset - a.timeOffset).coerceAtLeast(1) // Avoid div by 0
                 val hrDiff = b.bpm - a.bpm
                 val derivative = hrDiff.toDouble() / timeDiff.toDouble() // BPM per second
                 Pair(b.timeOffset, derivative)
+            }
+        }
+        
+        // Smooth derivatives (Moving Average to remove noise)
+        val derivatives = remember(rawDerivatives) {
+            if (rawDerivatives.size < 10) rawDerivatives
+            else {
+                // Window of 20 samples (approx 20-60s depending on sampling)
+                val windowSize = 20 
+                rawDerivatives.windowed(windowSize, 1) { window ->
+                     val avg = window.map { it.second }.average()
+                     val midTime = window[window.size / 2].first
+                     Pair(midTime, avg)
+                }
             }
         }
         
@@ -1897,19 +1912,16 @@ fun HeartRateDerivativeChart(samples: List<Persistence.HeartRateSample>, state: 
         
         Column {
             // Context Header
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                 Icon(Icons.Rounded.Info, null, modifier = Modifier.size(14.dp), tint = AirTextLight)
-                 Spacer(Modifier.width(6.dp))
+            Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd) {
                  Text(
-                     "Indique la vitesse d'adaptation du cœur. Une variation élevée (>1.5) signifie une forte réactivité ou fatigue.", 
-                     fontSize = 10.sp, 
+                     text = String.format("Moyenne: %.2f bpm/s", avgDerivative),
+                     fontSize = 12.sp,
+                     fontWeight = FontWeight.Bold,
                      color = AirTextSecondary,
-                     lineHeight = 14.sp
+                     modifier = Modifier.padding(bottom = 8.dp)
                  )
             }
+
             StreamCanvas(
                 height = chartHeight,
                 _dataSize = derivatives.size,
@@ -1981,48 +1993,6 @@ fun HeartRateDerivativeChart(samples: List<Persistence.HeartRateSample>, state: 
                     pathEffect = PathEffect.dashPathEffect(floatArrayOf(8f, 8f), 0f)
                 )
             }
-            
-            Spacer(Modifier.height(8.dp))
-            
-            // Interpretation
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Column {
-                    Text("Adaptation Moyenne", fontSize = 10.sp, color = AirTextLight)
-                    Text(
-                        text = String.format("%.2f bpm/s", avgDerivative),
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = when {
-                            avgDerivative > 2 -> Color(0xFFFF5252) // Montée rapide = effort intense
-                            avgDerivative < -2 -> Color(0xFF2979FF) // Descente rapide = bonne récupération
-                            else -> Color(0xFF00E676) // Stable = allure constante
-                        }
-                    )
-                }
-                Column(horizontalAlignment = Alignment.End) {
-                    Text("Interprétation", fontSize = 10.sp, color = AirTextLight)
-                    Text(
-                        text = when {
-                            avgDerivative > 3 -> "Départ rapide ⚡"
-                            avgDerivative > 1 -> "Montée progressive 📈"
-                            avgDerivative < -3 ->"Récup efficace 💚"
-                            avgDerivative < -1 -> "Ralentissement 📉"
-                            else -> "Allure stable ✅"
-                        },
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = AirTextPrimary
-                    )
-                }
-            }
-            
-            Spacer(Modifier.height(8.dp))
-            Text(
-                text = "💡 La dérivée montre la vitesse d'adaptation du cœur. Pic élevé = effort soudain, creux profond = récupération rapide.",
-                fontSize = 10.sp,
-                color = AirTextSecondary,
-                modifier = Modifier.fillMaxWidth()
-            )
         }
     }
 }

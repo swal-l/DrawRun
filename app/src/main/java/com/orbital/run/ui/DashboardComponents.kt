@@ -100,56 +100,7 @@ fun DashboardSection(trainingPlan: com.orbital.run.logic.TrainingPlanResult) {
              }
         }
         
-        // Global Zone Analysis & AI
-        val globalDist by analysisVm.globalZoneDist.collectAsState()
-        val lastType by analysisVm.lastWorkoutType.collectAsState()
-        
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = AirSurface),
-            shape = RoundedCornerShape(24.dp)
-        ) {
-            Column(Modifier.padding(20.dp)) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                     Icon(Icons.Default.AutoAwesome, null, tint = AirAccent, modifier = Modifier.size(20.dp))
-                     Spacer(Modifier.width(8.dp))
-                     Text("Analyse Globale & IA", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = AirTextPrimary)
-                }
-                Spacer(Modifier.height(20.dp))
-                
-                // AI Insight
-                Text("Dernière séance détectée :", fontSize = 12.sp, color = AirTextSecondary)
-                Text(lastType, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = AirPrimary)
-                Spacer(Modifier.height(16.dp))
-                
-                Divider(color = Color.Gray.copy(alpha = 0.1f))
-                Spacer(Modifier.height(16.dp))
 
-                // Zone Distribution Chart
-                Text("Répartition de l'effort (Temps Total)", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = AirTextPrimary)
-                Spacer(Modifier.height(12.dp))
-                
-                val totalSeconds = globalDist.values.sum().coerceAtLeast(1)
-                globalDist.toSortedMap().forEach { (zoneIdx, seconds) ->
-                     val pct = seconds.toFloat() / totalSeconds
-                     val hours = seconds / 3600
-                     val mins = (seconds % 3600) / 60
-                     val timeLabel = if (hours > 0) "${hours}h${mins}" else "${mins}m"
-                     
-                     ZoneBar(
-                         title = "Zone ${zoneIdx + 1}", 
-                         range = timeLabel, 
-                         fill = pct, 
-                         color = getZoneColor(zoneIdx + 1)
-                     )
-                     Spacer(Modifier.height(8.dp))
-                }
-                
-                if (totalSeconds < 60) {
-                     Text("Pas assez de données pour l'analyse globale.", fontSize = 11.sp, color = AirTextLight, fontStyle = FontStyle.Italic)
-                }
-            }
-        }
     }
 
     selectedMetric?.let { metric ->

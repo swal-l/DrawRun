@@ -9,6 +9,8 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Speed
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.filled.TrendingUp
+import androidx.compose.material.icons.filled.TrendingDown
 import androidx.compose.ui.graphics.vector.ImageVector
 
 enum class AdviceType {
@@ -498,19 +500,46 @@ object AnalysisEngine {
                  list.add(Insight("Haute Intensité", "FC Moy $hr bpm. Séance très sollicitante pour le cœur (Zone 4/5).", Icons.Default.Favorite, adviceType = AdviceType.PPG_CIRCUIT))
             }
             
-            // New dHR/dt Analysis (HRV Proxy)
+            // New dHR/dt Analysis (HRV Proxy & Adaptation)
             if (a.heartRateSamples.size > 60) {
-                // Calculate average absolute change per second
-                val derivatives = a.heartRateSamples.zipWithNext { p1, p2 ->
+                // 1. Variability (Absolute)
+                val absDerivatives = a.heartRateSamples.zipWithNext { p1, p2 ->
                      val dt = (p2.timeOffset - p1.timeOffset).coerceAtLeast(1)
                      kotlin.math.abs(p2.bpm - p1.bpm).toDouble() / dt
                 }
-                val avgDerivative = derivatives.average()
+                val avgVariability = absDerivatives.average()
                 
-                if (avgDerivative > 1.5) {
-                    list.add(Insight("Variabilité Cardiaque Élevée", "Votre cœur réagit très vite (dHR/dt > 1.5). Signe de fatigue ou d'intervalles très courts.", Icons.Default.Warning, isPositive = false))
-                } else if (avgDerivative < 0.3) {
-                    list.add(Insight("Cœur Métronomique", "Variation cardiaque très faible. Excellent pour l'endurance régulière.", Icons.Default.Favorite, isPositive = true))
+                if (avgVariability > 2.0) { // Bumped threshold slightly
+                    list.add(Insight("Variabilité Cardiaque Élevée", "Votre cœur réagit très vite (dHR/dt > 2.0). Signe de fatigue ou d'intervalles très courts.", Icons.Default.Warning, isPositive = false))
+                } 
+
+                // 2. Adaptation Trend (Signed) - MOVED FROM CHART UI
+                val signedDerivatives = a.heartRateSamples.zipWithNext { p1, p2 ->
+                     val dt = (p2.timeOffset - p1.timeOffset).coerceAtLeast(1)
+                     (p2.bpm - p1.bpm).toDouble() / dt
+                }
+                val avgTrend = signedDerivatives.average()
+                
+                // Logic matching the Chart UI
+                when {
+                    avgTrend > 1.0 -> list.add(Insight(
+                        "Montée Cardiaque (Adaptation)", 
+                        "Tendance à la hausse (${String.format("%.2f", avgTrend)} bpm/s). Départ rapide ou dérive cardiaque significative.", 
+                        Icons.Default.TrendingUp, 
+                        adviceType = AdviceType.RUN_TECHNIQUE
+                    ))
+                    avgTrend < -1.0 -> list.add(Insight(
+                        "Récupération Active", 
+                        "Tendance à la baisse (${String.format("%.2f", avgTrend)} bpm/s). Votre cœur récupère bien pendant l'effort.", 
+                        Icons.Default.TrendingDown, 
+                        isPositive = true
+                    ))
+                    else -> list.add(Insight(
+                        "Stabilité Cardiaque", 
+                        "Tendance stable (${String.format("%.2f", avgTrend)} bpm/s). Effort maîtrisé.", 
+                        Icons.Default.Favorite, 
+                        isPositive = true
+                    ))
                 }
             }
             

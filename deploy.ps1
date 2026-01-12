@@ -90,7 +90,7 @@ Copy-Item $apkPath -Destination "$docsDir/$apkName" -Force
 $removed = Get-ChildItem $docsDir -Filter "DrawRun_v*.apk" | Where-Object { $_.Name -ne $apkName }
 $removed | Remove-Item -Force
 if ($removed) {
-    Write-Host "  ✓ Removed $($removed.Count) old APK(s)" -ForegroundColor Green
+    Write-Host "  ✓ Removed $($removed.Count) old APKs" -ForegroundColor Green
 }
 Write-Host "  ✓ Deployed: $apkName" -ForegroundColor Green
 

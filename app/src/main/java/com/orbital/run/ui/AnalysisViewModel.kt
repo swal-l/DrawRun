@@ -90,7 +90,7 @@ class AnalysisViewModel(application: Application) : AndroidViewModel(application
             // Use groupingBy to be efficient and ensure no duplicates in Map keys
             val breakdown = history.groupBy { it.type }
                 .mapValues { (_, activities) -> activities.sumOf { it.distanceKm } }
-                .filterValues { it > 0.0 }
+                .filterValues { it > 0.1 } // Ignore noise (< 100m)
             
             _sportBreakdown.value = breakdown
             
@@ -101,15 +101,18 @@ class AnalysisViewModel(application: Application) : AndroidViewModel(application
             val zoneTotals = mutableMapOf(0 to 0L, 1 to 0L, 2 to 0L, 3 to 0L, 4 to 0L)
             var totalWithZones = 0
             
-            history.filter { it.type == WorkoutType.RUNNING }.forEach { act ->
+            history.forEach { act ->
                 // Recalculate or use stored distribution
-                val distrib = com.orbital.run.logic.AnalysisEngine.calculateScience(act).zoneDistribution
-                if (distrib.isNotEmpty()) {
-                    val durationSec = act.durationMin * 60L
-                    distrib.forEachIndexed { index, pct ->
-                        zoneTotals[index] = (zoneTotals[index] ?: 0L) + (durationSec * pct).toLong()
+                // Only include activities with Heart Rate data
+                if (act.heartRateSamples.isNotEmpty()) {
+                    val distrib = com.orbital.run.logic.AnalysisEngine.calculateScience(act).zoneDistribution
+                    if (distrib.isNotEmpty()) {
+                        val durationSec = act.durationMin * 60L
+                        distrib.forEachIndexed { index, pct ->
+                            zoneTotals[index] = (zoneTotals[index] ?: 0L) + (durationSec * pct).toLong()
+                        }
+                        totalWithZones++
                     }
-                    totalWithZones++
                 }
             }
             _globalZoneDist.value = zoneTotals

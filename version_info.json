@@ -1,6 +1,6 @@
 {
-  "versionCode": 97,
-  "versionName": "4.1",
+  "versionCode": 104,
+  "versionName": "4.8",
   "downloadUrl": "https://swal-l.github.io/DrawRun/app-release.apk",
-  "releaseNotes": "Polissage UI & Fixes:\n- Correction filtre Volume par Sport (suppression bruit < 100m)\n- Affichage Type Séance IA dans Détails Activité\n- Harmonisation largeur graphiques (Quadrants, Swim)\n- Placement explications Dérive Cardiaque"
+  "releaseNotes": "Hotfix v4.8 (UI):\n- Correction de la compilation issue des icônes manquantes."
 }
