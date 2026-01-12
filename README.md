@@ -7,13 +7,14 @@ DrawRun est une application Android moderne pour analyser vos performances sport
 ## ✨ Fonctionnalités
 
 ### Analyse Multi-Sport
-- 🏃 **Running** : Allure, zones cardiaques, puissance, cadence
+- 🏃 **Running** : Allure, zones cardiaques, puissance, cadence, **fréquence respiratoire**
 - 🏊 **Natation** : SWOLF, nombre de mouvements, analyse par longueur
-- 📊 **Métriques Avancées** : PMC (Performance Management Chart), TSS, CTL/ATL
+- 📊 **Métriques Avancées** : PMC, Eddington, **Répartition Globale des Zones**, Dérive Cardiaque
 
-### Intelligence Artificielle
-- 🤖 **AI Coach** : Conseils personnalisés basés sur votre charge d'entraînement
-- 📈 **Analyse Prédictive** : Prévisions de performance et recommandations
+### Intelligence Artificielle & Automatisation
+- 🤖 **AI Coach** : Détection automatique du type de séance (Fractionné, Seuil, Endurance)
+- ❤️ **RHR Auto** : Synchronisation et lissage automatique de la fréquence cardiaque au repos
+- 📈 **Analyse Prédictive** : Prévisions de performance sur 5k, 10k, Semi, Marathon
 
 ### Synchronisation Universelle
 - ❤️ **Health Connect** : Synchronisation automatique avec toutes vos apps
