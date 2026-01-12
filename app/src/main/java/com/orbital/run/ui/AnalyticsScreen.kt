@@ -60,6 +60,12 @@ fun AnalyticsScreen(
     trainingPlan: com.orbital.run.logic.TrainingPlanResult? = null
 ) {
     val analysisVm: AnalysisViewModel = viewModel()
+    
+    // Refresh data on mount or whenever screen is recomposed
+    LaunchedEffect(Unit) {
+        analysisVm.refresh()
+    }
+
     val pmcPoints by analysisVm.pmcPoints.collectAsState()
     val sportBreakdown by analysisVm.sportBreakdown.collectAsState()
     val coachInsight by analysisVm.coachInsight.collectAsState()

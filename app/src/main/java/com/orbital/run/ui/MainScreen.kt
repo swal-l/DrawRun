@@ -160,12 +160,21 @@ fun MainScreen() {
     LaunchedEffect(onboardingComplete) {
         if (onboardingComplete) {
             withContext(Dispatchers.IO) {
-                // Trigger generic sync (Manager handles checks for HC, Strava, etc.)
+                // 1. CLEANUP LEGACY DUPLICATES (Fix Volume Issue)
+                val removed = Persistence.deduplicateAllHistory(context)
+                if (removed > 0) {
+                     android.util.Log.d("DRAW_RUN", "Nettoyage: $removed doublons supprimés")
+                }
+                
+                // 2. Trigger generic sync (Manager handles checks for HC, Strava, etc.)
                 val count = com.orbital.run.api.SyncManager.syncAll(context)
-                if (count > 0) {
+                if (count > 0 || removed > 0) {
                     Persistence.recalculateRecords(context)
                     withContext(Dispatchers.Main) {
                         dataVersion++
+                        if (removed > 0) {
+                            android.widget.Toast.makeText(context, "Ménage terminé : $removed doublons fusionnés", android.widget.Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             }
@@ -286,11 +295,13 @@ fun MainScreen() {
                 // Views
                 AnimatedContent(targetState = currentView, label = "ViewTransition") { view ->
                     when (view) {
-                        0 -> AnalyticsScreen(
+                        0 -> key(dataVersion) {
+                            AnalyticsScreen(
                                 context = context,
                                 onNavigateToRecap = { currentView = 4 },
                                 trainingPlan = result
-                             )
+                            )
+                        }
                         1 -> DashboardScreen(trainingPlan = result!!)
                         2 -> PlanScreen(
                                 trainingPlan = result!!,

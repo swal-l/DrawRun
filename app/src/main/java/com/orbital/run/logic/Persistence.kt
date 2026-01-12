@@ -1410,4 +1410,78 @@ object Persistence {
             source = primary.source
         )
     }
+    /**
+     * One-time retroactive deduplication for the entire history.
+     * Fixes "Double Volume" issues caused by legacy syncs (Strava + HealthConnect separately).
+     */
+    fun deduplicateAllHistory(context: Context): Int {
+        val history = loadHistory(context).toMutableList()
+        if (history.isEmpty()) return 0
+        
+        var removedCount = 0
+        val processedIds = mutableSetOf<String>()
+        val uniqueHistory = mutableListOf<CompletedActivity>()
+        
+        // Sort by date descending to have newest first (or oldest? doesn't matter much if we compare all)
+        // Let's sort by date descending so we process recent ones first
+        history.sortByDescending { it.date }
+        
+        // We need a way to group potentially identical activities
+        // Group by Day to reduce search space
+        val calendar = java.util.Calendar.getInstance()
+        val groupedByDay = history.groupBy { 
+            calendar.timeInMillis = it.date
+            val day = calendar.get(java.util.Calendar.DAY_OF_YEAR)
+            val year = calendar.get(java.util.Calendar.YEAR)
+            "$year-$day"
+        }
+        
+        groupedByDay.values.forEach { dayActivities ->
+            // For each day, look for duplicates
+            // We use a local list for the day to handle merges
+            val dayList = dayActivities.toMutableList()
+            val iterator = dayList.iterator()
+            val dayUnique = mutableListOf<CompletedActivity>()
+            
+            while (dayList.isNotEmpty()) {
+                val current = dayList.removeAt(0)
+                var merged = current
+                val duplicates = mutableListOf<CompletedActivity>()
+                
+                // Find all matches in the remaining list
+                val iter = dayList.iterator()
+                while (iter.hasNext()) {
+                    val candidate = iter.next()
+                    
+                    // MATCHING LOGIC (Same as saveHistoryBatch)
+                    val isSameId = (merged.externalId != null && merged.externalId == candidate.externalId) || 
+                                   (merged.id == candidate.id)
+                    
+                    val timeDiff = kotlin.math.abs(merged.date - candidate.date)
+                    val isTimeMatch = timeDiff < 5 * 60 * 1000 // 5 mins
+                    
+                    if (isSameId || isTimeMatch) {
+                        duplicates.add(candidate)
+                        iter.remove()
+                    }
+                }
+                
+                // Merge all duplicates into 'merged'
+                duplicates.forEach { dup ->
+                    merged = mergeActivities(merged, dup)
+                    removedCount++
+                }
+                dayUnique.add(merged)
+            }
+            uniqueHistory.addAll(dayUnique)
+        }
+        
+        if (removedCount > 0) {
+            // Save cleaned history
+            uniqueHistory.sortByDescending { it.date }
+            saveHistoryList(context, uniqueHistory)
+        }
+        
+        return removedCount
+    }
 }
