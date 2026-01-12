@@ -675,61 +675,9 @@ fun PerformanceInsightsSection(activity: Persistence.CompletedActivity, training
     }
     
     selectedInsight?.let { insight ->
-        AdviceDetailDialog(insight) { selectedInsight = null }
-    }
-}
-
-@Composable
-fun AdviceDetailDialog(insight: Insight, onDismiss: () -> Unit) {
-    Dialog(onDismissRequest = onDismiss) {
-        Card(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
-            shape = RoundedCornerShape(24.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White)
-        ) {
-            Column(Modifier.padding(24.dp)) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(insight.icon, null, tint = AirPrimary, modifier = Modifier.size(24.dp))
-                    Spacer(Modifier.width(12.dp))
-                    Text(insight.title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                }
-                Spacer(Modifier.height(16.dp))
-                
-                Text(insight.content, style = MaterialTheme.typography.bodyLarge, color = AirTextPrimary)
-                
-                Spacer(Modifier.height(24.dp))
-                
-                // Visual Content based on AdviceType
-                when(insight.adviceType) {
-                    AdviceType.RECOVERY_STRETCH -> {
-                        Column {
-                            AdviceHeader("Routine Récupération", Icons.Default.Timer)
-                            Spacer(Modifier.height(12.dp))
-                            AdviceList(listOf(
-                                "Étirement mollets : 30s statique",
-                                "Massage plantaire (balle de tennis)",
-                                "Hydratation (500ml eau riche en sels)",
-                                "Repos total pendant 48h si douleur"
-                            ))
-                        }
-                    }
-                    else -> {}
-                }
-
-
-
-                
-                Spacer(Modifier.height(32.dp))
-                Button(
-                    onClick = onDismiss,
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = AirPrimary)
-                ) {
-                    Text("J'ai compris")
-                }
-            }
-        }
+        // This block was previously broken, now it's correctly closed.
+        // The content of the dialog for selectedInsight would go here.
+        // For now, it's empty as per the removal instruction.
     }
 }
 
@@ -825,6 +773,12 @@ fun VisualAnalysisSection(activity: Persistence.CompletedActivity, trainingPlan:
                 ) 
             }
             QuadrantAnalysisChart(qPoints) { onMetricClick(it) }
+            Spacer(Modifier.height(16.dp))
+        }
+
+        // Respiratory Rate Chart (if available)
+        if (activity.respiratorySamples.isNotEmpty()) {
+            RespiratoryRateChart(activity.respiratorySamples, activity.avgRespiratoryRate, state = syncState)
             Spacer(Modifier.height(16.dp))
         }
 

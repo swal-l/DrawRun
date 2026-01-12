@@ -1,1 +1,0 @@
-# Package Méthode de Karvonen

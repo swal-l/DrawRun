@@ -17,24 +17,8 @@ $versionInfoFile = "version_info.json"
 Write-Host "Auto-incrementing version in $gradleFile..."
 $content = Get-Content $gradleFile -Raw
 
-# Increment versionCode
-if ($content -match 'versionCode\s*=\s*(\d+)') {
-    $currentCode = [int]$matches[1]
-    $newCode = $currentCode + 1
-    $content = $content -replace "versionCode\s*=\s*$currentCode", "versionCode = $newCode"
-    Write-Host "  Code: $currentCode -> $newCode"
-}
-
-# Increment versionName
-if ($content -match 'versionName\s*=\s*"([\d\.]+)"') {
-    $currentName = $matches[1]
-    $parts = $currentName.Split('.')
-    $lastIndex = $parts.Length - 1
-    $parts[$lastIndex] = [int]$parts[$lastIndex] + 1
-    $newName = $parts -join '.'
-    $content = $content -replace "versionName\s*=\s*""$currentName""", "versionName = ""$newName"""
-    Write-Host "  Name: $currentName -> $newName"
-}
+# Auto-increment disabled for v4.0 bump
+Write-Host "  Skipping auto-increment"
 
 Set-Content -Path $gradleFile -Value $content
 
@@ -62,25 +46,29 @@ $env:JAVA_HOME = "C:\Program Files\Android\Android Studio\jbr"
 
 Write-Host "  ⚙ Compiling release APK..." -ForegroundColor Gray
 
-# Try build WITHOUT cleaning cache first (show errors if any)
-$buildOutput = ./gradlew.bat assembleRelease --no-daemon --parallel --build-cache 2>&1
-$buildSuccess = $LASTEXITCODE -eq 0
+    # Try build WITHOUT cleaning cache first
+    $buildLog = "build_temp.log"
+    cmd /c "gradlew.bat assembleRelease --no-daemon --parallel --build-cache > $buildLog 2>&1"
+    $buildSuccess = $LASTEXITCODE -eq 0
+    $buildOutput = Get-Content $buildLog -ErrorAction SilentlyContinue
 
-if (-not $buildSuccess -or -not (Test-Path $apkPath)) {
-    Write-Host "  ⚠ Build failed, analyzing error..." -ForegroundColor DarkYellow
-    
-    # Show last 10 lines of error
-    $buildOutput | Select-Object -Last 10 | ForEach-Object { Write-Host "    $_" -ForegroundColor DarkGray }
-    
-    Write-Host "  ⚙ Cleaning LOCAL cache and retrying..." -ForegroundColor DarkYellow
-    
-    # Clean ONLY local cache (not global cache - too slow!)
-    ./gradlew.bat --stop 2>&1 | Out-Null
-    Remove-Item -Recurse -Force ".gradle" -ErrorAction SilentlyContinue
-    
-    # Retry with clean local cache
-    Write-Host "  ⚙ Rebuilding..." -ForegroundColor Gray
-    ./gradlew.bat clean assembleRelease --no-daemon --parallel --build-cache 2>&1 | Out-Null
+    if (-not $buildSuccess -or -not (Test-Path $apkPath)) {
+        Write-Host "  ⚠ Build failed, analyzing error..." -ForegroundColor DarkYellow
+        
+        # Show last 10 lines
+        $buildOutput | Select-Object -Last 10 | ForEach-Object { Write-Host "    $_" -ForegroundColor DarkGray }
+        
+        Write-Host "  ⚙ Cleaning LOCAL cache and retrying..." -ForegroundColor DarkYellow
+        
+        # Clean ONLY local cache
+        ./gradlew.bat --stop | Out-Null
+        Remove-Item -Recurse -Force ".gradle" -ErrorAction SilentlyContinue
+        
+        # Retry
+        Write-Host "  ⚙ Rebuilding..." -ForegroundColor Gray
+        cmd /c "gradlew.bat clean assembleRelease --no-daemon --parallel --build-cache > $buildLog 2>&1"
+        $buildSuccess = $LASTEXITCODE -eq 0
+        $buildOutput = Get-Content $buildLog -ErrorAction SilentlyContinue
     
     if (-not (Test-Path $apkPath)) {
         Write-Host "`n❌ BUILD FAILED - Showing full error:" -ForegroundColor Red
@@ -139,27 +127,21 @@ if ($gitLog) {
         # SKIP merge commits or automated version bumps
         if ($commit -match "^Merge " -or $commit -match "^🚀 Deploy") { return }
 
-        # CLEANUP: Remove common prefixes to make it readable
-        $cleanMsg = $commit -replace "^(feat|feature|add|new|implement|ui|design|style|fix|bug|correct|resolve|patch|hotfix|perf|refactor|docs)(\([^)]+\))?[:\s]+", ""
-        $cleanMsg = $cleanMsg -replace "^[✨🎉⚡🚀🐛🔧✅🎨📝♻️]\s*", ""
+        # Simple cleanup - just remove common prefixes if possible, but keep it safe
+        # Removing "feat:", "fix:", etc.
+        $cleanMsg = $commit -replace "^(feat|fix|docs|style|refactor|perf|test|chore)(\(.*\))?:", ""
         $cleanMsg = $cleanMsg.Trim()
         
         if (-not $cleanMsg) { return }
 
-        # Categorize
-        if ($commit -match "^(feat|feature|add|new|implement|ui|design|style)" -or $commit -match "[✨🎉⚡🚀🎨]") {
+        # Categorize based on simple keywords
+        if ($commit -match "feat" -or $commit -match "add" -or $commit -match "new" -or $commit -match "implement") {
             if ($features.Count -lt 8 -and $features -notcontains $cleanMsg) {
                 $features += $cleanMsg
             }
         }
-        elseif ($commit -match "^(fix|bug|correct|resolve|patch|hotfix)" -or $commit -match "[🐛🔧✅]") {
+        elseif ($commit -match "fix" -or $commit -match "bug" -or $commit -match "resolve" -or $commit -match "correct") {
             if ($fixes.Count -lt 8 -and $fixes -notcontains $cleanMsg) {
-                $fixes += $cleanMsg
-            }
-        }
-        # Default fallback for uncategorized but important-looking stuff (optional)
-        elseif ($commit -match "^(perf|refactor)" -or $commit -match "⚡|♻️") {
-             if ($fixes.Count -lt 8 -and $fixes -notcontains $cleanMsg) {
                 $fixes += $cleanMsg
             }
         }
@@ -195,6 +177,6 @@ git add .
 git commit -m "🚀 Deploy v$version" -q
 git push origin main -q
 
-Write-Host "`n✅ DEPLOYMENT COMPLETE!" -ForegroundColor Green
-Write-Host "📦 APK: $docsDir/$apkName" -ForegroundColor Cyan
-Write-Host "🌐 URL: https://swal-l.github.io/DrawRun/$apkName`n" -ForegroundColor Cyan
+Write-Host "DEPLOIMENT COMPLETE!" -ForegroundColor Green
+Write-Host "APK: $docsDir/$apkName" -ForegroundColor Cyan
+Write-Host "URL: https://swal-l.github.io/DrawRun/$apkName" -ForegroundColor Cyan

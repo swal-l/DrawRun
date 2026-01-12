@@ -88,6 +88,22 @@ object Persistence {
         prefs.edit().putBoolean("hc_enabled", enabled).apply()
     }
 
+    /**
+     * Suggested Resting Heart Rate (from Health Connect)
+     */
+    fun saveSuggestedRHR(context: Context, rhr: Int) {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        prefs.edit().putInt("suggested_rhr", rhr).apply()
+    }
+
+    fun getSuggestedRHR(context: Context): Int? {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val rhr = prefs.getInt("suggested_rhr", -1)
+        return if (rhr > 0) rhr else null
+    }
+
+    // -------------------------------------------------------------
+
     fun loadHealthConnectEnabled(context: Context): Boolean {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         return prefs.getBoolean("hc_enabled", false)

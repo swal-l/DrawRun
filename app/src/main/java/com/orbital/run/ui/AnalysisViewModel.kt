@@ -45,6 +45,14 @@ class AnalysisViewModel(application: Application) : AndroidViewModel(application
     
     private val _coachInsight = MutableStateFlow<String>("Chargement de vos analyses...")
     val coachInsight: StateFlow<String> = _coachInsight
+    
+    // Global Zone Distribution (Seconds per Zone Index 0-4)
+    private val _globalZoneDist = MutableStateFlow<Map<Int, Long>>(emptyMap())
+    val globalZoneDist: StateFlow<Map<Int, Long>> = _globalZoneDist
+    
+    // AI Detected Workout Type
+    private val _lastWorkoutType = MutableStateFlow<String>("...")
+    val lastWorkoutType: StateFlow<String> = _lastWorkoutType
 
     private val _globalSummary = MutableStateFlow<AdvancedAnalytics.GlobalSummary?>(null)
     val globalSummary: StateFlow<AdvancedAnalytics.GlobalSummary?> = _globalSummary
@@ -80,11 +88,39 @@ class AnalysisViewModel(application: Application) : AndroidViewModel(application
             
             // Group by type and sum distance
             // Use groupingBy to be efficient and ensure no duplicates in Map keys
-            val breakdown = history
-                .groupingBy { it.type }
-                .fold(0.0) { sum, element -> sum + element.distanceKm }
+            val breakdown = history.groupBy { it.type }
+                .mapValues { (_, activities) -> activities.sumOf { it.distanceKm } }
+                .filterValues { it > 0.0 }
             
             _sportBreakdown.value = breakdown
+            
+            _sportBreakdown.value = breakdown
+            
+            // GLOBAL ZONE DISTRIBUTION
+            // Aggregating time spent in each zone for ALL running activities
+            val zoneTotals = mutableMapOf(0 to 0L, 1 to 0L, 2 to 0L, 3 to 0L, 4 to 0L)
+            var totalWithZones = 0
+            
+            history.filter { it.type == WorkoutType.RUNNING }.forEach { act ->
+                // Recalculate or use stored distribution
+                val distrib = com.orbital.run.logic.AnalysisEngine.calculateScience(act).zoneDistribution
+                if (distrib.isNotEmpty()) {
+                    val durationSec = act.durationMin * 60L
+                    distrib.forEachIndexed { index, pct ->
+                        zoneTotals[index] = (zoneTotals[index] ?: 0L) + (durationSec * pct).toLong()
+                    }
+                    totalWithZones++
+                }
+            }
+            _globalZoneDist.value = zoneTotals
+            
+            // LATEST WORKOUT TYPE (AI)
+            if (history.isNotEmpty()) {
+                val last = history.sortedByDescending { it.date }.first()
+                _lastWorkoutType.value = com.orbital.run.logic.AnalysisEngine.detectWorkoutType(last)
+            } else {
+                _lastWorkoutType.value = "Aucune activité"
+            }
             
             // COACH INSIGHT ENGINE
             generateInsight(history)

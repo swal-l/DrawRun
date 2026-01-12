@@ -65,6 +65,17 @@ object SyncManager {
             totalSaved += savedCount
         }
         
+        // AUTOMATION: Fetch and save Resting Heart Rate
+        try {
+            val rhr = HealthConnectManager.getAverageRestingHeartRate(context, 30)
+            if (rhr != null) {
+                Persistence.saveSuggestedRHR(context, rhr)
+                android.util.Log.d("SYNC", "RHR Suggestion Saved: $rhr bpm")
+            }
+        } catch (e: Exception) {
+            android.util.Log.e("SYNC", "Failed to sync RHR: ${e.message}")
+        }
+        
         return@withContext totalSaved
     }
     

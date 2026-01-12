@@ -298,12 +298,12 @@ fun MainScreen() {
                         0 -> key(dataVersion) {
                             AnalyticsScreen(
                                 context = context,
-                                onNavigateToRecap = { currentView = 4 },
+                                onNavigateToRecap = { currentView = 3 },
                                 trainingPlan = result
                             )
                         }
-                        1 -> DashboardScreen(trainingPlan = result!!)
-                        2 -> PlanScreen(
+// 1 -> DashboardScreen deleted
+                        1 -> PlanScreen(
                                 trainingPlan = result!!,
                                 context = context,
                                 onActivatePlan = { result = it },
@@ -311,7 +311,7 @@ fun MainScreen() {
                                 onSyncWorkout = { workout -> shareWorkout(context, workout) },
                                 onFinishPlan = { showCelebration = true }
                              )
-                        3 -> SwimScreen(
+                        2 -> SwimScreen(
                            savedSwims = savedSwims,
                            onSave = { w -> 
                                savedSwims.add(0, w)
@@ -325,9 +325,9 @@ fun MainScreen() {
                                Persistence.saveSwims(context, savedSwims)
                            }
                         ) 
-                        4 -> RecapScreen(context, dataVersion, onNavigateToSettings = { currentView = 5 })
-                        5 -> {
-                            androidx.activity.compose.BackHandler { currentView = 4 }
+                        3 -> RecapScreen(context, dataVersion, onNavigateToSettings = { currentView = 4 })
+                        4 -> {
+                            androidx.activity.compose.BackHandler { currentView = 3 }
                             ProfileSettingsScreen(
                                 result!!.userProfile, 
                                 connectedApps,
@@ -362,7 +362,7 @@ fun MainScreen() {
                                         }
                                     }
                                 },
-                                onBack = { currentView = 4 }
+                                onBack = { currentView = 3 }
                             )
                         }
 
@@ -814,18 +814,12 @@ fun BottomNav(current: Int, onSelect: (Int) -> Unit) {
         )
         NavigationBarItem(
             selected = current == 1, onClick = { onSelect(1) },
-            icon = { Icon(Icons.Rounded.Speed, null) },
-            label = { Text("Stats") },
+            icon = { Icon(Icons.Default.DirectionsRun, null) }, 
+            label = { Text("Plan") },
             colors = NavigationBarItemDefaults.colors(selectedIconColor = AirPrimary, selectedTextColor = AirPrimary, indicatorColor = AirSurface)
         )
         NavigationBarItem(
             selected = current == 2, onClick = { onSelect(2) },
-            icon = { Icon(Icons.Default.CalendarMonth, null) },
-            label = { Text("Run") },
-            colors = NavigationBarItemDefaults.colors(selectedIconColor = AirPrimary, selectedTextColor = AirPrimary, indicatorColor = AirSurface)
-        )
-        NavigationBarItem(
-            selected = current == 3, onClick = { onSelect(3) },
             icon = { Icon(Icons.Default.Pool, null) },
             label = { Text("Nage") },
             colors = NavigationBarItemDefaults.colors(selectedIconColor = AirPrimary, selectedTextColor = AirPrimary, indicatorColor = AirSurface)
@@ -873,160 +867,7 @@ fun InputForm(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun DashboardScreen(trainingPlan: TrainingPlanResult) {
-    val analysisVm: AnalysisViewModel = viewModel()
-    val coachInsight by analysisVm.coachInsight.collectAsState()
-    var selectedMetric by remember { mutableStateOf<String?>(null) }
 
-    Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(24.dp)) {
-        
-        CoachInsightSection(insight = coachInsight)
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-            CircularGauge(title = "VMA", value = String.format("%.1f", trainingPlan.vma), unit = "km/h", percent = (trainingPlan.vma.toFloat()/22f), color = AirSecondary) {
-                selectedMetric = "VMA"
-            }
-            CircularGauge(title = "VO2Max", value = String.format("%.0f", trainingPlan.vo2max), unit = "ml/kg/min", percent = (trainingPlan.vo2max.toFloat()/80f), color = AirPrimary) {
-                selectedMetric = "VO2Max"
-            }
-            CircularGauge(title = "FCM", value = "${trainingPlan.fcm}", unit = "bpm", percent = (trainingPlan.fcm.toFloat()/220f), color = AirAccent) {
-                selectedMetric = "FCM"
-            }
-        }
-        
-        Column {
-            Text("Prédictions de Course", color = AppText, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-            Spacer(modifier = Modifier.height(12.dp))
-            Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                trainingPlan.racePredictions.forEach { pred ->
-                    RaceTimeCard(pred.distanceName, pred.formattedTime)
-                }
-            }
-        }
-
-        @OptIn(ExperimentalFoundationApi::class)
-        val pagerState = rememberPagerState { 3 }
-        val scope = rememberCoroutineScope()
-
-        TabRow(selectedTabIndex = pagerState.currentPage, containerColor = Color.Transparent, contentColor = AirPrimary, indicator = { tabPositions ->
-              Box(
-                 Modifier
-                     .fillMaxWidth()
-                     .wrapContentSize(Alignment.BottomStart)
-                     .offset(x = tabPositions[pagerState.currentPage].left)
-                     .width(tabPositions[pagerState.currentPage].width)
-                     .height(3.dp)
-                     .background(AirPrimary)
-             )
-        }) {
-            Tab(selected = pagerState.currentPage == 0, onClick = { scope.launch { pagerState.animateScrollToPage(0) } }, text = { Text("Cardio", fontSize = 11.sp, maxLines = 1, softWrap = false) })
-            Tab(selected = pagerState.currentPage == 1, onClick = { scope.launch { pagerState.animateScrollToPage(1) } }, text = { Text("Allure", fontSize = 11.sp, maxLines = 1, softWrap = false) })
-            Tab(selected = pagerState.currentPage == 2, onClick = { scope.launch { pagerState.animateScrollToPage(2) } }, text = { Text("Puissance", fontSize = 11.sp, maxLines = 1, softWrap = false) })
-        }
-        
-        HorizontalPager(state = pagerState, modifier = Modifier.height(280.dp), verticalAlignment = Alignment.Top) { page ->
-             Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(top = 16.dp)) {
-                  when(page) {
-                    0 -> trainingPlan.hrZones.forEach { ZoneBar(it.label, "${it.min}-${it.max}", it.max.toFloat()/trainingPlan.fcm, getZoneColor(it.id)) }
-                    1 -> trainingPlan.speedZones.forEach { 
-                         ZoneBar("Z${it.id}", "${formatPace(it.maxSpeedKmh)} - ${formatPace(it.minSpeedKmh)} /km", it.id/5f, getZoneColor(it.id)) 
-                    }
-                    2 -> trainingPlan.powerZones.forEach { ZoneBar("Z${it.id}", "${it.minWatts}-${it.maxWatts}W", it.id/5f, getZoneColor(it.id)) }
-                }
-             }
-        }
-        
-        // Simulator
-        AirCard("Simulateur") {
-            var simDist by remember { mutableStateOf("") }
-            // State to hold results
-            var resultTime by remember { mutableStateOf("") }
-            var resultPace by remember { mutableStateOf("") }
-            var resultZone by remember { mutableStateOf<Int?>(null) }
-            var resultTimeZones by remember { mutableStateOf<List<Pair<Int, String>>>(emptyList()) }
-            val focusManager = LocalFocusManager.current
-            
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                OutlinedTextField(
-                    value = simDist, 
-                    onValueChange = { simDist = it }, 
-                    label = { Text("Dist (km)") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    modifier = Modifier.weight(1f)
-                )
-                
-                Button(
-                    onClick = {
-                        focusManager.clearFocus()
-                        val dist = simDist.toDoubleOrNull()
-                        if (dist != null && dist > 0) {
-                             val timeMin = OrbitalAlgorithm.estimateRaceTime(trainingPlan.vma, dist)
-                             val hours = (timeMin / 60).toInt()
-                             val mins = (timeMin % 60).toInt()
-                             resultTime = if(hours > 0) String.format("%dh%02d", hours, mins) else "${mins}min"
-                             
-                             val paceMinPerKm = timeMin / dist
-                             val paceMin = paceMinPerKm.toInt()
-                             val paceSec = ((paceMinPerKm - paceMin) * 60).toInt()
-                             resultPace = "%d:%02d".format(paceMin, paceSec)
-                             
-                             val speedKmh = dist / (timeMin / 60)
-                             val zone = trainingPlan.speedZones.find { speedKmh >= it.minSpeedKmh && speedKmh <= it.maxSpeedKmh } ?: 
-                                        if(speedKmh < trainingPlan.speedZones.first().minSpeedKmh) trainingPlan.speedZones.first() else trainingPlan.speedZones.last()
-                             resultZone = zone.id
-                             
-                             // Calculate Time Ranges for all zones
-                             resultTimeZones = trainingPlan.speedZones.map { z ->
-                                 val tMin = dist / z.maxSpeedKmh * 60
-                                 val tMax = dist / z.minSpeedKmh * 60
-                                 
-                                 fun fmt(m: Double): String {
-                                     val h = (m/60).toInt()
-                                     val mn = (m%60).toInt()
-                                     return if(h>0) String.format("%dh%02d", h, mn) else "${mn}min"
-                                 }
-                                 z.id to "${fmt(tMin)} - ${fmt(tMax)}"
-                             }
-                        }
-                    },
-                    colors = ButtonDefaults.buttonColors(containerColor = AirPrimary),
-                    shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier.height(56.dp)
-                ) {
-                    Text("SIMULER")
-                }
-            }
-            
-            if (resultTimeZones.isNotEmpty()) {
-                 Spacer(modifier = Modifier.height(16.dp))
-                 Divider(color = AirSurface, thickness = 1.dp)
-                 Spacer(modifier = Modifier.height(8.dp))
-                 Text("Zones de Temps pour cette distance :", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = AirTextPrimary)
-                 Spacer(modifier = Modifier.height(4.dp))
-                 
-                 resultTimeZones.forEach { (id, range) ->
-                     Row(
-                         modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), 
-                         horizontalArrangement = Arrangement.SpaceBetween,
-                         verticalAlignment = Alignment.CenterVertically
-                     ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                             Box(modifier = Modifier.size(8.dp).background(getZoneColor(id), CircleShape))
-                             Spacer(modifier = Modifier.width(8.dp))
-                             Text("Zone $id", color = AppText, fontSize = 12.sp)
-                        }
-                        Text(range, color = AppText, fontWeight = FontWeight.Bold, fontSize = 12.sp)
-                     }
-                 }
-            }
-        }
-    }
-
-    selectedMetric?.let { metric ->
-        MetricExplanationDialog(metric) { selectedMetric = null }
-    }
-}
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -1342,6 +1183,25 @@ fun ProfileSettingsScreen(
                 }
                 Spacer(modifier = Modifier.height(12.dp))
                 AirInput(hr, { hr = it }, "FC Repos")
+                
+                // RHR Suggestion
+                val suggestedRHR = remember { Persistence.getSuggestedRHR(context) }
+                if (suggestedRHR != null && suggestedRHR != hr.toIntOrNull()) {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Row(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(AirAccent.copy(alpha = 0.1f))
+                            .clickable { hr = suggestedRHR.toString() }
+                            .padding(horizontal = 8.dp, vertical = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(Icons.Default.AutoAwesome, null, tint = AirAccent, modifier = Modifier.size(12.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("Suggestion: $suggestedRHR bpm", fontSize = 11.sp, color = AirAccent.copy(alpha = 0.8f))
+                    }
+                }
+
                 Spacer(modifier = Modifier.height(12.dp))
                 AirInput(vol, { vol = it }, "Volume Actuel (km)")
              } else {
@@ -1844,44 +1704,6 @@ fun AirInput(value: String, onValueChange: (String) -> Unit, label: String, modi
 }
 
 @Composable
-fun CircularGauge(title: String, value: String, unit: String, percent: Float, color: Color, onClick: () -> Unit = {}) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Box(contentAlignment = Alignment.Center, modifier = Modifier.size(100.dp).clickable(onClick = onClick)) {
-            Canvas(modifier = Modifier.size(80.dp)) {
-                drawArc(color = AirSurface, startAngle = -90f, sweepAngle = 360f, useCenter = false, style = Stroke(width = 20f, cap = StrokeCap.Round))
-                drawArc(color = color, startAngle = -90f, sweepAngle = 360f * percent.coerceIn(0f, 1f), useCenter = false, style = Stroke(width = 20f, cap = StrokeCap.Round))
-            }
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(value, color = AppText, fontWeight = FontWeight.Bold, fontSize = 18.sp)
-                Text(unit, color = AirTextLight, fontSize = 10.sp)
-            }
-        }
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(title, color = AirTextLight, fontSize = 12.sp, fontWeight = FontWeight.Medium)
-    }
-}
-
-@Composable
-fun RaceTimeCard(title: String, time: String) {
-    Card(colors = CardDefaults.cardColors(containerColor = AirPrimary), shape = RoundedCornerShape(12.dp), modifier = Modifier.width(130.dp)) {
-        Column(modifier = Modifier.padding(12.dp)) {
-            Text(title, color = AirWhite.copy(alpha=0.8f), fontSize = 12.sp)
-            Text(time, color = AirWhite, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-        }
-    }
-}
-
-@Composable
-fun ZoneBar(label: String, range: String, percent: Float, color: Color) {
-    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().height(36.dp).background(AirSurface, RoundedCornerShape(8.dp)).padding(horizontal = 12.dp)) {
-        Text(label, color = AirTextLight, fontSize = 12.sp, modifier = Modifier.width(40.dp))
-        Box(modifier = Modifier.weight(1f).height(6.dp).background(Color.White, CircleShape)) { Box(modifier = Modifier.fillMaxWidth(percent.coerceIn(0f, 1f)).height(6.dp).background(color, CircleShape)) }
-        Spacer(modifier = Modifier.width(12.dp))
-        Text(range, color = AppText, fontSize = 12.sp, fontWeight = FontWeight.Bold)
-    }
-}
-
-@Composable
 fun WeekCard(week: TrainingWeek, trainingPlan: TrainingPlanResult, connectedApps: Map<String, Boolean> = emptyMap(), onSyncWorkout: (Workout) -> Unit = {}){
     val totalWeeks = trainingPlan.weeklyPlan.size
     val weeksUntilRace = totalWeeks - week.weekNumber + 1
@@ -2089,17 +1911,6 @@ fun ExpandableWorkoutItem(
                 }
             }
         }
-    }
-}
-
-fun getZoneColor(id: Int): Color {
-    return when(id) {
-        1 -> ZoneGrey // Z1 Recup
-        2 -> ZoneBlue // Z2 Endurance
-        3 -> ZoneGreen // Z3 Tempo
-        4 -> ZoneOrange // Z4 Seuil
-        5 -> ZoneRed // Z5 VMA
-        else -> ZoneGrey
     }
 }
 

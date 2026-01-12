@@ -2026,3 +2026,73 @@ fun HeartRateDerivativeChart(samples: List<Persistence.HeartRateSample>, state: 
         }
     }
 }
+
+/**
+ * Respiratory Rate Chart
+ */
+@Composable
+fun RespiratoryRateChart(
+    samples: List<Persistence.RespiratorySample>, 
+    avgRate: Double? = null, 
+    state: ChartSyncState = rememberChartSyncState()
+) {
+    if (samples.isEmpty()) return
+    
+    val points = remember(samples) { samples.sortedBy { it.timeOffset } }
+    val maxRpm = remember(points) { (points.maxOfOrNull { it.rpm } ?: 0.0).toFloat().coerceAtLeast(10f) } // Min scale 10
+    val maxDuration = remember(points) { (points.maxOfOrNull { it.timeOffset } ?: 0).toFloat().coerceAtLeast(1f) }
+    
+    StreamChartContainer("Fréquence Respiratoire", Color(0xFF26C6DA)) { isExpanded ->
+         val height = if(isExpanded) 300.dp else 160.dp
+         
+         StreamCanvas(
+             height = height,
+             _dataSize = points.size,
+             yLabels = listOf(
+                 "${maxRpm.toInt()} brpm" to Color(0xFF26C6DA),
+                 "0" to Color.Gray
+             ),
+             avgLineY = avgRate?.let { 1f - (it.toFloat() / maxRpm) },
+             avgLabel = avgRate?.let { "Moy: ${it.toInt()}" },
+             avgColor = Color(0xFF006064),
+             state = state,
+             scrubValue = { _, sx ->
+                 val sample = points.minByOrNull { kotlin.math.abs(it.timeOffset - sx) }
+                 sample?.let { "${it.rpm.toInt()} brpm" }
+             }
+         ) { w, h, zoom, offset ->
+             val path = Path()
+             var first = true
+             
+             points.forEach { p ->
+                 val x = (p.timeOffset / maxDuration) * w * zoom + offset
+                 val y = h - (p.rpm.toFloat() / maxRpm) * h
+                 
+                 // Skip points outside view for optimization (rough check)
+                 if (x >= -100 && x <= w + 100) {
+                    if (first) {
+                        path.moveTo(x, y)
+                        first = false
+                    } else {
+                        path.lineTo(x, y)
+                    }
+                 } else if (!first && x < -100) {
+                     // If we have started drawing but this point is far left, just move to it to start line correctly coming in
+                     path.moveTo(x, y) 
+                 }
+             }
+             
+             if (!first) {
+                 drawPath(path, Color(0xFF26C6DA), style = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round))
+                 
+                 // Fill
+                 val fillPath = Path()
+                 fillPath.addPath(path)
+                 fillPath.lineTo((points.last().timeOffset / maxDuration) * w * zoom + offset, h)
+                 fillPath.lineTo((points.first().timeOffset / maxDuration) * w * zoom + offset, h)
+                 fillPath.close()
+                 drawPath(fillPath, Brush.verticalGradient(listOf(Color(0xFF26C6DA).copy(alpha = 0.3f), Color.Transparent)))
+             }
+         }
+    }
+}

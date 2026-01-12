@@ -1,1 +1,0 @@
-# Package K dynamique

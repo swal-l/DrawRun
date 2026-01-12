@@ -608,9 +608,55 @@ object AnalysisEngine {
         }
     }
     
-    private fun formatPace(minPerKm: Double): String {
+    fun formatPace(minPerKm: Double): String {
         val m = minPerKm.toInt()
         val s = ((minPerKm - m) * 60).toInt()
         return String.format("%d'%02d\"", m, s)
+    }
+
+    /**
+     * AI-based workout type detection.
+     * Uses Heuristics on HR Zones and Variability.
+     */
+    fun detectWorkoutType(a: Persistence.CompletedActivity): String {
+        if (a.type == WorkoutType.SWIMMING) return "🏊 Natation"
+        if (a.type == WorkoutType.CYCLING) return "🚴 Cyclisme"
+        if (a.type != WorkoutType.RUNNING) return "Activite"
+
+        // 1. Check Intensity based on HR Zones
+        val zones = a.zoneDistribution // List<Float> percentages Z1..Z5
+        if (zones.isEmpty()) return "🏃 Course"
+
+        val z1 = zones.getOrElse(0) { 0f }
+        val z2 = zones.getOrElse(1) { 0f }
+        val z3 = zones.getOrElse(2) { 0f }
+        val z4 = zones.getOrElse(3) { 0f }
+        val z5 = zones.getOrElse(4) { 0f }
+
+        // 2. Heuristics
+        
+        // Polarized (High Z1/Z2 + High Z4/Z5) -> Intervals
+        if ((z1 + z2 > 0.3) && (z4 + z5 > 0.15)) {
+            return "⚡ Fractionné / Intervalles"
+        }
+        
+        // High Z4/Z5 dominance -> Threshold/Race
+        if (z4 + z5 > 0.4) {
+            return "🔥 Seuil / Allure Course"
+        }
+        
+        // High Z3 dominance -> Tempo
+        if (z3 > 0.4) {
+            return "🚀 Tempo / Rythme"
+        }
+        
+        // High Z1/Z2 dominance -> Endurance
+        if (z1 + z2 > 0.7) {
+            // Check length
+            if (a.durationMin > 60) return "🐢 Sortie Longue"
+            return "👟 Endurance Fondamentale"
+        }
+        
+        return "🏃 Course à Pied"
     }
 }

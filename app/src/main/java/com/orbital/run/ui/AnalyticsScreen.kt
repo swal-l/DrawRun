@@ -171,6 +171,11 @@ fun AnalyticsScreen(
             item {
                 Text("Vos tendances de forme et santé synthétisées", style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.ExtraBold, letterSpacing = (-1).sp), color = AirTextPrimary)
             }
+            
+            // NEW: Dashboard Section moved here
+            if (trainingPlan != null) {
+                item { DashboardSection(trainingPlan) }
+            }
 
 
 

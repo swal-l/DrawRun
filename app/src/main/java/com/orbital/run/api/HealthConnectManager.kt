@@ -31,7 +31,8 @@ object HealthConnectManager {
         HealthPermission.getReadPermission(SpeedRecord::class),
         HealthPermission.getReadPermission(PowerRecord::class),
         HealthPermission.getReadPermission(SleepSessionRecord::class),
-        HealthPermission.getReadPermission(RespiratoryRateRecord::class),  // NEW: Respiratory rate
+        HealthPermission.getReadPermission(RespiratoryRateRecord::class),
+        HealthPermission.getReadPermission(RestingHeartRateRecord::class), // NEW: RHR
         "android.permission.health.READ_EXERCISE_ROUTE",
         "android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND"
     )
@@ -219,6 +220,33 @@ object HealthConnectManager {
             }
         }
     }
+
+    /**
+     * Read respiratory rate samples for a specific time range.
+     */
+    suspend fun readRespiratoryRateSamples(
+        context: Context,
+        startTime: Long,
+        endTime: Long
+    ): List<RespiratoryRateRecord> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val client = getClient(context)
+                val request = ReadRecordsRequest(
+                    recordType = RespiratoryRateRecord::class,
+                    timeRangeFilter = TimeRangeFilter.between(
+                        Instant.ofEpochMilli(startTime),
+                        Instant.ofEpochMilli(endTime)
+                    )
+                )
+                val response = client.readRecords(request)
+                response.records
+            } catch (e: Exception) {
+                e.printStackTrace()
+                emptyList()
+            }
+        }
+    }
     
     /**
      * Convert ExerciseSessionRecord to CompletedActivity.
@@ -231,6 +259,7 @@ object HealthConnectManager {
         speedRecords: List<SpeedRecord> = emptyList(),
         powerRecords: List<PowerRecord> = emptyList(),
         stepsRecords: List<StepsRecord> = emptyList(),
+        respiratoryRecords: List<RespiratoryRateRecord> = emptyList(),
         route: ExerciseRoute? = null
     ): Persistence.CompletedActivity {
         // Determine activity type
@@ -239,6 +268,8 @@ object HealthConnectManager {
             ExerciseSessionRecord.EXERCISE_TYPE_RUNNING_TREADMILL -> WorkoutType.RUNNING
             ExerciseSessionRecord.EXERCISE_TYPE_SWIMMING_OPEN_WATER,
             ExerciseSessionRecord.EXERCISE_TYPE_SWIMMING_POOL -> WorkoutType.SWIMMING
+            ExerciseSessionRecord.EXERCISE_TYPE_BIKING,
+            ExerciseSessionRecord.EXERCISE_TYPE_BIKING_STATIONARY -> WorkoutType.CYCLING
             else -> WorkoutType.RUNNING
         }
         
@@ -288,6 +319,14 @@ object HealthConnectManager {
                 timeOffset = ((record.startTime.toEpochMilli() - startTime) / 1000).toInt(),
                 rpm = stepsPerMin
             )
+        }.sortedBy { it.timeOffset }
+
+        // Respiratory Samples
+        val respiratorySamples = respiratoryRecords.map { record ->
+                Persistence.RespiratorySample(
+                    timeOffset = ((record.time.toEpochMilli() - startTime) / 1000).toInt(),
+                    rpm = record.rate
+                )
         }.sortedBy { it.timeOffset }
 
         // Heart Rate (average from samples)
@@ -356,7 +395,9 @@ object HealthConnectManager {
             powerSamples = powerSamples,
             cadenceSamples = cadenceSamples,
             summaryPolyline = polyline,
-            gpsCoordinates = gpsCoordinates  // NEW: GPS route
+            gpsCoordinates = gpsCoordinates,
+            respiratorySamples = respiratorySamples,
+            avgRespiratoryRate = if (respiratorySamples.isNotEmpty()) respiratorySamples.map { it.rpm }.average() else null
         )
     }
 
@@ -393,6 +434,33 @@ object HealthConnectManager {
     /**
      * Sync recent activities from Health Connect with optional pagination and progress.
      */
+
+    /**
+     * Get average Resting Heart Rate over the last [days] (default 30).
+     */
+    suspend fun getAverageRestingHeartRate(context: Context, days: Int = 30): Int? {
+        return withContext(Dispatchers.IO) {
+            try {
+                val client = getClient(context)
+                val endTime = Instant.now()
+                val startTime = endTime.minusSeconds(days * 24L * 60 * 60)
+                
+                val request = ReadRecordsRequest(
+                    recordType = RestingHeartRateRecord::class,
+                    timeRangeFilter = TimeRangeFilter.between(startTime, endTime)
+                )
+                
+                val response = client.readRecords(request)
+                
+                val avg = response.records.map { it.beatsPerMinute }.average()
+                if (avg.isNaN()) null else avg.toInt()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                null
+            }
+        }
+    }
+
     suspend fun syncRecentActivities(
         context: Context, 
         daysBack: Int = 30,
@@ -499,6 +567,7 @@ object HealthConnectManager {
                 val eTime = session.endTime.toEpochMilli()
                 
                 val hrRecords = readHeartRateSamples(context, sTime, eTime)
+                val respRecords = readRespiratoryRateSamples(context, sTime, eTime)
                 
                 // Fetch extra data
                 val client = getClient(context)
@@ -537,6 +606,7 @@ object HealthConnectManager {
                     speedRecords = speedRecords,
                     powerRecords = powerRecords,
                     stepsRecords = stepsRecords,
+                    respiratoryRecords = respRecords,
                     route = routeResult
                 ).copy(
                     distanceKm = if (totalDistanceKm > 0.0) totalDistanceKm else 0.0,

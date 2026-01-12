@@ -1,0 +1,3 @@
+openjdk version "25" 2025-09-16 LTS
+OpenJDK Runtime Environment Microsoft-12398178 (build 25+36-LTS)
+OpenJDK 64-Bit Server VM Microsoft-12398178 (build 25+36-LTS, mixed mode, sharing)

@@ -1,13 +1,17 @@
 {
-  "latestVersionCode": 95,
-  "latestVersionName": "3.6",
-  "downloadUrl": "https://swal-l.github.io/DrawRun/DrawRun_v3.6.apk",
+  "latestVersionCode": 96,
+  "latestVersionName": "4.0",
+  "downloadUrl": "https://swal-l.github.io/DrawRun/DrawRun_v4.0.apk",
   "releaseNotes": {
     "features": [
-      "Améliorations diverses et optimisations"
+      "Refonte Analyse: Zone globale & IA",
+      "Automatisation RHR (Health Connect)",
+      "Métriques: Fréquence Respiratoire",
+      "UI: Fusion Stats/Analyse"
     ],
     "fixes": [
-      "Corrections mineures de stabilité"
+      "Correction Volume par Sport",
+      "Optimisation Sync Health Connect"
     ]
   }
 }
