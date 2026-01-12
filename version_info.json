@@ -1,17 +1,6 @@
 {
-  "latestVersionCode": 96,
-  "latestVersionName": "4.0",
-  "downloadUrl": "https://swal-l.github.io/DrawRun/DrawRun_v4.0.apk",
-  "releaseNotes": {
-    "features": [
-      "Refonte Analyse: Zone globale & IA",
-      "Automatisation RHR (Health Connect)",
-      "Métriques: Fréquence Respiratoire",
-      "UI: Fusion Stats/Analyse"
-    ],
-    "fixes": [
-      "Correction Volume par Sport",
-      "Optimisation Sync Health Connect"
-    ]
-  }
+  "versionCode": 97,
+  "versionName": "4.1",
+  "downloadUrl": "https://swal-l.github.io/DrawRun/app-release.apk",
+  "releaseNotes": "Polissage UI & Fixes:\n- Correction filtre Volume par Sport (suppression bruit < 100m)\n- Affichage Type Séance IA dans Détails Activité\n- Harmonisation largeur graphiques (Quadrants, Swim)\n- Placement explications Dérive Cardiaque"
 }
