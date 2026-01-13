@@ -5,8 +5,8 @@ import com.orbital.run.logic.Persistence
 import kotlinx.coroutines.*
 
 /**
- * Simplified sync manager using only Health Connect.
- * All activity data comes from Health Connect which aggregates data from Garmin, Strava, etc.
+ * Strava-only sync manager.
+ * All activity data comes exclusively from Strava API.
  */
 object SyncManager {
     
@@ -14,70 +14,26 @@ object SyncManager {
     
     /**
      * Main entry point for synchronization.
-     * General function to sync ALL sources (currently only HC).
+     * Strava-only sync.
      */
     suspend fun syncAll(context: Context, onProgress: ((Int, Int) -> Unit)? = null): Int {
-        android.util.Log.d("SYNC", "=== Début syncAll (Multi-Sources) ===")
+        android.util.Log.d("SYNC", "=== Début syncAll (Strava Only) ===")
         
         var totalNew = 0
         
-        // 1. Health Connect (Aggregation principale)
-        if (HealthConnectManager.isAvailable(context) && HealthConnectManager.hasAllPermissions(context)) {
-            totalNew += syncHealthConnect(context, onProgress)
-        }
-        
-        // 2. Fitbit Direct
-        if (FitbitManager.isConnected(context)) {
-            val fitbitActivities = FitbitManager.downloadRecentActivities(context)
-            totalNew += saveActivitiesIfNew(context, fitbitActivities, "FITBIT")
-        }
-        
-        // 3. Withings Direct
-        if (WithingsManager.isConnected(context)) {
-            val withingsActivities = WithingsManager.downloadRecentActivities(context)
-            totalNew += saveActivitiesIfNew(context, withingsActivities, "WITHINGS")
-        }
-        
-        // 4. Strava Sync
+        // Strava Sync (Unique Source)
         if (com.orbital.run.api.StravaManager.isConnected(context)) {
             val daysBack = com.orbital.run.logic.SyncPreferences.getDaysBack(context)
             val stravaCount = com.orbital.run.api.StravaManager.syncActivities(context, daysBack)
             totalNew += stravaCount
-            android.util.Log.d("SYNC", "Strava: $stravaCount activiés récupérées")
+            android.util.Log.d("SYNC", "Strava: $stravaCount activités récupérées")
         }
         
         android.util.Log.d("SYNC", "=== FIN SYNC: $totalNew activités traitées ===")
         return totalNew
     }
 
-    suspend fun syncHealthConnect(context: Context, onProgress: ((Int, Int) -> Unit)? = null): Int = withContext(Dispatchers.IO) {
-        // PER USER REQUEST: Health Connect should sync "20 or 50 years" (All Time).
-        // Since it's local aggregation, we can afford a longer history scan (50 years)
-        // without hitting API rate limits like Strava.
-        val daysBack = maxOf(com.orbital.run.logic.SyncPreferences.getDaysBack(context), 365 * 50)
-        
-        var totalSaved = 0
-        
-        // Use streaming batch loader
-        HealthConnectManager.syncRecentActivities(context, daysBack, onProgress) { batch ->
-            // Save batch immediately
-            val savedCount = saveActivitiesIfNew(context, batch, "HEALTH_CONNECT")
-            totalSaved += savedCount
-        }
-        
-        // AUTOMATION: Fetch and save Resting Heart Rate
-        try {
-            val rhr = HealthConnectManager.getAverageRestingHeartRate(context, 30)
-            if (rhr != null) {
-                Persistence.saveSuggestedRHR(context, rhr)
-                android.util.Log.d("SYNC", "RHR Suggestion Saved: $rhr bpm")
-            }
-        } catch (e: Exception) {
-            android.util.Log.e("SYNC", "Failed to sync RHR: ${e.message}")
-        }
-        
-        return@withContext totalSaved
-    }
+    // syncHealthConnect removed - Strava Only
     
     // Core of "The Cake": Merging Data
     private fun saveActivitiesIfNew(context: Context, activities: List<Persistence.CompletedActivity>, source: String): Int {
@@ -139,20 +95,14 @@ object SyncManager {
     }
 
     /**
-     * EXPORT: Push an activity to all connected services
-     * This ensures "Sync on all services" requirement.
+     * EXPORT: Push an activity to Strava
      */
     suspend fun syncToAll(context: Context, activity: Persistence.CompletedActivity) {
         withContext(Dispatchers.IO) {
-            // Strava Export
+            // Strava Export (if upload feature is implemented)
             if (com.orbital.run.api.StravaManager.isConnected(context)) {
-                // StravaManager.upload(context, activity) // Stub
+                // StravaManager.upload(context, activity) // Future feature
             }
-            // Fitbit Export
-            if (FitbitManager.isConnected(context)) {
-                FitbitManager.uploadActivity(context, activity)
-            }
-            // Others...
         }
     }
     

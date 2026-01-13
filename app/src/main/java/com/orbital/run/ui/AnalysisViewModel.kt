@@ -18,7 +18,7 @@ import java.time.Instant
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import android.util.Log
-import com.orbital.run.api.HealthConnectManager
+// HealthConnectManager import removed - Strava Only
 import com.orbital.run.logic.AdvancedAnalytics
 import com.orbital.run.logic.Persistence
 import com.orbital.run.logic.WorkoutType
@@ -68,17 +68,11 @@ class AnalysisViewModel(application: Application) : AndroidViewModel(application
         viewModelScope.launch(Dispatchers.IO) {
             val context = getApplication<android.app.Application>()
             
-            // SDK Status
-            val status = com.orbital.run.api.HealthConnectManager.checkAvailability(context)
-            _hcSdkStatus.value = status
+            // Health Connect removed - Strava Only
+            _hcSdkStatus.value = androidx.health.connect.client.HealthConnectClient.SDK_UNAVAILABLE
             
-            // Health Data
-            if (status == androidx.health.connect.client.HealthConnectClient.SDK_AVAILABLE) {
-                fetchTodaySteps()
-                fetchWeeklySteps()
-                fetchAvgHeartRate()
-                fetchTotalCalories()
-            }
+            
+            // Health Data removed - No HC available (Strava Only)
             
             val history = Persistence.loadHistory(context)
             

@@ -29,16 +29,8 @@ import com.orbital.run.ui.theme.*
 @Composable
 fun SyncOnboardingScreen(
     onConnectStrava: () -> Unit,
-    onConnectHealthConnect: () -> Unit,
-    onConnectGarmin: () -> Unit,
-    onConnectPolar: () -> Unit,
-    onConnectSuunto: () -> Unit,
     onFinish: () -> Unit,
-    isStravaConnected: Boolean,
-    isHealthConnectConnected: Boolean,
-    isGarminConnected: Boolean,
-    isPolarConnected: Boolean,
-    isSuuntoConnected: Boolean
+    isStravaConnected: Boolean
 ) {
     Column(
         modifier = Modifier
@@ -68,7 +60,7 @@ fun SyncOnboardingScreen(
             )
             Spacer(Modifier.height(8.dp))
             Text(
-                "Connectez vos services habituels pour importer votre historique et vos tracés GPS.",
+                "Connectez Strava pour importer vos courses avec GPS, allure, cardio et toutes vos métriques.",
                 fontSize = 16.sp,
                 color = AirTextSecondary,
                 textAlign = TextAlign.Center,
@@ -76,56 +68,16 @@ fun SyncOnboardingScreen(
             )
         }
 
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(24.dp))
 
-        // Garmin Card
-        SyncServiceCard(
-            title = "Garmin Connect",
-            description = "Synchronisation directe depuis votre montre Garmin.",
-            icon = Icons.Default.Watch,
-            accentColor = Color(0xFF007CC3), // Garmin Blue
-            isConnected = isGarminConnected,
-            onClick = onConnectGarmin
-        )
-
-        // Strava Card
+        // Strava Card - Only Service
         SyncServiceCard(
             title = "Strava",
-            description = "Importez vos courses avec GPS, allure et cardio.",
+            description = "Source unique : Importez toutes vos activités et métriques.",
             icon = Icons.Default.Sync,
             accentColor = Color(0xFFFC4C02), // Strava Orange
             isConnected = isStravaConnected,
             onClick = onConnectStrava
-        )
-
-        // Health Connect Card
-        SyncServiceCard(
-            title = "Santé Connect",
-            description = "Récupérez vos pas, sommeil et données de santé unifiées.",
-            icon = Icons.Rounded.HealthAndSafety,
-            accentColor = Color(0xFF4285F4), // Google Blue-ish
-            isConnected = isHealthConnectConnected,
-            onClick = onConnectHealthConnect
-        )
-
-        // Polar Card
-        SyncServiceCard(
-            title = "Polar Flow",
-            description = "Connectez votre compte Polar Flow.",
-            icon = Icons.Default.FavoriteBorder,
-            accentColor = Color(0xFFE2001A), // Polar Red
-            isConnected = isPolarConnected,
-            onClick = onConnectPolar
-        )
-
-        // Suunto Card
-        SyncServiceCard(
-            title = "Suunto App",
-            description = "Connectez votre compte Suunto.",
-            icon = Icons.Default.Explore,
-            accentColor = Color(0xFF00D7D7), // Suunto Cyan
-            isConnected = isSuuntoConnected,
-            onClick = onConnectSuunto
         )
 
         Spacer(Modifier.weight(1f))
@@ -140,7 +92,7 @@ fun SyncOnboardingScreen(
             colors = ButtonDefaults.buttonColors(containerColor = AirPrimary)
         ) {
             Text(
-                if (isStravaConnected || isHealthConnectConnected) "TERMINER L'INSTALLATION" else "PLUS TARD / CONTINUER",
+                if (isStravaConnected) "TERMINER L'INSTALLATION" else "PLUS TARD / CONTINUER",
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
                 letterSpacing = 1.sp

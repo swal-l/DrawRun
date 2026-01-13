@@ -25,7 +25,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.runtime.*
 import com.orbital.run.api.SyncManager
-import com.orbital.run.api.HealthConnectManager
+// HealthConnectManager removed - Strava Only
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -107,19 +107,16 @@ fun AnalyticsScreen(
                                 0
                             }
                             
-                            val hasHc = HealthConnectManager.hasAllPermissions(context)
+                            // Strava Only - No HC check needed
                             val sources = mutableListOf<String>()
                             if (count > 0) {
-                                if (HealthConnectManager.hasAllPermissions(context)) sources.add("Santé")
                                 if (com.orbital.run.api.StravaManager.isConnected(context)) sources.add("Strava")
-                                if (com.orbital.run.api.FitbitManager.isConnected(context)) sources.add("Fitbit")
-                                if (com.orbital.run.api.WithingsManager.isConnected(context)) sources.add("Withings")
                             }
                             
                             val message = when {
                                 count > 0 -> "✅ $count activités (Sources: ${sources.joinToString(", ")})"
-                                !hasHc -> "⚠️ Connectez Health Connect dans les paramètres"
-                                else -> "ℹ️ Vos données sont à jour (Sources vérifiées: ${sources.size})"
+                                else -> "ℹ️ Vos données sont à jour"
+
                             }
                             android.widget.Toast.makeText(context, message, android.widget.Toast.LENGTH_LONG).show()
                             
@@ -181,7 +178,7 @@ fun AnalyticsScreen(
             item { CoachInsightSection(coachInsight) }
 
             item { PerformanceTrendSection(pmcPoints) { selectedMetric = it } }
-            item { SportBreakdownSection(sportBreakdown) }
+            // SportsBreakdownSection call removed per user request
 
             // HISTORY SECTION
             item {
@@ -464,50 +461,7 @@ fun AnalyticsLegendItem(label: String, color: Color) {
     }
 }
 
-@Composable
-fun SportBreakdownSection(breakdown: Map<WorkoutType, Double>) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = AirSurface),
-        shape = RoundedCornerShape(24.dp)
-    ) {
-        Column(Modifier.padding(20.dp)) {
-            Text("Volume par Sport", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = AirTextPrimary)
-            Spacer(Modifier.height(20.dp))
-            val total = breakdown.values.sum().coerceAtLeast(1.0)
-            breakdown.forEach { (type, dist) ->
-                val percent = (dist / total).toFloat()
-                Column(Modifier.padding(bottom = 12.dp)) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            when(type) {
-                                WorkoutType.SWIMMING -> "🏊 Natation"
-                                WorkoutType.CYCLING -> "🚴 Cyclisme"
-                                WorkoutType.RUNNING -> "🏃 Course"
-                                else -> "🏃 ${type.name.lowercase().replaceFirstChar { it.uppercase() }}"
-                            }, 
-                            fontSize = 13.sp, fontWeight = FontWeight.SemiBold
-                        )
-                        Spacer(Modifier.weight(1f))
-                        Text(String.format("%.1f km", dist), fontSize = 13.sp, color = AirTextSecondary, fontWeight = FontWeight.Bold)
-                    }
-                    Spacer(Modifier.height(8.dp))
-                    LinearProgressIndicator(
-                        progress = percent,
-                        modifier = Modifier.fillMaxWidth().height(8.dp).clip(RoundedCornerShape(4.dp)),
-                        color = when(type) {
-                            WorkoutType.SWIMMING -> AirSecondary
-                            WorkoutType.CYCLING -> Color(0xFFE91E63)
-                            else -> AirPrimary
-                        },
-                        trackColor = Color.White
-                    )
-                }
-            }
-        }
-    }
-}
-
+// SportBreakdownSection removed (Volume par Sport) per user request
 
 @Composable
 fun ActivityRow(activity: Persistence.CompletedActivity, onClick: () -> Unit) {

@@ -90,26 +90,24 @@ fun MainScreen() {
     val context = androidx.compose.ui.platform.LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     
-    // Observe lifecycle to refresh Health Connect status when app resumes
+    // Observe lifecycle to refresh Strava status when app resumes
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
-                // Trigger sync if Health Connect is connected
+                // Trigger Strava sync only
                 kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
-                    val isHcConnected = com.orbital.run.api.HealthConnectManager.hasAllPermissions(context)
                     val isStravaConnected = com.orbital.run.api.StravaManager.isConnected(context)
                     
-                    if (isHcConnected) {
+                    if (isStravaConnected) {
                         com.orbital.run.api.SyncManager.syncAll(context)
                         Persistence.recalculateRecords(context)
+                        
+                        withContext(Dispatchers.Main) {
+                            dataVersion++
+                        }
                     }
                     
                     withContext(Dispatchers.Main) {
-                        if (isHcConnected) {
-                            dataVersion++
-                            connectedApps["Health Connect"] = true
-                        }
-                        // Update Strava status reactively on resume
                         connectedApps["Strava"] = isStravaConnected
                     }
                 }
@@ -131,19 +129,7 @@ fun MainScreen() {
     val notifications = remember { mutableStateListOf<AppNotification>() }
     var updateInfo by remember { mutableStateOf<UpdateInfo?>(null) }
 
-    // Health Connect Permission Launcher
-    val hcPermissionLauncher = rememberLauncherForActivityResult(
-        contract = com.orbital.run.api.HealthConnectManager.getPermissionsContract()
-    ) { _ ->
-        kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Main).launch {
-            val hasAll = com.orbital.run.api.HealthConnectManager.hasAllPermissions(context)
-            if (hasAll) {
-                Persistence.saveHealthConnectEnabled(context, true)
-                connectedApps["Health Connect"] = true
-                android.widget.Toast.makeText(context, "✅ Health Connect autorisé !", android.widget.Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
+    // Health Connect removed - Strava Only
 
     var prs by remember { mutableStateOf(com.orbital.run.logic.Persistence.PersonalRecords()) } // Added state
 
@@ -212,12 +198,7 @@ fun MainScreen() {
                 prs = loadedPrs
             }
 
-            // Check Health Connect status
-            val hcAuth = com.orbital.run.api.HealthConnectManager.isIntegrationEnabled(context)
-            
-            withContext(Dispatchers.Main) {
-                connectedApps["Health Connect"] = hcAuth
-            }
+            // Health Connect removed - Strava Only
 
         }
         
@@ -261,34 +242,14 @@ fun MainScreen() {
                         onGenerate = { generate() }
                     )
                 } else {
-                    // Step 2: Advanced Sync Onboarding
+                    // Step 2: Strava-Only Onboarding
                     SyncOnboardingScreen(
-                        context = context,
-                        connectedApps = connectedApps,
-                        onConnectApp = { app -> 
-                            if (app == "Health Connect") {
-                                try {
-                                    hcPermissionLauncher.launch(com.orbital.run.api.HealthConnectManager.getPermissionsToRequest())
-                                } catch (e: Exception) {
-                                  android.widget.Toast.makeText(context, "Erreur: ${e.message}", android.widget.Toast.LENGTH_LONG).show()
-                                }
+                        onConnectStrava = {
+                            if (com.orbital.run.BuildConfig.STRAVA_CLIENT_ID.isEmpty()) {
+                                android.widget.Toast.makeText(context, "Client ID Manquant", android.widget.Toast.LENGTH_SHORT).show()
                             } else {
-                                // Trigger connect logic for specific app
-                                when(app) {
-                                    "Garmin" -> com.orbital.run.api.GarminManager.connect(context)
-                                    "Strava" -> {
-                                        if (com.orbital.run.BuildConfig.STRAVA_CLIENT_ID.isEmpty()) 
-                                            android.widget.Toast.makeText(context, "Client ID Manquant", android.widget.Toast.LENGTH_SHORT).show()
-                                        else 
-                                            com.orbital.run.api.StravaManager.connect(context)
-                                    }
-                                    "Fitbit" -> com.orbital.run.api.FitbitManager.connect(context)
-                                    "Withings" -> com.orbital.run.api.WithingsManager.connect(context)
-                                    "Polar" -> com.orbital.run.api.PolarManager.connect(context)
-                                    "Suunto" -> com.orbital.run.api.SuuntoManager.connect(context)
-                                }
-                                // Optimistic UI update (Managers serve as source of truth on reload)
-                                connectedApps[app] = true 
+                                com.orbital.run.api.StravaManager.connect(context)
+                                connectedApps["Strava"] = true
                             }
                         },
                         onFinish = {
@@ -297,7 +258,8 @@ fun MainScreen() {
                                 addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK or android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK)
                             }
                             context.startActivity(intent)
-                        }
+                        },
+                        isStravaConnected = connectedApps["Strava"] == true
                     )
                 }
             } else {
@@ -336,44 +298,27 @@ fun MainScreen() {
                         ) 
                         3 -> RecapScreen(context, dataVersion, onNavigateToSettings = { currentView = 4 })
                         4 -> {
+                            // Profile tab shows Bilan (Personal Records) per user request
                             androidx.activity.compose.BackHandler { currentView = 3 }
-                            ProfileSettingsScreen(
-                                result!!.userProfile, 
-                                connectedApps,
-                                onConnect = { appToConnect = it },
-                                onDisconnect = { app ->
-                                     connectedApps[app] = false
-                                     if (app == "Health Connect") {
-                                         Persistence.saveHealthConnectEnabled(context, false)
-                                     }
-                                },
-                                onUpdateProfile = { updated -> 
-                                    age = updated.age.toString()
-                                    weight = updated.weightKg.toString()
-                                    generate(updated)
-                                },
-                                onResetData = {
-                                    com.orbital.run.logic.Persistence.clearAllData(context)
-                                    val intent = android.content.Intent(context, com.orbital.run.MainActivity::class.java).apply {
-                                        addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK or android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .verticalScroll(rememberScrollState())
+                                    .padding(16.dp)
+                            ) {
+                                // Header with Back Button
+                                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
+                                    IconButton(onClick = { currentView = 3 }) {
+                                        Icon(Icons.Default.ArrowBack, contentDescription = "Retour")
                                     }
-                                    context.startActivity(intent)
-                                },
-                                onCheckForUpdate = {
-                                    kotlinx.coroutines.CoroutineScope(Dispatchers.IO).launch {
-                                        val info = UpdateManager.checkForUpdate(BuildConfig.VERSION_CODE)
-                                        withContext(Dispatchers.Main) {
-                                            if (info != null) {
-                                                updateInfo = info
-                                            } else {
-                                                android.widget.Toast.makeText(context, "Votre application est à jour (v${BuildConfig.VERSION_NAME})", android.widget.Toast.LENGTH_SHORT).show()
-                                            }
-                                        }
-                                    }
-                                },
-                                onBack = { currentView = 3 },
-                                prs = prs // Pass PRs
-                            )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text("Mon Profil - Bilan", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = AppText)
+                                }
+                                Spacer(modifier = Modifier.height(24.dp))
+                                
+                                // Personal Records Card (Bilan)
+                                PersonalRecordsCard(prs)
+                            }
                         }
 
                     }
@@ -381,21 +326,7 @@ fun MainScreen() {
                 }
             }
             
-            // Health Connect Dialog
-            if (appToConnect == "Health Connect") {
-                AppConnectDialog(
-                    appName = "Health Connect",
-                    onDismiss = { appToConnect = null },
-                    onConnect = {
-                        try {
-                            hcPermissionLauncher.launch(com.orbital.run.api.HealthConnectManager.getPermissionsToRequest())
-                        } catch (e: Exception) {
-                            android.widget.Toast.makeText(context, "Erreur: ${e.message}", android.widget.Toast.LENGTH_LONG).show()
-                        }
-                        appToConnect = null
-                    }
-                )
-            }
+            // Health Connect removed - Strava Only
             
             if (syncApp != null) {
                 SyncDialog(
