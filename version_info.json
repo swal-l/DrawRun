@@ -1,6 +1,6 @@
 {
-  "versionCode": 104,
-  "versionName": "4.8",
-  "downloadUrl": "https://swal-l.github.io/DrawRun/DrawRun_v4.8.apk",
-  "releaseNotes": "Hotfix v4.8 (UI):\n- Correction de la compilation issue des icônes manquantes."
+  "versionCode": 105,
+  "versionName": "4.9",
+  "downloadUrl": "https://swal-l.github.io/DrawRun/DrawRun_v4.9.apk",
+  "releaseNotes": "Mise à jour v4.9 (Optimisation & Fixes):\n- Fix Critique: Volume doublé corrigé (Déduplication améloriée).\n- UI: Profil & Navigation repensés.\n- Nouveau: Suggestion FC Repos.\n- Analytics: Retour des explications Coach."
 }
