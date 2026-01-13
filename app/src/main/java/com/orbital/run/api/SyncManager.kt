@@ -97,19 +97,15 @@ object SyncManager {
                 
                 val timeDiff = kotlin.math.abs(it.date - act.date)
                 
-                // Case 1: Strong Time Match (< 5 mins)
-                // We assume user cannot do two different activities within 5 mins start difference that aren't the same real-world event
-                if (timeDiff < 5 * 60 * 1000) return@indexOfFirst true
+                // Case 1: Strong Time Match (< 15 mins now, to be safe against timezone/sync delays)
+                if (timeDiff < 15 * 60 * 1000) return@indexOfFirst true
                 
-                // Case 2: Weak Match (5-30 mins) - e.g. "Elapsed" vs "Moving" time discrepancies
-                if (timeDiff < 30 * 60 * 1000) {
+                // Case 2: Weak Match (15-60 mins) or Just Duplicate detection
+                // If it's the SAME DAY and SIMILAR DISTANCE/DURATION, it's likely a duplicate
+                if (timeDiff < 60 * 60 * 1000) {
                      val distDiff = kotlin.math.abs(it.distanceKm - act.distanceKm)
-                     val isDistClose = distDiff < 0.5 || (act.distanceKm > 0 && distDiff / act.distanceKm < 0.1)
-                     
-                     val durDiff = kotlin.math.abs(it.durationMin - act.durationMin)
-                     val isDurationClose = durDiff < 5 
-                     
-                     return@indexOfFirst (isDistClose || isDurationClose)
+                     val isDistClose = distDiff < 0.5 || (act.distanceKm > 0 && distDiff / act.distanceKm < 0.1) // 10% diff
+                     return@indexOfFirst isDistClose
                 }
                 
                 false

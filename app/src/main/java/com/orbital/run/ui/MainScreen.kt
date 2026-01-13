@@ -851,7 +851,28 @@ fun InputForm(
             }
             Spacer(modifier = Modifier.height(12.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                AirInput(hr, onHr, "FC Repos", Modifier.weight(1f))
+                Column(Modifier.weight(1f)) {
+                    AirInput(hr, onHr, "FC Repos")
+                    // RHR Suggestion
+                    val context = androidx.compose.ui.platform.LocalContext.current
+                    val suggestedRHR = remember { Persistence.getSuggestedRHR(context) }
+                    if (suggestedRHR != null && suggestedRHR.toString() != hr) {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Row(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(AirAccent.copy(alpha = 0.1f))
+                                .clickable { onHr(suggestedRHR.toString()) }
+                                .padding(horizontal = 8.dp, vertical = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(Icons.Default.AutoAwesome, null, tint = AirAccent, modifier = Modifier.size(12.dp))
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text("Suggéré: $suggestedRHR", fontSize = 10.sp, color = AirAccent.copy(alpha = 0.8f))
+                        }
+                    }
+                }
+                
                 Box(modifier = Modifier.weight(1f).height(56.dp).clip(RoundedCornerShape(12.dp)).background(AirSurface).clickable { onGender() }, contentAlignment = Alignment.Center) {
                     Text(if (isMale) "Homme" else "Femme", color = AppText, fontWeight = FontWeight.Bold)
                 }
@@ -1170,7 +1191,7 @@ fun ProfileSettingsScreen(
                 Icon(Icons.Default.ArrowBack, contentDescription = "Retour")
             }
             Spacer(modifier = Modifier.width(8.dp))
-            Text("Paramètres & Profil", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = AppText)
+            Text("Mon Profil", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = AppText)
         }
         Spacer(modifier = Modifier.height(24.dp))
         
@@ -1242,7 +1263,7 @@ fun ProfileSettingsScreen(
         // PersonalRecordsCard(prs)
 
         Spacer(modifier = Modifier.height(24.dp))
-        Text("Applications & Montres", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = AppText)
+        Text("Synchronisation", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = AppText)
         Text("Connectez vos comptes pour la synchronisation", color = AirTextLight, fontSize = 12.sp)
         Spacer(modifier = Modifier.height(16.dp))
         

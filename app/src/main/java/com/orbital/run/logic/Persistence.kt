@@ -642,20 +642,16 @@ object Persistence {
                 // 2. Smart Time Match
                 val timeDiff = kotlin.math.abs(it.date - activity.date)
                 
-                // Case A: Strong Time Match (< 5 mins)
-                // Different sources for the same real-world event
-                if (timeDiff < 5 * 60 * 1000) return@indexOfFirst true
+                // Case A: Strong Time Match (< 15 mins)
+                if (timeDiff < 15 * 60 * 1000) return@indexOfFirst true
                 
-                // Case B: Weak Match (5-30 mins) with Distance Check
-                if (timeDiff < 30 * 60 * 1000) {
-                     val distDiff = kotlin.math.abs(it.distanceKm - activity.distanceKm)
-                     val isDistClose = distDiff < 0.5 || (activity.distanceKm > 0 && distDiff / activity.distanceKm < 0.1)
-                     
-                     val durDiff = kotlin.math.abs(it.durationMin - activity.durationMin)
-                     val isDurationClose = durDiff < 5 
-                     
-                     return@indexOfFirst (isDistClose || isDurationClose)
-                }
+                // Case B: Same Day + Similar Distance (catching source offsets)
+                val distDiff = kotlin.math.abs(it.distanceKm - activity.distanceKm)
+                val isDistClose = distDiff < 0.5 || (activity.distanceKm > 0 && distDiff / activity.distanceKm < 0.1) // 10% tolerance
+                
+                // If within 2 hours and distance matches very closely, assume duplicate
+                if (timeDiff < 120 * 60 * 1000 && isDistClose) return@indexOfFirst true
+
                 false
             }
 
@@ -1474,9 +1470,19 @@ object Persistence {
                                    (merged.id == candidate.id)
                     
                     val timeDiff = kotlin.math.abs(merged.date - candidate.date)
-                    val isTimeMatch = timeDiff < 5 * 60 * 1000 // 5 mins
+                    val isTimeMatch = timeDiff < 15 * 60 * 1000 // 15 mins
                     
-                    if (isSameId || isTimeMatch) {
+                    var isDistMatch = false
+                    if (!isTimeMatch) {
+                        // Check for duplicate with time offset but same stats
+                        val distDiff = kotlin.math.abs(merged.distanceKm - candidate.distanceKm)
+                        if (distDiff < 0.5 || (merged.distanceKm > 0 && distDiff / merged.distanceKm < 0.1)) {
+                            // Distance is close. Check if within 2 hours (timezone or bad sync)
+                            if (timeDiff < 120 * 60 * 1000) isDistMatch = true
+                        }
+                    }
+                    
+                    if (isSameId || isTimeMatch || isDistMatch) {
                         duplicates.add(candidate)
                         iter.remove()
                     }

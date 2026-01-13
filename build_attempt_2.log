@@ -1,0 +1,104 @@
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by net.rubygrapefruit.platform.internal.NativeLibraryLoader in an unnamed module (file:/C:/Users/lomic/.gradle/wrapper/dists/gradle-8.9-bin/90cnw93cvbtalezasaz0blq0a/gradle-8.9/lib/native-platform-0.22-milestone-26.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+Starting a Gradle Daemon, 4 stopped Daemons could not be reused, use --status for details
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :app:checkKotlinGradlePluginConfigurationErrors
+> Task :app:generateDebugBuildConfig
+> Task :app:checkDebugAarMetadata
+> Task :app:generateDebugResValues
+> Task :app:mapDebugSourceSetPaths
+> Task :app:generateDebugResources
+> Task :app:packageDebugResources
+> Task :app:mergeDebugResources
+> Task :app:createDebugCompatibleScreenManifests
+> Task :app:extractDeepLinksDebug
+> Task :app:parseDebugLocalResources
+> Task :app:processDebugMainManifest
+> Task :app:processDebugManifest
+> Task :app:processDebugManifestForPackage
+> Task :app:javaPreCompileDebug
+> Task :app:mergeDebugShaders
+> Task :app:compileDebugShaders NO-SOURCE
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :app:mergeDebugAssets
+> Task :app:desugarDebugFileDependencies
+> Task :app:compressDebugAssets
+> Task :app:processDebugResources
+> Task :app:checkDebugDuplicateClasses
+> Task :app:mergeDebugStartupProfile
+> Task :app:compileDebugKotlin
+> Task :app:mergeExtDexDebug
+> Task :app:mergeDebugJniLibFolders
+> Task :app:mergeLibDexDebug
+> Task :app:validateSigningDebug
+> Task :app:writeDebugAppMetadata
+> Task :app:writeDebugSigningConfigVersions
+> Task :app:mergeDebugNativeLibs
+
+> Task :app:stripDebugDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libmaplibre.so.
+
+> Task :app:compileDebugKotlin
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/HealthConnectPermissionsActivity.kt:39:13 'SmallTopAppBar(() -> Unit, Modifier = ..., () -> Unit = ..., RowScope.() -> Unit = ..., WindowInsets = ..., TopAppBarColors = ..., TopAppBarScrollBehavior? = ...): Unit' is deprecated. Use TopAppBar instead.
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/HealthConnectPermissionsActivity.kt:41:44 'smallTopAppBarColors(Color = ..., Color = ..., Color = ..., Color = ..., Color = ...): TopAppBarColors' is deprecated. Use topAppBarColors instead.
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/api/FitbitManager.kt:85:13 Variable 'token' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/api/FitbitManager.kt:94:13 Variable 'token' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/api/HealthConnectManager.kt:364:13 Variable 'power' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/api/SyncOptimizer.kt:74:46 Parameter 'context' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/api/SyncOptimizer.kt:125:9 Parameter 'activityIds' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/api/SyncOptimizer.kt:135:9 Parameter 'context' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/api/WithingsManager.kt:73:32 Parameter 'context' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/api/WithingsManager.kt:73:50 Parameter 'activity' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/api/WithingsManager.kt:80:13 Variable 'token' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/AdvancedAnalytics.kt:235:46 Parameter 'index' is never used, could be renamed to _
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/AdvancedAnalytics.kt:337:29 Parameter 'gctMs' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/AdvancedAnalytics.kt:337:44 Parameter 'durationSec' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/AdvancedAnalytics.kt:337:65 Parameter 'distanceMeters' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Algorithm.kt:280:40 Parameter 'isMale' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Algorithm.kt:316:83 Parameter 'vma' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Algorithm.kt:384:99 Parameter 'phases' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:676:13 Variable 'prefs' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:1438:13 Variable 'processedIds' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:1459:17 Variable 'iterator' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:754:28 Parameter 'insight' is never used, could be renamed to _
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1429:26 Parameter 'activity' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:71:9 Variable 'coachInsight' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/DashboardComponents.kt:42:9 Variable 'coachInsight' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/HealthConnectComponents.kt:29:5 Parameter 'context' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/MainScreen.kt:126:9 Variable 'showGarminLogin' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/MainScreen.kt:1148:5 Parameter 'connectedApps' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/MainScreen.kt:1149:5 Parameter 'onConnect' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/MainScreen.kt:1150:5 Parameter 'onDisconnect' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/MainScreen.kt:1522:9 Variable 'fallbackIcon' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/MainScreen.kt:1576:29 Variable 'statusColor' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/MapLibreHero.kt:91:67 Parameter 'style' is never used, could be renamed to _
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/MapLibreHero.kt:105:33 'addPolyline(PolylineOptions): Polyline' is deprecated. Deprecated in Java
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/MapLibreHero.kt:106:66 'PolylineOptions' is deprecated. Deprecated in Java
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:872:9 Variable 'textMeasurer' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:873:9 Variable 'labelStyle' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:1315:21 Name shadowed: cw
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/RecapScreen.kt:74:9 Variable 'cal' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/RecapScreen.kt:253:21 Variable 'streak' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ShareActivityDialog.kt:265:5 Parameter 'context' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ShareActivityDialog.kt:325:107 Parameter 'settings' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ShareActivityDialog.kt:357:5 Parameter 'height' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ShareActivityDialog.kt:422:109 Parameter 'settings' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ShareActivityDialog.kt:524:44 'insertImage(ContentResolver!, Bitmap!, String!, String!): String!' is deprecated. Deprecated in Java
+
+> Task :app:compileDebugJavaWithJavac
+> Task :app:dexBuilderDebug
+> Task :app:mergeDebugGlobalSynthetics
+> Task :app:processDebugJavaRes
+> Task :app:mergeProjectDexDebug
+> Task :app:mergeDebugJavaResource
+> Task :app:packageDebug
+> Task :app:createDebugApkListingFileRedirect
+> Task :app:assembleDebug
+
+BUILD SUCCESSFUL in 4m 37s
+39 actionable tasks: 39 executed

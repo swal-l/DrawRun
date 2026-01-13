@@ -176,8 +176,9 @@ fun AnalyticsScreen(
             if (trainingPlan != null) {
                 item { DashboardSection(trainingPlan) }
             }
-
-
+            
+            // Re-added Coach Insight (Explanations)
+            item { CoachInsightSection(coachInsight) }
 
             item { PerformanceTrendSection(pmcPoints) { selectedMetric = it } }
             item { SportBreakdownSection(sportBreakdown) }
