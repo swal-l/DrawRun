@@ -29,6 +29,8 @@
         android:label="DrawRun"
         android:icon="@mipmap/ic_launcher"
         android:supportsRtl="true"
+        android:allowBackup="false"
+        android:fullBackupContent="false"
         android:theme="@android:style/Theme.Material.NoActionBar">
         
         <!-- Health Connect metadata -->

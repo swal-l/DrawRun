@@ -1,6 +1,6 @@
 {
-  "versionCode": 105,
-  "versionName": "4.9",
-  "downloadUrl": "https://swal-l.github.io/DrawRun/DrawRun_v4.9.apk",
-  "releaseNotes": "Mise à jour v4.9 (Optimisation & Fixes):\n- Fix Critique: Volume doublé corrigé (Déduplication améloriée).\n- UI: Profil & Navigation repensés.\n- Nouveau: Suggestion FC Repos.\n- Analytics: Retour des explications Coach."
+  "versionCode": 106,
+  "versionName": "4.9.1",
+  "downloadUrl": "https://swal-l.github.io/DrawRun/DrawRun_v4.9.1.apk",
+  "releaseNotes": "Mise à jour v4.9.1 (Strava Optimized):\n- Strava Source Unique: Simplification radicale de la sync.\n- Fix Persistance: Désinstallation = Suppression propre."
 }

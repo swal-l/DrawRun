@@ -131,7 +131,7 @@ fun MainScreen() {
     val notifications = remember { mutableStateListOf<AppNotification>() }
     var updateInfo by remember { mutableStateOf<UpdateInfo?>(null) }
 
-    // Health Connect Permission Launcher (Lifted to MainScreen)
+    // Health Connect Permission Launcher
     val hcPermissionLauncher = rememberLauncherForActivityResult(
         contract = com.orbital.run.api.HealthConnectManager.getPermissionsContract()
     ) { _ ->
@@ -144,6 +144,8 @@ fun MainScreen() {
             }
         }
     }
+
+    var prs by remember { mutableStateOf(com.orbital.run.logic.Persistence.PersonalRecords()) } // Added state
 
     // Helper to regenerate
     fun generate(newProfile: UserProfile? = null) {
@@ -203,6 +205,13 @@ fun MainScreen() {
             }
             
             
+            
+            // Load PRs
+            val loadedPrs = Persistence.loadPersonalRecords(context)
+            withContext(Dispatchers.Main) {
+                prs = loadedPrs
+            }
+
             // Check Health Connect status
             val hcAuth = com.orbital.run.api.HealthConnectManager.isIntegrationEnabled(context)
             
@@ -362,7 +371,8 @@ fun MainScreen() {
                                         }
                                     }
                                 },
-                                onBack = { currentView = 3 }
+                                onBack = { currentView = 3 },
+                                prs = prs // Pass PRs
                             )
                         }
 
@@ -1171,8 +1181,9 @@ fun ProfileSettingsScreen(
     onDisconnect: (String) -> Unit,
     onUpdateProfile: (UserProfile) -> Unit,
     onResetData: () -> Unit,
-    onCheckForUpdate: () -> Unit, // Added
-    onBack: () -> Unit
+    onCheckForUpdate: () -> Unit,
+    onBack: () -> Unit,
+    prs: com.orbital.run.logic.Persistence.PersonalRecords // Added Argument
 ) {
     // Local editable state
     var editMode by remember { mutableStateOf(false) }
@@ -1195,6 +1206,13 @@ fun ProfileSettingsScreen(
         }
         Spacer(modifier = Modifier.height(24.dp))
         
+        Spacer(modifier = Modifier.height(24.dp))
+        
+        // 1. Stats Summary (Bilan) - Moved to TOP
+        PersonalRecordsCard(prs)
+        
+        Spacer(modifier = Modifier.height(24.dp))
+
         // Stats Card
         AirCard("Mes Données") {
              if (editMode) {
@@ -1264,159 +1282,27 @@ fun ProfileSettingsScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
         Text("Synchronisation", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = AppText)
-        Text("Connectez vos comptes pour la synchronisation", color = AirTextLight, fontSize = 12.sp)
+        Text("Strava (Source Unique)", color = AirTextLight, fontSize = 12.sp)
         Spacer(modifier = Modifier.height(16.dp))
         
-        // Health Connect Permission Launcher
-        var hcAvailable by remember { mutableStateOf<Boolean?>(null) }
-        var hcHasPermissions by remember { mutableStateOf(false) }
+        // Health Connect and others removed per user request (Strava Only)
         
-        val permissionLauncher = rememberLauncherForActivityResult(
-            contract = com.orbital.run.api.HealthConnectManager.getPermissionsContract()
-        ) { _ ->
-            kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Main).launch {
-                hcHasPermissions = com.orbital.run.api.HealthConnectManager.hasAllPermissions(context)
-                if (hcHasPermissions) {
-                    Persistence.saveHealthConnectEnabled(context, true) // Added persistence
-                    // Also update main app state if possible, though it might be reactive via Persistence check on resume
-                    android.widget.Toast.makeText(context, "✅ Health Connect autorisé !", android.widget.Toast.LENGTH_SHORT).show()
+        // Strava Only Integration (Source Unique)
+        val isConn = com.orbital.run.api.StravaManager.isConnected(context)
+        AppItem(
+            name = "Strava",
+            isLinked = isConn,
+            isConfigured = isConn,
+            subtitle = "Connexion directe",
+            onConnect = { 
+                if (com.orbital.run.BuildConfig.STRAVA_CLIENT_ID.isEmpty()) {
+                        android.widget.Toast.makeText(context, "API Client ID manquant !", android.widget.Toast.LENGTH_LONG).show()
+                } else {
+                    com.orbital.run.api.StravaManager.connect(context) 
                 }
-            }
-        }
-        
-        LaunchedEffect(Unit) {
-            hcAvailable = com.orbital.run.api.HealthConnectManager.isAvailable(context)
-            if (hcAvailable == true) {
-                hcHasPermissions = com.orbital.run.api.HealthConnectManager.hasAllPermissions(context)
-            }
-        }
-        
-        // Garmin Connect API Integration
-        // GarminInstallCard() // Removed per user request
-        
-        Spacer(modifier = Modifier.height(16.dp))
-        
-        
-        val apps = listOf("Health Connect", "Garmin", "Strava", "Polar", "Suunto", "Samsung", "Google", "Fitbit", "Coros", "Withings")
-        
-        apps.forEach { appName ->
-            // Health Connect handling
-            if (appName == "Health Connect") {
-                if (hcAvailable == false) {
-                    return@forEach
-                }
-                
-                AppItem(
-                    name = "Health Connect",
-                    isLinked = hcHasPermissions && com.orbital.run.logic.Persistence.loadHealthConnectEnabled(context),
-                    isConfigured = com.orbital.run.logic.Persistence.loadHealthConnectEnabled(context),
-                    subtitle = "Sync: Hub Central (Recommendé)",
-                    onConnect = {
-                        try {
-                            permissionLauncher.launch(com.orbital.run.api.HealthConnectManager.getPermissionsToRequest())
-                        } catch (e: Exception) {
-                            android.widget.Toast.makeText(context, "Erreur: ${e.message}", android.widget.Toast.LENGTH_LONG).show()
-                        }
-                    },
-                    onDisconnect = {
-                        android.widget.Toast.makeText(context, "Gérez les permissions dans les paramètres Android", android.widget.Toast.LENGTH_SHORT).show()
-                    }
-                )
-            } else if (appName == "Garmin") {
-                val isConn = com.orbital.run.api.GarminManager.isConnected(context)
-                AppItem(
-                    name = "Garmin",
-                    isLinked = isConn,
-                    isConfigured = isConn,
-                    subtitle = "Connexion directe",
-                    onConnect = { com.orbital.run.api.GarminManager.connect(context) },
-                    onDisconnect = { com.orbital.run.api.GarminManager.disconnect(context) }
-                )
-            } else if (appName == "Strava") {
-                val isConn = com.orbital.run.api.StravaManager.isConnected(context)
-                AppItem(
-                    name = "Strava",
-                    isLinked = isConn,
-                    isConfigured = isConn,
-                    subtitle = "Connexion directe",
-                    onConnect = { 
-                        if (com.orbital.run.BuildConfig.STRAVA_CLIENT_ID.isEmpty()) {
-                             android.widget.Toast.makeText(context, "API Client ID manquant !", android.widget.Toast.LENGTH_LONG).show()
-                        } else {
-                            com.orbital.run.api.StravaManager.connect(context) 
-                        }
-                    },
-                    onDisconnect = { com.orbital.run.api.StravaManager.disconnect(context) }
-                )
-            } else if (appName == "Polar") {
-                val isConn = com.orbital.run.api.PolarManager.isConnected(context)
-                AppItem(
-                    name = "Polar",
-                    isLinked = isConn,
-                    isConfigured = isConn,
-                    subtitle = "Connexion directe (Flow)",
-                    onConnect = { com.orbital.run.api.PolarManager.connect(context) },
-                    onDisconnect = { com.orbital.run.api.PolarManager.disconnect(context) }
-                )
-            } else if (appName == "Suunto") {
-                val isConn = com.orbital.run.api.SuuntoManager.isConnected(context)
-                AppItem(
-                    name = "Suunto",
-                    isLinked = isConn,
-                    isConfigured = isConn,
-                    subtitle = "Connexion directe (App)",
-                    onConnect = { com.orbital.run.api.SuuntoManager.connect(context) },
-                    onDisconnect = { com.orbital.run.api.SuuntoManager.disconnect(context) }
-                )
-            } else if (appName == "Samsung") {
-                 AppItem(
-                    name = "Samsung Health",
-                    isLinked = false, // Managed via Health Connect
-                    isConfigured = false,
-                    subtitle = "Via Health Connect",
-                    onConnect = { permissionLauncher.launch(com.orbital.run.api.HealthConnectManager.getPermissionsToRequest()) },
-                    onDisconnect = { }
-                )
-            } else if (appName == "Google") {
-                 AppItem(
-                    name = "Google Fit",
-                    isLinked = false,
-                    isConfigured = false,
-                    subtitle = "Via Health Connect",
-                    onConnect = { permissionLauncher.launch(com.orbital.run.api.HealthConnectManager.getPermissionsToRequest()) },
-                    onDisconnect = { }
-                )
-            } else if (appName == "Fitbit") {
-                 val isConn = com.orbital.run.api.FitbitManager.isConnected(context)
-                 AppItem(
-                    name = "Fitbit",
-                    isLinked = isConn,
-                    isConfigured = isConn,
-                    subtitle = if(isConn) "Connecté (API)" else "Connexion API",
-                    onConnect = { com.orbital.run.api.FitbitManager.connect(context) },
-                    onDisconnect = { com.orbital.run.api.FitbitManager.disconnect(context) }
-                )
-            } else if (appName == "Coros") {
-                 AppItem(
-                    name = "Coros",
-                    isLinked = false,
-                    isConfigured = false,
-                    subtitle = "Via Health Connect", // Coros closed API
-                    onConnect = { permissionLauncher.launch(com.orbital.run.api.HealthConnectManager.getPermissionsToRequest()) },
-                    onDisconnect = { }
-                )
-            } else if (appName == "Withings") {
-                 val isConn = com.orbital.run.api.WithingsManager.isConnected(context)
-                 AppItem(
-                    name = "Withings",
-                    isLinked = isConn,
-                    isConfigured = isConn,
-                    subtitle = if(isConn) "Connecté (API)" else "Connexion API",
-                    onConnect = { com.orbital.run.api.WithingsManager.connect(context) },
-                    onDisconnect = { com.orbital.run.api.WithingsManager.disconnect(context) }
-                )
-            }
-        }
+            },
+            onDisconnect = { com.orbital.run.api.StravaManager.disconnect(context) }
+        )
         
         
 
