@@ -1,0 +1,336 @@
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by net.rubygrapefruit.platform.internal.NativeLibraryLoader in an unnamed module (file:/C:/Users/lomic/.gradle/wrapper/dists/gradle-8.9-bin/90cnw93cvbtalezasaz0blq0a/gradle-8.9/lib/native-platform-0.22-milestone-26.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.9/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+A problem occurred configuring root project 'OrbitalRun'.
+> Multiple build operations failed.
+      Could not isolate parameters org.gradle.api.internal.initialization.transform.MergeInstrumentationAnalysisTransform$Parameters_Decorated@2c35ca65 of artifact transform MergeInstrumentationAnalysisTransform
+      Could not isolate parameters org.gradle.api.internal.initialization.transform.MergeInstrumentationAnalysisTransform$Parameters_Decorated@2c35ca65 of artifact transform MergeInstrumentationAnalysisTransform
+      Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\c48d1912df9d130c3c1213a94d66f0e1\metadata.bin
+      Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\d21fc12b8fc487d01c164729d813f4fb\metadata.bin
+      Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\34b39a0ca78656b913efe72bcc042f52\metadata.bin
+      Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\a79b7816396df700ded2e76e5c5d59c3\metadata.bin
+      Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\d6d09d3709e4d0180e23ad71982a7615\metadata.bin
+      Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\8959a6fa7468b144a42cfdbfd2b22b1b\metadata.bin
+      Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\f0ecec450ff5064e904e541ac0a28dc3\metadata.bin
+      Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\1ab5377dde8dfec0e6cd5861deb00c39\metadata.bin
+      ...and 140 more failures.
+   > Could not isolate parameters org.gradle.api.internal.initialization.transform.MergeInstrumentationAnalysisTransform$Parameters_Decorated@2c35ca65 of artifact transform MergeInstrumentationAnalysisTransform
+      > Could not isolate value org.gradle.api.internal.initialization.transform.MergeInstrumentationAnalysisTransform$Parameters_Decorated@2c35ca65 of type MergeInstrumentationAnalysisTransform.Parameters
+         > Multiple build operations failed.
+               Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\6369d61830a7a7fa8397d7fcefb6630a\metadata.bin
+               Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\02e3395c6687872e99bcef40f0326c7f\metadata.bin
+               Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\d21fc12b8fc487d01c164729d813f4fb\metadata.bin
+               Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\d92d0f5fa1e2f4f8fa4f5bcf51d4c2e0\metadata.bin
+               Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\21a08d358118131c1b0639a74cc66fad\metadata.bin
+               Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\eac16fd25a553ff01de7b11cb0a4a3db\metadata.bin
+               Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\f0ecec450ff5064e904e541ac0a28dc3\metadata.bin
+               Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\34b39a0ca78656b913efe72bcc042f52\metadata.bin
+               Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\1ab5377dde8dfec0e6cd5861deb00c39\metadata.bin
+               Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\d6d09d3709e4d0180e23ad71982a7615\metadata.bin
+               ...and 135 more failures.
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\6369d61830a7a7fa8397d7fcefb6630a\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\02e3395c6687872e99bcef40f0326c7f\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\d21fc12b8fc487d01c164729d813f4fb\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\d92d0f5fa1e2f4f8fa4f5bcf51d4c2e0\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\21a08d358118131c1b0639a74cc66fad\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\eac16fd25a553ff01de7b11cb0a4a3db\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\f0ecec450ff5064e904e541ac0a28dc3\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\34b39a0ca78656b913efe72bcc042f52\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\1ab5377dde8dfec0e6cd5861deb00c39\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\d6d09d3709e4d0180e23ad71982a7615\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\8959a6fa7468b144a42cfdbfd2b22b1b\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\ebefe2fb7607812247f4c9a594538fef\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\c48d1912df9d130c3c1213a94d66f0e1\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\30d6a342284881df7b7da1758524e506\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\a79b7816396df700ded2e76e5c5d59c3\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\a72ada0a0bd5f1de76bfccd3212b885f\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\9fc9495ff24d5f95e037ae601eeaf3b0\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\40174507b10191b528e61397a14b7662\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\cdacfa741753fc914434f5c0adc7154c\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\9c7054f85ddb900b8974174afb3d024b\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\e48163038d0d791b5b7f2dcaeb49154a\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\c8aebfa310216ebbdaec44b2f5cd998a\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\d223969eb53ab8e82104fd70e9df0472\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\b8a938fd8f691dbc0a4b6128adc7cc6b\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\f064891e345b8d5c94c55ef6807e89c0\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\87fc52b505724757ded5d2d86951a340\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\8f8a7a95d740c506f9a9e315d6bfadfc\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\47bab470cf88af0aec50a218c60cc950\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\54594fde554c14f81bf6a9b248986ced\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\1f798134bce435d4693662466c37022c\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\7f07b69906e781c1dfebdd561210d1a9\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\a14c9414c02cd1e298b5ab4fd4f624cd\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\fe874225d5d2e4f1b686de9e40abee72\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\3972b25c8907f8fec75822936512d0f5\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\b0a423f27e50befc497f9a4a24a32ab6\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\a7b2e3ee7f7cf8f6d69b91a253b0e97f\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\b7227fc993a9c3fecddff6df0115e0b9\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\e632546b365cff1fe6d7b0375fbebcce\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\4c4c2138ea2316a0a4c43bcb0e88cb3a\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\64fb6d505898da31ced0f7cfa8258cf9\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\55b1c38c556a768af14c11b8ecda2f12\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\6fb6b28353f444bbe69c6e32f99b5bc6\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\40d861d4f32fd2fc7fec1cfd0dc5fe3f\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\e5d7cf2b2027954aae720db0096d7353\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\a7d4242aa20e3ffad02acb6ec76d1340\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\495289baacb155f59f6c6677daa1ac96\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\8b4a1163120f94361801ae37f55083a5\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\7de611c7aef5f14720e057bf8f323b63\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\d4946ab997502ecb48feb2140ee9d9c8\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\af2c96bb9c89b5471bd10941dde5c0c0\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\192a0ba563655c98b8e103ebc05019c1\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\32064ece3d8c8e6339ee5ce1610eebdd\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\b6eed6fd50c5775f9938e845e7c24750\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\989bf7c2227a3e60f58987f839dbb9e4\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\bca83af1ccf4d61c0dc05981f370d7e5\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\a83f104b29721c44fe0c61e09412ad99\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\4969014ab055a54da5fd491dcb266a43\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\f7eb8e35151d0f6721beab60f74fbc05\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\0759993524352e9f975bf477ce4826d5\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\1cb0cb0668647adc4e88a98f75bd5297\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\237fac6d04e18e9db2ab2e3190053bab\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\e88eea235314c3e3a42ba10660412526\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\26b7dc38abfd9a98453c19ec6ad16cc3\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\8f8c01e72e23b8eccd4f26c16c8162d2\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\07d166442946ee7f2658c2320bda88da\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\b9662a4592733429a7bbb62aeead1da1\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\31aa3b54e8e9db970bea322f1cecd63b\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\ad322f99520f2c991ede5b154beda8c6\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\8e67500bb1fa5501e4bceb6290105f57\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\269ae377929b9f6114a794b2fb0b8e9b\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\e8d6e93948a7675e4b369cd42c67f680\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\19c100c5eeb7aa0a4c9efbc4e53c05ff\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\4bf23632c488054f294bb554d4eecde3\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\ffa9b076811c5d3ea0d9ab9b6dc517f4\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\b73e8319c1f2b25ac0c0ee18a5d52438\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\76a5e19b2ac90df772b8c2b0f1712805\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\0946334b77e6fb9a468690799153d92c\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\7b7f21b73ff103de7122861e20ba041f\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\08f3f5d5a20e0aaa6aae46c2785e6fdb\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\384b2a1f265dc73baf5637a1286e5d36\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\f644df473a407b0c37e211c8c44585ea\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\8574ec98e8e87dbf20bbaabfa3435050\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\6bf11fc827fe67b1fdfa041395c5ae83\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\1eb2f16d3fd9706abcb57ea12b228ba9\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\d3539197ea2c0d67d04b5077aaa2b03e\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\183df12c8f26258f181d83ebde1ea817\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\73267dedd117adcd288ba5f910cc50a1\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\7a9db39a95d59b025b631ac9aaa929cd\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\53c122a196dd8714b148d9b89a8ef36e\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\da429c864892eaa2acf9893ff567fe20\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\9023ace4cc67da174522d99da9315060\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\ab1e8ba814d7accf6a4d293c5d8fcd5e\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\871aa245e8fe2ae8638831b4a8de0949\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\8569ccaeea0d4943dd00903f62686908\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\3805cfdfda5a8017a360ec428505a4b6\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\d2647c9645eb0d44f6536bceabf155d5\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\9977fc80e5826d32f1ec5ecc9248b17f\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\b53904fc86ed3335ea750d5ecd86bb3e\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\b5d92bc435e179342123e81c8ec5691e\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\8f1136d6413d7772d37652c7c5b6b680\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\3a59a2fe69204c0cff8ecb38b50db3af\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\13f7d7fbb105d339071a3ea1c8adb431\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\f02594b541550f32b73aa1cfb504459c\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\bf647071714cb32142982f8192fa7bbc\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\048d5e7f2400e6b56116b09f38bfda53\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\b58b8d7fbd4ca443143afb3001c281aa\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\721d72d7e7870160e01035f12bcc540f\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\b924270aee55a93dfbde6f49f03622ad\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\d57882f0dd2f3e743ff6b205b8637f59\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\831229076f5e9d006ee5c15b85bf74b7\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\ae3da73e90491a1ac1c0bab30459b025\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\0458582e8ea3416b8981f11f271a29ae\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\6433edcd6fbe497bff7a1e943eddc33f\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\c65577fc6e04e094a7e9cddfaabc9062\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\bf41f01db07e2237699ff4423e2194e6\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\2b4910480f6f4939d36ac67af712af9c\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\08652da9c5fc6033938779d4e4db5f11\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\8af4df9feab5d585aceb3083a57c63e5\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\84b3785d3ace9128a149b3327d08e2a2\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\054c58bab0538f933da059baf3078d06\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\8236f9146983391a7a242938ae6f1444\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\942477cb07eb61e0a0dfb6199bbb3557\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\9d1de03bc6dca374838b63c4f33c9cef\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\037665d51127e62640bfce75da89db7e\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\d80718aa96ead987fea985008e00ecb0\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\bf37be03e5d8fcdd04310d21fabb2080\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\8007c5fc7ef10e8cee3c70c31abb7356\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\b08b181d86d35bca454f0e682c7c8a86\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\cafbfb12073a0d5c39e6f49ecc19a849\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\7356b3856fc48999bce9d3763b2e39f4\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\64643f2d13b484a28bee07b15ceaecb6\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\b397d06ea23744b490e9bfc8905c1962\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\0d1e0feec36682d281a002b4b39f0e40\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\8399750aadf9d9796e1db8e5e81eef38\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\b48b2b91d5113ed30baa16fc20e5074c\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\85dc3583c466bf12d4ee93865246a757\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\f784c2c7b3cd803c9af13b4cde40d779\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\fbcd0c19f0d14e5919f17e84224dc983\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\0626408f18e50194cf0e8ae4646f0fc5\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\c24ee4fcbc9283d739d6a2de544c54b4\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\7c844efdd3dd5b9ffc791a9ffee5c7ef\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\87e5f04c366afa61720de404ef708daf\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\c8545e7f6fc7d5757573a08236fb6bab\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\5e1fa85f39b2f6911e356f33359acbd4\metadata.bin
+            > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\cb508a5eb40a63d42d0fbec5fab367c0\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\c48d1912df9d130c3c1213a94d66f0e1\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\d21fc12b8fc487d01c164729d813f4fb\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\34b39a0ca78656b913efe72bcc042f52\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\a79b7816396df700ded2e76e5c5d59c3\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\d6d09d3709e4d0180e23ad71982a7615\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\8959a6fa7468b144a42cfdbfd2b22b1b\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\f0ecec450ff5064e904e541ac0a28dc3\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\1ab5377dde8dfec0e6cd5861deb00c39\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\d92d0f5fa1e2f4f8fa4f5bcf51d4c2e0\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\6369d61830a7a7fa8397d7fcefb6630a\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\21a08d358118131c1b0639a74cc66fad\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\02e3395c6687872e99bcef40f0326c7f\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\30d6a342284881df7b7da1758524e506\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\ebefe2fb7607812247f4c9a594538fef\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\eac16fd25a553ff01de7b11cb0a4a3db\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\a72ada0a0bd5f1de76bfccd3212b885f\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\9fc9495ff24d5f95e037ae601eeaf3b0\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\40174507b10191b528e61397a14b7662\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\e48163038d0d791b5b7f2dcaeb49154a\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\cdacfa741753fc914434f5c0adc7154c\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\9c7054f85ddb900b8974174afb3d024b\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\c8aebfa310216ebbdaec44b2f5cd998a\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\d223969eb53ab8e82104fd70e9df0472\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\b8a938fd8f691dbc0a4b6128adc7cc6b\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\87fc52b505724757ded5d2d86951a340\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\f064891e345b8d5c94c55ef6807e89c0\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\8f8a7a95d740c506f9a9e315d6bfadfc\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\1f798134bce435d4693662466c37022c\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\47bab470cf88af0aec50a218c60cc950\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\54594fde554c14f81bf6a9b248986ced\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\7f07b69906e781c1dfebdd561210d1a9\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\a14c9414c02cd1e298b5ab4fd4f624cd\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\fe874225d5d2e4f1b686de9e40abee72\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\3972b25c8907f8fec75822936512d0f5\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\b0a423f27e50befc497f9a4a24a32ab6\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\a7b2e3ee7f7cf8f6d69b91a253b0e97f\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\b7227fc993a9c3fecddff6df0115e0b9\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\e632546b365cff1fe6d7b0375fbebcce\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\64fb6d505898da31ced0f7cfa8258cf9\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\4c4c2138ea2316a0a4c43bcb0e88cb3a\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\6fb6b28353f444bbe69c6e32f99b5bc6\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\40d861d4f32fd2fc7fec1cfd0dc5fe3f\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\55b1c38c556a768af14c11b8ecda2f12\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\e5d7cf2b2027954aae720db0096d7353\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\a7d4242aa20e3ffad02acb6ec76d1340\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\8b4a1163120f94361801ae37f55083a5\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\495289baacb155f59f6c6677daa1ac96\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\7de611c7aef5f14720e057bf8f323b63\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\d4946ab997502ecb48feb2140ee9d9c8\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\af2c96bb9c89b5471bd10941dde5c0c0\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\192a0ba563655c98b8e103ebc05019c1\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\32064ece3d8c8e6339ee5ce1610eebdd\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\b6eed6fd50c5775f9938e845e7c24750\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\989bf7c2227a3e60f58987f839dbb9e4\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\bca83af1ccf4d61c0dc05981f370d7e5\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\a83f104b29721c44fe0c61e09412ad99\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\4969014ab055a54da5fd491dcb266a43\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\f7eb8e35151d0f6721beab60f74fbc05\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\0759993524352e9f975bf477ce4826d5\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\237fac6d04e18e9db2ab2e3190053bab\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\1cb0cb0668647adc4e88a98f75bd5297\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\e88eea235314c3e3a42ba10660412526\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\26b7dc38abfd9a98453c19ec6ad16cc3\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\8f8c01e72e23b8eccd4f26c16c8162d2\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\07d166442946ee7f2658c2320bda88da\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\b9662a4592733429a7bbb62aeead1da1\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\ad322f99520f2c991ede5b154beda8c6\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\31aa3b54e8e9db970bea322f1cecd63b\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\8e67500bb1fa5501e4bceb6290105f57\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\269ae377929b9f6114a794b2fb0b8e9b\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\e8d6e93948a7675e4b369cd42c67f680\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\19c100c5eeb7aa0a4c9efbc4e53c05ff\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\4bf23632c488054f294bb554d4eecde3\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\b73e8319c1f2b25ac0c0ee18a5d52438\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\ffa9b076811c5d3ea0d9ab9b6dc517f4\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\76a5e19b2ac90df772b8c2b0f1712805\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\0946334b77e6fb9a468690799153d92c\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\7b7f21b73ff103de7122861e20ba041f\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\08f3f5d5a20e0aaa6aae46c2785e6fdb\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\384b2a1f265dc73baf5637a1286e5d36\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\f644df473a407b0c37e211c8c44585ea\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\8574ec98e8e87dbf20bbaabfa3435050\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\6bf11fc827fe67b1fdfa041395c5ae83\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\1eb2f16d3fd9706abcb57ea12b228ba9\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\d3539197ea2c0d67d04b5077aaa2b03e\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\183df12c8f26258f181d83ebde1ea817\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\73267dedd117adcd288ba5f910cc50a1\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\7a9db39a95d59b025b631ac9aaa929cd\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\da429c864892eaa2acf9893ff567fe20\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\53c122a196dd8714b148d9b89a8ef36e\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\ab1e8ba814d7accf6a4d293c5d8fcd5e\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\9023ace4cc67da174522d99da9315060\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\8569ccaeea0d4943dd00903f62686908\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\871aa245e8fe2ae8638831b4a8de0949\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\3805cfdfda5a8017a360ec428505a4b6\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\d2647c9645eb0d44f6536bceabf155d5\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\9977fc80e5826d32f1ec5ecc9248b17f\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\b53904fc86ed3335ea750d5ecd86bb3e\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\b5d92bc435e179342123e81c8ec5691e\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\8f1136d6413d7772d37652c7c5b6b680\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\3a59a2fe69204c0cff8ecb38b50db3af\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\f02594b541550f32b73aa1cfb504459c\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\13f7d7fbb105d339071a3ea1c8adb431\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\bf647071714cb32142982f8192fa7bbc\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\048d5e7f2400e6b56116b09f38bfda53\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\b58b8d7fbd4ca443143afb3001c281aa\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\721d72d7e7870160e01035f12bcc540f\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\d57882f0dd2f3e743ff6b205b8637f59\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\b924270aee55a93dfbde6f49f03622ad\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\831229076f5e9d006ee5c15b85bf74b7\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\ae3da73e90491a1ac1c0bab30459b025\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\0458582e8ea3416b8981f11f271a29ae\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\6433edcd6fbe497bff7a1e943eddc33f\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\c65577fc6e04e094a7e9cddfaabc9062\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\bf41f01db07e2237699ff4423e2194e6\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\2b4910480f6f4939d36ac67af712af9c\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\08652da9c5fc6033938779d4e4db5f11\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\8af4df9feab5d585aceb3083a57c63e5\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\84b3785d3ace9128a149b3327d08e2a2\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\054c58bab0538f933da059baf3078d06\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\8236f9146983391a7a242938ae6f1444\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\942477cb07eb61e0a0dfb6199bbb3557\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\9d1de03bc6dca374838b63c4f33c9cef\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\037665d51127e62640bfce75da89db7e\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\d80718aa96ead987fea985008e00ecb0\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\bf37be03e5d8fcdd04310d21fabb2080\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\8007c5fc7ef10e8cee3c70c31abb7356\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\b08b181d86d35bca454f0e682c7c8a86\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\cafbfb12073a0d5c39e6f49ecc19a849\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\7356b3856fc48999bce9d3763b2e39f4\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\64643f2d13b484a28bee07b15ceaecb6\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\b397d06ea23744b490e9bfc8905c1962\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\0d1e0feec36682d281a002b4b39f0e40\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\8399750aadf9d9796e1db8e5e81eef38\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\85dc3583c466bf12d4ee93865246a757\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\b48b2b91d5113ed30baa16fc20e5074c\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\f784c2c7b3cd803c9af13b4cde40d779\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\fbcd0c19f0d14e5919f17e84224dc983\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\0626408f18e50194cf0e8ae4646f0fc5\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\c24ee4fcbc9283d739d6a2de544c54b4\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\7c844efdd3dd5b9ffc791a9ffee5c7ef\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\87e5f04c366afa61720de404ef708daf\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\c8545e7f6fc7d5757573a08236fb6bab\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\cb508a5eb40a63d42d0fbec5fab367c0\metadata.bin
+   > Could not read workspace metadata from C:\Users\lomic\.gradle\caches\8.9\transforms\5e1fa85f39b2f6911e356f33359acbd4\metadata.bin
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 5s

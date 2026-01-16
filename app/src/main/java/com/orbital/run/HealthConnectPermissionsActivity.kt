@@ -13,11 +13,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * Activity required by Health Connect to display permission rationale.
  * This is shown when users click "Learn more" in Health Connect permissions screen.
  */
+@AndroidEntryPoint
 class HealthConnectPermissionsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

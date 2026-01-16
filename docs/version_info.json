@@ -2,5 +2,5 @@
   "versionCode": 108,
   "versionName": "5.0.0",
   "downloadUrl": "https://swal-l.github.io/DrawRun/DrawRun_v5.0.0.apk",
-  "releaseNotes": "Version 5.0.0\n\nNouvelles fonctionnalités :\n- Fix Volume deduplication, Profile UI, and Analytics\n- \\ docs: Update README for v4.0 features\\\n\nCorrections :\n- Update index.html to v4.9.2\n- ­ƒÜÇ Deploy v4.9.1 (Strava Only + Backup Fix)\n- Fix download URL domain\n- Delete build_debug.log\n"
+  "releaseNotes": "DrawRun Pro v5.0.0 - Professional Edition:\n- Architecture Clean complète (Domain/Data/Presentation)\n- Design System Premium inspiré de Linear/Apple\n- Migration sécurisée JSON -> Room avec progression\n- Splash Screen Android 12+ et Onboarding\n- Corrections de stabilité et injection Hilt"
 }

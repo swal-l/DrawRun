@@ -1,9 +1,10 @@
-
 # Android Deployment Script
 # 1. Extracts version from build.gradle.kts
 # 2. Builds APK
 # 3. Copies to docs/
 # 4. Updates index.html
+# 5. Updates version_info.json
+# 6. Pushes to GitHub
 
 $ErrorActionPreference = "Stop"
 
@@ -12,28 +13,21 @@ $docsDir = "docs"
 $indexFile = "$docsDir/index.html"
 $versionInfoFile = "version_info.json"
 
-
-# 0. Auto-Increment Version
-Write-Host "Auto-incrementing version in $gradleFile..."
-$content = Get-Content $gradleFile -Raw
-
-# Auto-increment disabled for v4.0 bump
-Write-Host "  Skipping auto-increment"
-
-Set-Content -Path $gradleFile -Value $content
-
-# 1. Extract Version (re-read to get updated values)
+# 1. Extract Version
+Write-Host "Extracting version from $gradleFile..."
 $content = Get-Content $gradleFile -Raw
 if ($content -match 'versionCode\s*=\s*(\d+)') {
     $versionCode = [int]$matches[1]
 } else {
     Write-Error "Could not find versionCode"
+    exit 1
 }
 
 if ($content -match 'versionName\s*=\s*"([^"]+)"') {
     $version = $matches[1]
 } else {
     Write-Error "Could not find versionName in $gradleFile"
+    exit 1
 }
 
 Write-Host "Detected Version: $version (Code: $versionCode)"
@@ -46,37 +40,30 @@ $env:JAVA_HOME = "C:\Program Files\Android\Android Studio\jbr"
 
 Write-Host "  ⚙ Compiling release APK..." -ForegroundColor Gray
 
-    # Try build WITHOUT cleaning cache first
-    $buildLog = "build_temp.log"
-    cmd /c "gradlew.bat assembleRelease --no-daemon --parallel --build-cache > $buildLog 2>&1"
-    $buildSuccess = $LASTEXITCODE -eq 0
-    $buildOutput = Get-Content $buildLog -ErrorAction SilentlyContinue
+# Try build WITHOUT cleaning cache first
+$buildLog = "build_temp.log"
+cmd /c "gradlew.bat assembleRelease --no-daemon --parallel --build-cache > $buildLog 2>&1"
+$buildSuccess = $LASTEXITCODE -eq 0
+$buildOutput = Get-Content $buildLog -ErrorAction SilentlyContinue
 
-    if (-not $buildSuccess -or -not (Test-Path $apkPath)) {
-        Write-Host "  ⚠ Build failed, analyzing error..." -ForegroundColor DarkYellow
-        
-        # Show last 10 lines
-        $buildOutput | Select-Object -Last 10 | ForEach-Object { Write-Host "    $_" -ForegroundColor DarkGray }
-        
-        Write-Host "  ⚙ Cleaning LOCAL cache and retrying..." -ForegroundColor DarkYellow
-        
-        # Clean ONLY local cache
-        ./gradlew.bat --stop | Out-Null
-        Remove-Item -Recurse -Force ".gradle" -ErrorAction SilentlyContinue
-        
-        # Retry
-        Write-Host "  ⚙ Rebuilding..." -ForegroundColor Gray
-        cmd /c "gradlew.bat clean assembleRelease --no-daemon --parallel --build-cache > $buildLog 2>&1"
-        $buildSuccess = $LASTEXITCODE -eq 0
-        $buildOutput = Get-Content $buildLog -ErrorAction SilentlyContinue
+if (-not $buildSuccess -or -not (Test-Path $apkPath)) {
+    Write-Host "  ⚠ Build failed, analyzing error..." -ForegroundColor DarkYellow
+    $buildOutput | Select-Object -Last 10 | ForEach-Object { Write-Host "    $_" -ForegroundColor DarkGray }
+    
+    Write-Host "  ⚙ Cleaning LOCAL cache and retrying..." -ForegroundColor DarkYellow
+    ./gradlew.bat --stop | Out-Null
+    Remove-Item -Recurse -Force ".gradle" -ErrorAction SilentlyContinue
+    
+    Write-Host "  ⚙ Rebuilding..." -ForegroundColor Gray
+    cmd /c "gradlew.bat clean assembleRelease --no-daemon --parallel --build-cache > $buildLog 2>&1"
     
     if (-not (Test-Path $apkPath)) {
+        $buildOutput = Get-Content $buildLog -ErrorAction SilentlyContinue
         Write-Host "`n❌ BUILD FAILED - Showing full error:" -ForegroundColor Red
         $buildOutput | Select-Object -Last 30
         Write-Error "APK not found at $apkPath"
         exit 1
     }
-    
     Write-Host "  ✓ Build succeeded after cache clean" -ForegroundColor Green
 } else {
     Write-Host "  ✓ APK built successfully (no cache clean needed)" -ForegroundColor Green
@@ -88,8 +75,8 @@ Copy-Item $apkPath -Destination "$docsDir/$apkName" -Force
 
 # Remove old APKs
 $removed = Get-ChildItem $docsDir -Filter "DrawRun_v*.apk" | Where-Object { $_.Name -ne $apkName }
-$removed | Remove-Item -Force
 if ($removed) {
+    $removed | Remove-Item -Force
     Write-Host "  ✓ Removed $($removed.Count) old APKs" -ForegroundColor Green
 }
 Write-Host "  ✓ Deployed: $apkName" -ForegroundColor Green
@@ -105,69 +92,46 @@ Write-Host "  ✓ Updated $indexFile" -ForegroundColor Green
 
 # Update version_info.json with AI-generated release notes
 Write-Host "  ⚙ Generating release notes..." -ForegroundColor Gray
-
-# Get commits since last tag
 $lastTag = git describe --tags --abbrev=0 2>$null
 if ($lastTag) {
-    Write-Host "  Use commits from $lastTag to HEAD" -ForegroundColor Gray
     $gitLog = git log "$lastTag..HEAD" --pretty=format:"%s" 2>$null
 } else {
-    Write-Host "  No tags found, using last 20 commits" -ForegroundColor Gray
     $gitLog = git log -n 20 --pretty=format:"%s" 2>$null
 }
 
-# Analyze commits to categorize changes
 $features = @()
 $fixes = @()
 
 if ($gitLog) {
     $gitLog | ForEach-Object {
         $commit = $_
-        
-        # SKIP merge commits or automated version bumps
         if ($commit -match "^Merge " -or $commit -match "^🚀 Deploy") { return }
-
-        # Simple cleanup - just remove common prefixes if possible, but keep it safe
-        # Removing "feat:", "fix:", etc.
-        $cleanMsg = $commit -replace "^(feat|fix|docs|style|refactor|perf|test|chore)(\(.*\))?:", ""
-        $cleanMsg = $cleanMsg.Trim()
-        
+        $cleanMsg = ($commit -replace "^(feat|fix|docs|style|refactor|perf|test|chore)(\(.*\))?:", "").Trim()
         if (-not $cleanMsg) { return }
 
-        # Categorize based on simple keywords
         if ($commit -match "feat" -or $commit -match "add" -or $commit -match "new" -or $commit -match "implement") {
-            if ($features.Count -lt 8 -and $features -notcontains $cleanMsg) {
-                $features += $cleanMsg
-            }
+            if ($features.Count -lt 8 -and $features -notcontains $cleanMsg) { $features += $cleanMsg }
         }
         elseif ($commit -match "fix" -or $commit -match "bug" -or $commit -match "resolve" -or $commit -match "correct") {
-            if ($fixes.Count -lt 8 -and $fixes -notcontains $cleanMsg) {
-                $fixes += $cleanMsg
-            }
+            if ($fixes.Count -lt 8 -and $fixes -notcontains $cleanMsg) { $fixes += $cleanMsg }
         }
     }
 }
 
-# Fallbacks if empty
 if ($features.Count -eq 0) { $features = @("Améliorations diverses et optimisations") }
 if ($fixes.Count -eq 0) { $fixes = @("Corrections mineures de stabilité") }
 
-# Update version_info.json (or create if missing)
 $versionInfoPath = "$docsDir/$versionInfoFile"
-
 if (Test-Path $versionInfoPath) {
     $jsonContent = Get-Content $versionInfoPath -Raw | ConvertFrom-Json
 } else {
-    # Create new structure if file doesn't exist
     $jsonContent = @{}
 }
 
-# Update properties (use Add-Member -Force to handle missing properties)
 $jsonContent | Add-Member -MemberType NoteProperty -Name "versionCode" -Value $versionCode -Force
 $jsonContent | Add-Member -MemberType NoteProperty -Name "versionName" -Value $version -Force
 $jsonContent | Add-Member -MemberType NoteProperty -Name "downloadUrl" -Value "https://swal-l.github.io/DrawRun/$apkName" -Force
 
-# Build release notes as simple string
 $releaseNotesText = "Version $version`n"
 if ($features.Count -gt 0) {
     $releaseNotesText += "`nNouvelles fonctionnalités :`n"
@@ -179,11 +143,8 @@ if ($fixes.Count -gt 0) {
 }
 
 $jsonContent | Add-Member -MemberType NoteProperty -Name "releaseNotes" -Value $releaseNotesText -Force
-
-# Save JSON
 $jsonContent | ConvertTo-Json -Depth 3 | Set-Content -Path $versionInfoPath -Encoding utf8
 Write-Host "  ✓ Updated $versionInfoFile" -ForegroundColor Green
-Write-Host "    Features: $($features.Count) | Fixes: $($fixes.Count)" -ForegroundColor DarkGray
 
 # ===== 6. GIT PUSH =====
 Write-Host "`n[6/6] Pushing to GitHub..." -ForegroundColor Yellow

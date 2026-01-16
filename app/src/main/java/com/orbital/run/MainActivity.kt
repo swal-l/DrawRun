@@ -25,7 +25,9 @@ import java.time.Instant
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import android.util.Log
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     // Lazy initialization of Health Connect client
     private val healthConnectClient by lazy { HealthConnectClient.getOrCreate(this) }
