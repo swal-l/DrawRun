@@ -2,6 +2,7 @@ package com.orbital.run.domain.models
 
 import java.time.Duration
 import java.time.Instant
+import kotlinx.serialization.Serializable
 
 /**
  * Represents a completed athletic activity (run, swim, bike, etc.).
@@ -355,6 +356,7 @@ data class Distance(val meters: Double) {
  * @property averageCadence Optional cadence for this split
  * @property groundContactTime Optional GCT for this split
  */
+@Serializable
 data class Split(
     val index: Int,
     val duration: Duration,
@@ -373,6 +375,7 @@ data class Split(
  * @property altitude Elevation in meters above sea level
  * @property accuracy GPS accuracy in meters
  */
+@Serializable
 data class GpsPoint(
     val latitude: Double,
     val longitude: Double,
@@ -387,6 +390,7 @@ data class GpsPoint(
  * @property secondsOffset Seconds since activity start
  * @property beatsPerMinute Heart rate value
  */
+@Serializable
 data class HeartRateSample(
     val secondsOffset: Int,
     val beatsPerMinute: Int
@@ -398,6 +402,7 @@ data class HeartRateSample(
  * @property secondsOffset Seconds since activity start
  * @property metersPerSecond Speed value
  */
+@Serializable
 data class SpeedSample(
     val secondsOffset: Int,
     val metersPerSecond: Double
@@ -409,6 +414,7 @@ data class SpeedSample(
  * @property secondsOffset Seconds since activity start
  * @property watts Power value
  */
+@Serializable
 data class PowerSample(
     val secondsOffset: Int,
     val watts: Double
@@ -420,6 +426,7 @@ data class PowerSample(
  * @property secondsOffset Seconds since activity start
  * @property stepsPerMinute Cadence value (steps or strokes)
  */
+@Serializable
 data class CadenceSample(
     val secondsOffset: Int,
     val stepsPerMinute: Double
@@ -431,6 +438,7 @@ data class CadenceSample(
  * @property secondsOffset Seconds since activity start
  * @property metersAboveSeaLevel Altitude value
  */
+@Serializable
 data class ElevationSample(
     val secondsOffset: Int,
     val metersAboveSeaLevel: Double
@@ -444,6 +452,7 @@ data class ElevationSample(
  * @property secondsOffset Seconds since activity start
  * @property value Metric value (unit depends on type)
  */
+@Serializable
 data class BiomechanicSample(
     val secondsOffset: Int,
     val value: Double
@@ -455,6 +464,7 @@ data class BiomechanicSample(
  * @property secondsOffset Seconds since activity start
  * @property breathsPerMinute Respiratory rate
  */
+@Serializable
 data class RespiratorySample(
     val secondsOffset: Int,
     val breathsPerMinute: Double

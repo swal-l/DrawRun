@@ -65,10 +65,10 @@ class MainActivity : ComponentActivity() {
         handleIntent(intent)
 
         setContent {
-            MaterialTheme {
+            DrawRunTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = AirSurface
+                    color = MaterialTheme.colorScheme.background
                 ) {
                     MainScreen()
                 }
