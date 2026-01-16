@@ -152,24 +152,38 @@ if ($gitLog) {
 if ($features.Count -eq 0) { $features = @("Améliorations diverses et optimisations") }
 if ($fixes.Count -eq 0) { $fixes = @("Corrections mineures de stabilité") }
 
-# Update version_info.json
-if (Test-Path $versionInfoFile) {
-    $jsonContent = Get-Content $versionInfoFile -Raw | ConvertFrom-Json
-    $jsonContent.latestVersionCode = $versionCode
-    $jsonContent.latestVersionName = $version
-    $jsonContent.downloadUrl = "https://swal-l.github.io/DrawRun/$apkName"
-    
-    # Update release notes
-    $jsonContent.releaseNotes.features = $features
-    $jsonContent.releaseNotes.fixes = $fixes
-    
-    $newJsonInfo = $jsonContent | ConvertTo-Json -Depth 5
-    Set-Content -Path $versionInfoFile -Value $newJsonInfo
-    Write-Host "  ✓ Updated $versionInfoFile with AI-generated notes" -ForegroundColor Green
-    Write-Host "    Features: $($features.Count) | Fixes: $($fixes.Count)" -ForegroundColor DarkGray
+# Update version_info.json (or create if missing)
+$versionInfoPath = "$docsDir/$versionInfoFile"
+
+if (Test-Path $versionInfoPath) {
+    $jsonContent = Get-Content $versionInfoPath -Raw | ConvertFrom-Json
 } else {
-    Write-Host "  ⚠ $versionInfoFile not found, skipping" -ForegroundColor DarkYellow
+    # Create new structure if file doesn't exist
+    $jsonContent = @{}
 }
+
+# Update properties (use Add-Member -Force to handle missing properties)
+$jsonContent | Add-Member -MemberType NoteProperty -Name "versionCode" -Value $versionCode -Force
+$jsonContent | Add-Member -MemberType NoteProperty -Name "versionName" -Value $version -Force
+$jsonContent | Add-Member -MemberType NoteProperty -Name "downloadUrl" -Value "https://swal-l.github.io/DrawRun/$apkName" -Force
+
+# Build release notes as simple string
+$releaseNotesText = "Version $version`n"
+if ($features.Count -gt 0) {
+    $releaseNotesText += "`nNouvelles fonctionnalités :`n"
+    $features | ForEach-Object { $releaseNotesText += "- $_`n" }
+}
+if ($fixes.Count -gt 0) {
+    $releaseNotesText += "`nCorrections :`n"
+    $fixes | ForEach-Object { $releaseNotesText += "- $_`n" }
+}
+
+$jsonContent | Add-Member -MemberType NoteProperty -Name "releaseNotes" -Value $releaseNotesText -Force
+
+# Save JSON
+$jsonContent | ConvertTo-Json -Depth 3 | Set-Content -Path $versionInfoPath -Encoding utf8
+Write-Host "  ✓ Updated $versionInfoFile" -ForegroundColor Green
+Write-Host "    Features: $($features.Count) | Fixes: $($fixes.Count)" -ForegroundColor DarkGray
 
 # ===== 6. GIT PUSH =====
 Write-Host "`n[6/6] Pushing to GitHub..." -ForegroundColor Yellow

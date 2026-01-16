@@ -26,6 +26,7 @@
     </queries>
     
     <application
+        android:name=".DrawRunApplication"
         android:label="DrawRun"
         android:icon="@mipmap/ic_launcher"
         android:supportsRtl="true"

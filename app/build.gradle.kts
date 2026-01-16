@@ -4,6 +4,9 @@ import java.io.FileInputStream
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.dagger.hilt.android")
+    id("com.google.devtools.ksp")
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.22"
 }
 
 android {
@@ -133,14 +136,31 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     
+    
     // 3D Maps (Open Source)
     implementation("org.maplibre.gl:android-sdk:11.0.0")
+    
+    
+    // Hilt (Dependency Injection)
+    implementation("com.google.dagger:hilt-android:2.50")
+    ksp("com.google.dagger:hilt-android-compiler:2.50")
+    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+    
+    // Room (Local Database)
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    ksp("androidx.room:room-compiler:2.6.1")
+    
+    // Kotlinx Serialization (for JSON in Room)
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 }
 
 // Satisfy IDE expectation for testClasses task
 tasks.register("testClasses") {
     dependsOn("compileDebugUnitTestSources")
 }
+
+
 
 
 

@@ -1,6 +1,6 @@
 {
-    "versionCode": 104,
-    "versionName": "4.8",
-    "downloadUrl": "https://swal-l.github.io/DrawRun/DrawRun_v4.8.apk",
-    "releaseNotes": "Hotfix v4.8 (UI):\n- Correction de la compilation issue des icônes manquantes."
+  "versionCode": 107,
+  "versionName": "4.9.2",
+  "downloadUrl": "https://swal-l.github.io/DrawRun/DrawRun_v4.9.2.apk",
+  "releaseNotes": "Version 4.9.2\n\nNouvelles fonctionnalités :\n- Fix Volume deduplication, Profile UI, and Analytics\n- \\ docs: Update README for v4.0 features\\\n\nCorrections :\n- Update index.html to v4.9.2\n- ­ƒÜÇ Deploy v4.9.1 (Strava Only + Backup Fix)\n- Fix download URL domain\n- Delete build_debug.log\n"
 }
