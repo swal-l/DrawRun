@@ -88,7 +88,20 @@ val DarkZone5 = Color(0xFFEF5350)             // Rouge ajusté
 // LEGACY COLORS (for gradual migration)
 // ========================
 
-// Keep old colors temporarily for compatibility
+// ========================
+// LEGACY COMPATIBILITY
+// ========================
+// Keep old color names for legacy UI files (to be migrated)
+
+val AirSurface = LightBackground
+val AirWhite = LightSurface
+val AirTextPrimary = LightOnSurface
+val AirTextSecondary = LightOnSurfaceVariant
+val AirTextLight = LightOnSurfaceTertiary
+val AirAccent = LightAccent
+val AirBackground = LightBackground
+val AppText = LightOnSurface
+
 val AirPrimary = LightPrimary
 val AirSecondary = Color(0xFF2979FF)
 val ZoneGrey = LightZone1

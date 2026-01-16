@@ -166,15 +166,15 @@ fun Persistence.CompletedActivity.toEntity(): ActivityEntity {
 /**
  * Map legacy WorkoutType to new ActivityType string.
  */
-private fun mapLegacyWorkoutType(type: com.orbital.run.logic.Algorithm.WorkoutType): String {
+private fun mapLegacyWorkoutType(type: com.orbital.run.logic.WorkoutType): String {
     return when (type) {
-        com.orbital.run.logic.Algorithm.WorkoutType.RUNNING -> "RUNNING"
-        com.orbital.run.logic.Algorithm.WorkoutType.SWIMMING -> "SWIMMING"
-        com.orbital.run.logic.Algorithm.WorkoutType.CYCLING -> "CYCLING"
-        com.orbital.run.logic.Algorithm.WorkoutType.EASY_RUN -> "EASY_RUN"
-        com.orbital.run.logic.Algorithm.WorkoutType.LONG_RUN -> "LONG_RUN"
-        com.orbital.run.logic.Algorithm.WorkoutType.INTERVALS -> "INTERVALS"
-        com.orbital.run.logic.Algorithm.WorkoutType.RECOVERY -> "RECOVERY"
+        com.orbital.run.logic.WorkoutType.RUNNING -> "RUNNING"
+        com.orbital.run.logic.WorkoutType.SWIMMING -> "SWIMMING"
+        com.orbital.run.logic.WorkoutType.CYCLING -> "CYCLING"
+        com.orbital.run.logic.WorkoutType.EASY_RUN -> "EASY_RUN"
+        com.orbital.run.logic.WorkoutType.LONG_RUN -> "LONG_RUN"
+        com.orbital.run.logic.WorkoutType.INTERVALS -> "INTERVALS"
+        com.orbital.run.logic.WorkoutType.RECOVERY -> "RECOVERY"
     }
 }
 

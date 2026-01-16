@@ -18,7 +18,7 @@ class HistoryViewModel @Inject constructor(
     val selectedFilter: StateFlow<ActivityFilter> = _selectedFilter.asStateFlow()
     
     val activities: StateFlow<List<Activity>> = combine(
-        activityRepository.observeActivities(limit = 500),
+        activityRepository.observeActivities(),
         selectedFilter
     ) { allActivities, filter ->
         allActivities.filter { filter.predicate(it) }

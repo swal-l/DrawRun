@@ -190,7 +190,7 @@ fun StatCard(
                 Spacer(modifier = Modifier.height(4.dp))
                 
                 LinearProgressIndicator(
-                    progress = { progressValue },
+                    progress = progressValue,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(4.dp),

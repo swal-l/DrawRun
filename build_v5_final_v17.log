@@ -1,0 +1,91 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :app:buildKotlinToolingMetadata
+> Task :app:checkKotlinGradlePluginConfigurationErrors
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preReleaseBuild UP-TO-DATE
+> Task :app:generateReleaseBuildConfig
+> Task :app:checkReleaseAarMetadata
+> Task :app:generateReleaseResValues
+> Task :app:mapReleaseSourceSetPaths
+> Task :app:generateReleaseResources
+> Task :app:packageReleaseResources
+> Task :app:createReleaseCompatibleScreenManifests
+> Task :app:extractDeepLinksRelease
+> Task :app:parseReleaseLocalResources
+> Task :app:mergeReleaseResources
+> Task :app:processReleaseMainManifest
+> Task :app:processReleaseManifest
+> Task :app:javaPreCompileRelease
+> Task :app:extractProguardFiles
+> Task :app:mergeReleaseJniLibFolders
+> Task :app:mergeReleaseNativeLibs
+> Task :app:processReleaseManifestForPackage
+> Task :app:checkReleaseDuplicateClasses
+> Task :app:desugarReleaseFileDependencies
+> Task :app:mergeReleaseStartupProfile UP-TO-DATE
+
+> Task :app:stripReleaseDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libmaplibre.so.
+
+> Task :app:processReleaseResources
+> Task :app:mergeExtDexRelease
+> Task :app:extractReleaseNativeSymbolTables
+> Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
+> Task :app:mergeReleaseShaders
+> Task :app:compileReleaseShaders NO-SOURCE
+> Task :app:generateReleaseAssets UP-TO-DATE
+> Task :app:mergeReleaseArtProfile
+> Task :app:mergeReleaseAssets
+> Task :app:compressReleaseAssets
+> Task :app:extractReleaseVersionControlInfo
+> Task :app:collectReleaseDependencies
+> Task :app:sdkReleaseDependencyData
+> Task :app:validateSigningRelease
+> Task :app:writeReleaseAppMetadata
+> Task :app:writeReleaseSigningConfigVersions
+> Task :app:optimizeReleaseResources
+
+> Task :app:kspReleaseKotlin
+w: [ksp] C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/data/local/database/DrawRunDatabase.kt:28: Schema export directory was not provided to the annotation processor so Room cannot export the schema. You can either provide `room.schemaLocation` annotation processor argument by applying the Room Gradle plugin (id 'androidx.room') OR set exportSchema to false.
+
+> Task :app:compileReleaseKotlin
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/data/migration/LegacyJsonMigrator.kt:159:37 Suspension functions can be called only within coroutine body
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/domain/calculations/Calculations.kt:4:38 Unresolved reference: Duration
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/domain/calculations/Calculations.kt:20:49 Unresolved reference: Duration
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/domain/calculations/Calculations.kt:34:50 Unresolved reference: Duration
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/domain/calculations/Calculations.kt:38:32 Overload resolution ambiguity: 
+public final operator fun div(other: Byte): Double defined in kotlin.Double
+public final operator fun div(other: Double): Double defined in kotlin.Double
+public final operator fun div(other: Float): Double defined in kotlin.Double
+public final operator fun div(other: Int): Double defined in kotlin.Double
+public final operator fun div(other: Long): Double defined in kotlin.Double
+public final operator fun div(other: Short): Double defined in kotlin.Double
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/domain/calculations/Calculations.kt:59:30 Unresolved reference: Duration
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/components/DrawRunTopBar.kt:93:80 Unresolved reference: KeyboardArrowLeft
+
+> Task :app:compileReleaseKotlin FAILED
+
+[Incubating] Problems report is available at: file:///C:/Users/lomic/Dev/orbital-belt/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:compileReleaseKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 6m 38s
+39 actionable tasks: 38 executed, 1 up-to-date

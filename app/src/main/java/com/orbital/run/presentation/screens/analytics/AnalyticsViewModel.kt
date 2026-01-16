@@ -57,7 +57,7 @@ class AnalyticsViewModel @Inject constructor(
     private fun observeData() {
         viewModelScope.launch {
             combine(
-                activityRepository.observeActivities(limit = 10000),
+                activityRepository.observeActivities(),
                 selectedTimeRange
             ) { activities, timeRange ->
                 computeAnalytics(activities, timeRange)

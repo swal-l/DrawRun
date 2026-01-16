@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Splash Screen colors (Light Mode) -->
+    <color name="splash_background_light">#FBFCFE</color>
+    <color name="splash_icon_background_light">#0066FF</color>
+    
+    <!-- Splash Screen colors (Dark Mode) -->
+    <color name="splash_background_dark">#0F1419</color>
+    <color name="splash_icon_background_dark">#4D9FFF</color>
+</resources>

@@ -1,0 +1,403 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :app:buildKotlinToolingMetadata
+> Task :app:checkKotlinGradlePluginConfigurationErrors
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preReleaseBuild UP-TO-DATE
+> Task :app:generateReleaseBuildConfig
+> Task :app:generateReleaseResValues
+> Task :app:checkReleaseAarMetadata
+> Task :app:mapReleaseSourceSetPaths
+> Task :app:generateReleaseResources
+> Task :app:packageReleaseResources
+> Task :app:createReleaseCompatibleScreenManifests
+> Task :app:extractDeepLinksRelease
+> Task :app:parseReleaseLocalResources
+> Task :app:mergeReleaseResources
+> Task :app:processReleaseMainManifest
+> Task :app:processReleaseManifest
+> Task :app:extractProguardFiles
+> Task :app:javaPreCompileRelease
+> Task :app:mergeReleaseJniLibFolders
+> Task :app:mergeReleaseNativeLibs
+> Task :app:desugarReleaseFileDependencies
+> Task :app:mergeReleaseStartupProfile UP-TO-DATE
+> Task :app:mergeReleaseShaders
+> Task :app:compileReleaseShaders NO-SOURCE
+> Task :app:generateReleaseAssets UP-TO-DATE
+> Task :app:checkReleaseDuplicateClasses
+> Task :app:mergeReleaseArtProfile
+
+> Task :app:stripReleaseDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libmaplibre.so.
+
+> Task :app:mergeReleaseAssets
+> Task :app:processReleaseManifestForPackage
+> Task :app:extractReleaseNativeSymbolTables
+> Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
+> Task :app:compressReleaseAssets
+> Task :app:extractReleaseVersionControlInfo
+> Task :app:collectReleaseDependencies
+> Task :app:sdkReleaseDependencyData
+> Task :app:validateSigningRelease
+> Task :app:writeReleaseAppMetadata
+> Task :app:writeReleaseSigningConfigVersions
+> Task :app:processReleaseResources
+> Task :app:optimizeReleaseResources
+> Task :app:mergeExtDexRelease
+
+> Task :app:kspReleaseKotlin
+w: [ksp] C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/data/local/database/DrawRunDatabase.kt:28: Schema export directory was not provided to the annotation processor so Room cannot export the schema. You can either provide `room.schemaLocation` annotation processor argument by applying the Room Gradle plugin (id 'androidx.room') OR set exportSchema to false.
+
+> Task :app:compileReleaseKotlin FAILED
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/MainActivity.kt:11:33 Unresolved reference: AirSurface
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/MainActivity.kt:69:29 Unresolved reference: AirSurface
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/data/local/database/TypeConverters.kt:83:29 Public-API inline function cannot access non-public-API 'private final val json: Json defined in com.orbital.run.data.local.database.Converters'
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/data/local/database/TypeConverters.kt:92:17 Public-API inline function cannot access non-public-API 'private final val json: Json defined in com.orbital.run.data.local.database.Converters'
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/data/mappers/LegacyMappers.kt:169:62 Unresolved reference: Algorithm
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/data/mappers/LegacyMappers.kt:170:12 'when' expression must be exhaustive, add necessary 'else' branch
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/data/mappers/LegacyMappers.kt:171:31 Unresolved reference: Algorithm
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/data/mappers/LegacyMappers.kt:172:31 Unresolved reference: Algorithm
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/data/mappers/LegacyMappers.kt:173:31 Unresolved reference: Algorithm
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/data/mappers/LegacyMappers.kt:174:31 Unresolved reference: Algorithm
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/data/mappers/LegacyMappers.kt:175:31 Unresolved reference: Algorithm
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/data/mappers/LegacyMappers.kt:176:31 Unresolved reference: Algorithm
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/data/mappers/LegacyMappers.kt:177:31 Unresolved reference: Algorithm
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/data/migration/LegacyJsonMigrator.kt:159:37 Suspension functions can be called only within coroutine body
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/data/migration/LegacyJsonMigrator.kt:308:42 Unresolved reference: Algorithm
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/domain/calculations/Calculations.kt:4:38 Unresolved reference: Duration
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/domain/calculations/Calculations.kt:20:49 Unresolved reference: Duration
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/domain/calculations/Calculations.kt:34:50 Unresolved reference: Duration
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/domain/calculations/Calculations.kt:38:32 Overload resolution ambiguity: 
+public final operator fun div(other: Byte): Double defined in kotlin.Double
+public final operator fun div(other: Double): Double defined in kotlin.Double
+public final operator fun div(other: Float): Double defined in kotlin.Double
+public final operator fun div(other: Int): Double defined in kotlin.Double
+public final operator fun div(other: Long): Double defined in kotlin.Double
+public final operator fun div(other: Short): Double defined in kotlin.Double
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/domain/calculations/Calculations.kt:59:30 Unresolved reference: Duration
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/components/DrawRunTopBar.kt:92:73 Unresolved reference: AutoMirrored
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/components/StatCard.kt:192:17 None of the following functions can be called with the arguments supplied: 
+public fun LinearProgressIndicator(modifier: Modifier = ..., color: Color = ..., trackColor: Color = ..., strokeCap: StrokeCap = ...): Unit defined in androidx.compose.material3
+public fun LinearProgressIndicator(progress: Float, modifier: Modifier = ..., color: Color = ..., trackColor: Color = ..., strokeCap: StrokeCap = ...): Unit defined in androidx.compose.material3
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/components/charts/DrawRunLineChart.kt:165:29 Unresolved reference: Fill
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/screens/analytics/AnalyticsScreen.kt:18:27 Unresolved reference: compose
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/screens/analytics/AnalyticsScreen.kt:39:38 Unresolved reference: collectAsStateWithLifecycle
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/screens/analytics/AnalyticsScreen.kt:40:58 Unresolved reference: collectAsStateWithLifecycle
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/screens/analytics/AnalyticsScreen.kt:352:13 This material API is experimental and is likely to change or to be removed in the future.
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/screens/analytics/AnalyticsScreen.kt:362:26 This material API is experimental and is likely to change or to be removed in the future.
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/screens/analytics/AnalyticsScreen.kt:362:45 This material API is experimental and is likely to change or to be removed in the future.
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/screens/analytics/AnalyticsViewModel.kt:60:54 Cannot find a parameter with this name: limit
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/screens/history/HistoryScreen.kt:17:27 Unresolved reference: compose
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/screens/history/HistoryScreen.kt:42:44 Unresolved reference: collectAsStateWithLifecycle
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/screens/history/HistoryScreen.kt:43:52 Unresolved reference: collectAsStateWithLifecycle
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/screens/history/HistoryScreen.kt:103:13 This material API is experimental and is likely to change or to be removed in the future.
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/screens/history/HistoryScreen.kt:121:26 This material API is experimental and is likely to change or to be removed in the future.
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/screens/history/HistoryScreen.kt:121:45 This material API is experimental and is likely to change or to be removed in the future.
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/screens/history/HistoryScreen.kt:193:27 Unresolved reference: sp
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/screens/history/HistoryViewModel.kt:21:46 Cannot find a parameter with this name: limit
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/screens/home/HomeScreen.kt:16:27 Unresolved reference: compose
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/screens/home/HomeScreen.kt:41:38 Unresolved reference: collectAsStateWithLifecycle
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/screens/home/HomeScreen.kt:147:17 None of the following functions can be called with the arguments supplied: 
+public fun LinearProgressIndicator(modifier: Modifier = ..., color: Color = ..., trackColor: Color = ..., strokeCap: StrokeCap = ...): Unit defined in androidx.compose.material3
+public fun LinearProgressIndicator(progress: Float, modifier: Modifier = ..., color: Color = ..., trackColor: Color = ..., strokeCap: StrokeCap = ...): Unit defined in androidx.compose.material3
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/screens/home/HomeViewModel.kt:64:54 Cannot find a parameter with this name: limit
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/screens/settings/SettingsScreen.kt:15:27 Unresolved reference: compose
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/screens/settings/SettingsScreen.kt:33:44 Unresolved reference: collectAsStateWithLifecycle
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/screens/settings/SettingsScreen.kt:34:52 Unresolved reference: collectAsStateWithLifecycle
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/screens/settings/SettingsScreen.kt:35:54 Unresolved reference: collectAsStateWithLifecycle
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/social/SocialScreen.kt:51:25 Unresolved reference: AirSurface
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:111:41 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:118:37 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:124:93 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:142:73 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:209:30 Unresolved reference: AirWhite
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:210:62 Unresolved reference: AppText
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:215:33 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:220:33 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:241:45 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:271:25 Unresolved reference: AirSurface
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:273:25 Unresolved reference: AirSurface
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:341:91 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:342:76 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:344:108 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:360:37 Unresolved reference: AirSurface
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:385:29 Unresolved reference: AirSurface
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:392:106 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:400:106 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:407:53 Unresolved reference: AirSurface
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:428:91 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:433:33 Unresolved reference: AirSurface
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:443:91 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:446:80 Unresolved reference: AirSurface
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:448:88 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:451:80 Unresolved reference: AirSurface
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:453:89 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:479:94 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:487:102 Unresolved reference: AirAccent
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:489:104 Unresolved reference: AirAccent
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:507:90 Unresolved reference: AirAccent
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:509:100 Unresolved reference: AirAccent
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:534:32 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:618:37 Unresolved reference: AirSurface
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:624:94 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:627:92 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:634:81 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:638:89 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:670:104 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:675:29 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:680:116 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:699:94 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:703:116 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:705:82 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:742:103 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:745:75 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:908:30 Unresolved reference: formatPace
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:908:86 Unresolved reference: formatPace
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:914:24 Unresolved reference: formatPace
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:992:58 Unresolved reference: AirAccent
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:994:134 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1024:88 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1028:93 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1032:86 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1037:104 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1072:76 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1187:116 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1188:119 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1189:120 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1191:129 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1193:119 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1195:116 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1196:118 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1199:119 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1200:123 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1203:121 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1205:117 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1207:41 Unresolved reference: AirSurface
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1214:119 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1234:78 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1239:157 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1243:121 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1245:151 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1250:128 Unresolved reference: AirAccent
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1252:160 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1258:130 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1263:182 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1265:82 Unresolved reference: AirSurface
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1348:64 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1376:123 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1397:69 Unresolved reference: AirSurface
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1404:29 Unresolved reference: AirAccent
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1409:73 Unresolved reference: AirSurface
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1433:59 Unresolved reference: AirWhite
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1441:126 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1448:96 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1469:33 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1473:69 Unresolved reference: AirSurface
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1477:99 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1495:47 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1502:39 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1503:39 Unresolved reference: AirSurface
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1521:112 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1526:83 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalysisDialogs.kt:104:37 Unresolved reference: AirAccent
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalysisDialogs.kt:133:37 Unresolved reference: AirAccent
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalysisDialogs.kt:144:37 Unresolved reference: AirAccent
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalysisDialogs.kt:182:37 Unresolved reference: AirAccent
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalysisDialogs.kt:191:37 Unresolved reference: AirAccent
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalysisDialogs.kt:204:37 Unresolved reference: AirAccent
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:169:191 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:199:132 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:201:88 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:211:78 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:217:78 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:253:36 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:267:80 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:324:65 Unresolved reference: AirSurface
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:330:113 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:332:100 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:421:33 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:429:78 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:445:88 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:450:50 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:460:47 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:473:65 Unresolved reference: AirSurface
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:498:76 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:499:161 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:503:79 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/DashboardComponents.kt:57:140 Unresolved reference: AirAccent
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/DashboardComponents.kt:63:51 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/DashboardComponents.kt:121:51 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/DashboardComponents.kt:122:81 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/DashboardComponents.kt:123:50 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/DashboardComponents.kt:130:60 Unresolved reference: AirSurface
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/DashboardComponents.kt:132:50 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/DashboardComponents.kt:133:80 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/DashboardComponents.kt:142:81 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/DashboardComponents.kt:144:51 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/GarminLoginDialog.kt:18:33 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/GarminLoginDialog.kt:19:33 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/GarminLoginDialog.kt:50:29 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/GarminLoginDialog.kt:58:29 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/GarminLoginDialog.kt:91:49 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/HealthConnectComponents.kt:37:25 Unresolved reference: AirBackground
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/HealthConnectComponents.kt:60:21 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/HealthConnectComponents.kt:70:21 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/HealthConnectComponents.kt:81:113 Unresolved reference: AirSurface
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/HealthConnectComponents.kt:89:95 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/HealthConnectComponents.kt:90:98 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/HealthConnectComponents.kt:103:21 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/HealthConnectComponents.kt:119:32 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/HealthConnectComponents.kt:124:75 Unresolved reference: AirWhite
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/HealthConnectComponents.kt:125:117 Unresolved reference: AirSurface
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/HealthConnectComponents.kt:130:130 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/HeartRateChart.kt:21:21 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/HeartRateChart.kt:75:25 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/HeartRateChart.kt:86:25 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/IntelligentInsights.kt:32:21 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/IntelligentInsights.kt:71:41 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/IntelligentInsights.kt:77:37 Unresolved reference: AirSurface
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/IntelligentInsights.kt:106:74 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/IntelligentInsights.kt:121:82 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/IntelligentInsights.kt:133:71 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/IntelligentInsights.kt:144:37 Unresolved reference: AirSurface
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/IntelligentInsights.kt:171:33 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/IntelligentInsights.kt:175:37 Unresolved reference: AirSurface
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/IntelligentInsights.kt:208:37 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/IntelligentInsights.kt:262:25 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/NotificationDialog.kt:33:26 Unresolved reference: AirWhite
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/NotificationDialog.kt:40:47 Unresolved reference: AppText
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/NotificationDialog.kt:58:36 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/NotificationDialog.kt:64:37 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/NotificationDialog.kt:100:25 Unresolved reference: AirSurface
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/NotificationDialog.kt:107:29 Unresolved reference: AirAccent
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/NotificationDialog.kt:113:25 Unresolved reference: AppText
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/NotificationDialog.kt:120:25 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/NotificationDialog.kt:126:25 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:85:37 Unresolved reference: AirSurface
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:91:124 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:93:140 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:305:79 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:352:56 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:353:94 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:354:54 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:373:59 Unresolved reference: AirBackground
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:378:76 Unresolved reference: AirAccent
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:380:85 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:383:57 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:386:93 Unresolved reference: AirAccent
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:409:71 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:417:79 Unresolved reference: AirAccent
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:450:47 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:492:97 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:576:59 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:592:47 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:665:39 Unresolved reference: AirAccent
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:673:64 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:674:94 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:675:65 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:677:78 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:679:104 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:691:59 Unresolved reference: AirSurface
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:694:82 Unresolved reference: AirAccent
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:766:56 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:767:87 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:768:54 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:773:88 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:801:69 Unresolved reference: AirBackground
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:842:92 Unresolved reference: AirAccent
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:861:46 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:935:36 Unresolved reference: AirAccent
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:946:57 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:947:96 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:948:58 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:951:101 Unresolved reference: AirAccent
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:952:78 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:970:80 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:982:99 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:985:148 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:996:102 Unresolved reference: AirBackground
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:1030:32 Unresolved reference: AirAccent
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:1033:131 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:1034:149 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:1045:129 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:1077:37 Unresolved reference: AirSurface
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:1081:126 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:1083:88 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:1108:65 Unresolved reference: AirAccent
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:1285:40 Unresolved reference: AirAccent
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:1364:99 Unresolved reference: AirAccent
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:1369:55 Unresolved reference: formatPace
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:1388:63 Unresolved reference: AirSurface
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:1400:58 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:1407:76 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:1492:14 Unresolved reference: formatPace
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:1639:58 Unresolved reference: AirAccent
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:1645:55 Unresolved reference: AirAccent
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:1645:77 Unresolved reference: AirAccent
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:1648:24 Unresolved reference: AirAccent
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:1667:31 None of the following functions can be called with the arguments supplied: 
+public final fun verticalGradient(vararg colorStops: Pair<Float, Color>, startY: Float = ..., endY: Float = ..., tileMode: TileMode = ...): Brush defined in androidx.compose.ui.graphics.Brush.Companion
+public final fun verticalGradient(colors: List<Color>, startY: Float = ..., endY: Float = ..., tileMode: TileMode = ...): Brush defined in androidx.compose.ui.graphics.Brush.Companion
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:1667:55 Unresolved reference: AirAccent
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:1667:77 Unresolved reference: AirAccent
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:1679:70 Unresolved reference: AirAccent
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:1905:55 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:1920:30 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/RecapScreen.kt:132:26 Unresolved reference: AirSurface
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/RecapScreen.kt:134:40 Unresolved reference: AirSurface
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/RecapScreen.kt:137:102 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/RecapScreen.kt:138:93 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/RecapScreen.kt:141:66 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/RecapScreen.kt:183:74 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/RecapScreen.kt:235:69 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/RecapScreen.kt:283:73 Unresolved reference: AirSurface
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/RecapScreen.kt:288:104 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/RecapScreen.kt:309:33 Unresolved reference: AirSurface
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/RecapScreen.kt:358:52 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/RecapScreen.kt:364:52 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/RecapScreen.kt:373:73 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/RecapScreen.kt:381:29 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/RecapScreen.kt:382:29 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/RecapScreen.kt:398:51 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/RecapScreen.kt:409:57 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ShareActivityDialog.kt:211:49 Unresolved reference: AirTextLight
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ShareActivityDialog.kt:221:101 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/SyncOnboardingScreen.kt:38:25 Unresolved reference: AirSurface
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/SyncOnboardingScreen.kt:58:25 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/SyncOnboardingScreen.kt:65:25 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/SyncOnboardingScreen.kt:141:85 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/SyncOnboardingScreen.kt:142:61 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/UpdateDialog.kt:23:33 Unresolved reference: AirSurface
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/UpdateDialog.kt:24:33 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/UpdateDialog.kt:25:33 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/UpdateDialog.kt:63:29 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/UpdateDialog.kt:68:29 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/UpdateDialog.kt:116:47 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/UpdateDialog.kt:129:17 Unresolved reference: AirTextPrimary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/UpdateDialog.kt:142:21 Unresolved reference: AirTextSecondary
+e: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/UpdateDialog.kt:148:21 Unresolved reference: AirTextPrimary
+
+[Incubating] Problems report is available at: file:///C:/Users/lomic/Dev/orbital-belt/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:compileReleaseKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 52s
+39 actionable tasks: 38 executed, 1 up-to-date

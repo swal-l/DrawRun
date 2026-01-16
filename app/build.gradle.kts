@@ -17,8 +17,8 @@ android {
         applicationId = "com.orbital.run"
         minSdk = 26
         targetSdk = 35
-        versionCode = 107
-        versionName = "4.9.2"
+        versionCode = 108
+        versionName = "5.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         
@@ -140,6 +140,15 @@ dependencies {
     // 3D Maps (Open Source)
     implementation("org.maplibre.gl:android-sdk:11.0.0")
     
+    // Splash Screen (Android 12+)
+    implementation("androidx.core:core-splashscreen:1.0.1")
+    
+    // Material3
+    implementation("com.google.android.material:material:1.11.0")
+    implementation("androidx.compose.material:material-icons-extended:1.6.1")
+    
+    // Lifecycle Compose (collectAsStateWithLifecycle)
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
     
     // Hilt (Dependency Injection)
     implementation("com.google.dagger:hilt-android:2.50")
@@ -159,6 +168,7 @@ dependencies {
 tasks.register("testClasses") {
     dependsOn("compileDebugUnitTestSources")
 }
+
 
 
 

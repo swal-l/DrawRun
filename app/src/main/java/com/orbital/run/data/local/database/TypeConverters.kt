@@ -2,6 +2,7 @@ package com.orbital.run.data.local.database
 
 import androidx.room.TypeConverter
 import kotlinx.serialization.encodeToString
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import java.time.Duration
 import java.time.Instant
@@ -17,7 +18,7 @@ import java.time.LocalDate
  */
 class Converters {
     
-    private val json = Json {
+    val json = Json {
         ignoreUnknownKeys = true
         encodeDefaults = true
     }

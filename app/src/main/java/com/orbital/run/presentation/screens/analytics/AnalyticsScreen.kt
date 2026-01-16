@@ -338,6 +338,7 @@ private fun ContentState(
 /**
  * Time range selector with chips.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TimeRangeSelector(
     selected: TimeRange,

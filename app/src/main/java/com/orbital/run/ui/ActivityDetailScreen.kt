@@ -1,5 +1,6 @@
 package com.orbital.run.ui
 
+import com.orbital.run.domain.calculations.formatPace
 import androidx.compose.animation.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -905,13 +906,26 @@ fun GapChart(gapSeries: List<Pair<Int, Double>>, state: ChartSyncState = remembe
         StreamCanvas(
             height = h,
             _dataSize = gapSeries.size,
-            yLabels = listOf(formatPace(maxG.toDouble() * 3.6) to Color(0xFF673AB7), formatPace(minG.toDouble() * 3.6) to Color(0xFF673AB7)),
+            yLabels = listOf(
+                run {
+                   val sp = maxG.toDouble() * 3.6
+                   val p = if (sp > 0.1) (3600 / sp).toLong() else 0L
+                   formatPace(p) to Color(0xFF673AB7)
+                },
+                run {
+                   val sp = minG.toDouble() * 3.6
+                   val p = if (sp > 0.1) (3600 / sp).toLong() else 0L
+                   formatPace(p) to Color(0xFF673AB7)
+                }
+            ),
             state = state,
             scrubValue = { width, _ ->
                 val sx = state.scrubX
                 if (sx != null) {
                     val idx = (sx / width * (gapSeries.size - 1)).toInt().coerceIn(0, gapSeries.size - 1)
-                    "${formatPace(gapSeries[idx].second * 3.6)} /km"
+                    val sp = gapSeries[idx].second * 3.6
+                    val paceSec = if(sp > 0.1) (3600/sp).toLong() else 0L
+                    "${formatPace(paceSec)} /km"
                 } else null
             }
         ) { w, h2, zScale, zOffset ->

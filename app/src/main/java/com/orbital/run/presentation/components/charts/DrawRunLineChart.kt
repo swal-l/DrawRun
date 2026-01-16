@@ -161,8 +161,7 @@ fun DrawRunLineChart(
                 drawCircle(
                     color = if (isHighlighted) lineColor else Color.White,
                     radius = if (isHighlighted) 6.dp.toPx() else 4.dp.toPx(),
-                    center = point,
-                    style = Fill
+                    center = point
                 )
                 drawCircle(
                     color = lineColor,

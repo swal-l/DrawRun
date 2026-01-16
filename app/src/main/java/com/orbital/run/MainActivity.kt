@@ -12,6 +12,9 @@ import com.orbital.run.ui.theme.AirSurface
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 
+// Splash Screen (Android 12+)
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+
 // Health Connect imports
 import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.permission.HealthPermission
@@ -44,6 +47,9 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Install Splash Screen BEFORE super.onCreate()
+        installSplashScreen()
+        
         super.onCreate(savedInstanceState)
         
         // Check Health Connect availability

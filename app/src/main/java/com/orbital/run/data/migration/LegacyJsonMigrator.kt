@@ -2,6 +2,7 @@ package com.orbital.run.data.migration
 
 import android.content.Context
 import android.util.Log
+import androidx.room.withTransaction
 import com.orbital.run.data.local.dao.ActivityDao
 import com.orbital.run.data.local.database.DrawRunDatabase
 import com.orbital.run.data.mappers.toEntity
@@ -155,7 +156,7 @@ class LegacyJsonMigrator @Inject constructor(
                 
                 // Insert in transaction
                 try {
-                    database.runInTransaction {
+                    database.withTransaction {
                         activityDao.insertActivities(entities)
                     }
                     importedCount += entities.size
@@ -233,7 +234,7 @@ class LegacyJsonMigrator @Inject constructor(
             }
             
             // Check file size
-            val sizeInMB = file.length() / (1024.0 * 1024.0)
+            val sizeInMB = file.length().toDouble() / (1024.0 * 1024.0)
             if (sizeInMB > 50) {
                 return@withContext ValidationResult.Failure("JSON too large: ${sizeInMB}MB (max 50MB)")
             }
@@ -305,7 +306,7 @@ class LegacyJsonMigrator @Inject constructor(
         return Persistence.CompletedActivity(
             id = obj.optString("id", java.util.UUID.randomUUID().toString()),
             date = obj.getLong("date"),
-            type = com.orbital.run.logic.Algorithm.WorkoutType.valueOf(obj.getString("type")),
+            type = com.orbital.run.logic.WorkoutType.valueOf(obj.getString("type")),
             title = obj.getString("title"),
             distanceKm = obj.getDouble("dist"),
             durationMin = obj.getInt("dur"),

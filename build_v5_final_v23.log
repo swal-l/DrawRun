@@ -1,0 +1,177 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :app:buildKotlinToolingMetadata UP-TO-DATE
+> Task :app:checkKotlinGradlePluginConfigurationErrors
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preReleaseBuild UP-TO-DATE
+> Task :app:generateReleaseBuildConfig UP-TO-DATE
+> Task :app:checkReleaseAarMetadata UP-TO-DATE
+> Task :app:generateReleaseResValues UP-TO-DATE
+> Task :app:mapReleaseSourceSetPaths UP-TO-DATE
+> Task :app:generateReleaseResources UP-TO-DATE
+> Task :app:mergeReleaseResources UP-TO-DATE
+> Task :app:packageReleaseResources UP-TO-DATE
+> Task :app:parseReleaseLocalResources UP-TO-DATE
+> Task :app:createReleaseCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksRelease UP-TO-DATE
+> Task :app:processReleaseMainManifest UP-TO-DATE
+> Task :app:processReleaseManifest UP-TO-DATE
+> Task :app:processReleaseManifestForPackage UP-TO-DATE
+> Task :app:processReleaseResources UP-TO-DATE
+> Task :app:javaPreCompileRelease UP-TO-DATE
+> Task :app:extractProguardFiles UP-TO-DATE
+> Task :app:mergeReleaseJniLibFolders UP-TO-DATE
+> Task :app:mergeReleaseNativeLibs UP-TO-DATE
+> Task :app:stripReleaseDebugSymbols UP-TO-DATE
+> Task :app:extractReleaseNativeSymbolTables UP-TO-DATE
+> Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
+> Task :app:checkReleaseDuplicateClasses UP-TO-DATE
+> Task :app:desugarReleaseFileDependencies UP-TO-DATE
+> Task :app:mergeReleaseStartupProfile UP-TO-DATE
+> Task :app:mergeExtDexRelease UP-TO-DATE
+> Task :app:mergeReleaseArtProfile UP-TO-DATE
+> Task :app:mergeReleaseShaders UP-TO-DATE
+> Task :app:compileReleaseShaders NO-SOURCE
+> Task :app:generateReleaseAssets UP-TO-DATE
+> Task :app:mergeReleaseAssets UP-TO-DATE
+> Task :app:compressReleaseAssets UP-TO-DATE
+> Task :app:extractReleaseVersionControlInfo UP-TO-DATE
+> Task :app:optimizeReleaseResources UP-TO-DATE
+> Task :app:collectReleaseDependencies UP-TO-DATE
+> Task :app:sdkReleaseDependencyData UP-TO-DATE
+> Task :app:validateSigningRelease UP-TO-DATE
+> Task :app:writeReleaseAppMetadata UP-TO-DATE
+> Task :app:writeReleaseSigningConfigVersions UP-TO-DATE
+> Task :app:kspReleaseKotlin
+> Task :app:compileReleaseKotlin
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/HealthConnectPermissionsActivity.kt:39:13 'SmallTopAppBar(() -> Unit, Modifier = ..., () -> Unit = ..., RowScope.() -> Unit = ..., WindowInsets = ..., TopAppBarColors = ..., TopAppBarScrollBehavior? = ...): Unit' is deprecated. Use TopAppBar instead.
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/HealthConnectPermissionsActivity.kt:41:44 'smallTopAppBarColors(Color = ..., Color = ..., Color = ..., Color = ..., Color = ...): TopAppBarColors' is deprecated. Use topAppBarColors instead.
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/api/FitbitManager.kt:85:13 Variable 'token' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/api/FitbitManager.kt:94:13 Variable 'token' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/api/HealthConnectManager.kt:364:13 Variable 'power' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/api/SyncManager.kt:19:43 Parameter 'onProgress' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/api/SyncManager.kt:100:45 Parameter 'activity' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/api/SyncOptimizer.kt:74:46 Parameter 'context' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/api/SyncOptimizer.kt:125:9 Parameter 'activityIds' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/api/SyncOptimizer.kt:135:9 Parameter 'context' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/api/WithingsManager.kt:73:32 Parameter 'context' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/api/WithingsManager.kt:73:50 Parameter 'activity' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/api/WithingsManager.kt:80:13 Variable 'token' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/AdvancedAnalytics.kt:235:46 Parameter 'index' is never used, could be renamed to _
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/AdvancedAnalytics.kt:337:29 Parameter 'gctMs' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/AdvancedAnalytics.kt:337:44 Parameter 'durationSec' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/AdvancedAnalytics.kt:337:65 Parameter 'distanceMeters' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Algorithm.kt:280:40 Parameter 'isMale' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Algorithm.kt:316:83 Parameter 'vma' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Algorithm.kt:384:99 Parameter 'phases' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/AnalysisEngine.kt:528:39 'TrendingUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.TrendingUp
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/AnalysisEngine.kt:534:39 'TrendingDown: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.TrendingDown
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:672:13 Variable 'prefs' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:1434:13 Variable 'processedIds' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/logic/Persistence.kt:1455:17 Variable 'iterator' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/components/ActivitySummaryItem.kt:111:46 'DirectionsRun: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.DirectionsRun
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/components/ActivitySummaryItem.kt:175:41 'DirectionsRun: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.DirectionsRun
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/components/ActivitySummaryItem.kt:177:41 'DirectionsBike: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.DirectionsBike
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/components/charts/DrawRunLineChart.kt:64:9 Variable 'textColor' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/components/charts/DrawRunLineChart.kt:73:13 Variable 'infiniteTransition' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/components/charts/DrawRunLineChart.kt:201:5 Parameter 'yAxisLabel' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/components/charts/DrawRunLineChart.kt:217:13 Variable 'value' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/components/charts/DrawRunLineChart.kt:287:5 Parameter 'xAxisLabel' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/screens/analytics/AnalyticsScreen.kt:259:46 'DirectionsRun: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.DirectionsRun
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/screens/analytics/AnalyticsScreen.kt:398:59 'TrendingUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.TrendingUp
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/screens/analytics/AnalyticsScreen.kt:399:58 'TrendingFlat: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.TrendingFlat
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/screens/analytics/AnalyticsScreen.kt:400:59 'TrendingDown: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.TrendingDown
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/screens/history/HistoryScreen.kt:287:30 'DirectionsRun: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.DirectionsRun
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/screens/history/HistoryScreen.kt:292:30 'DirectionsBike: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.DirectionsBike
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/screens/history/HistoryViewModel.kt:35:24 Parameter 'activity' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/screens/home/HomeScreen.kt:193:5 Parameter 'lastActivity' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/presentation/screens/home/HomeScreen.kt:250:46 'DirectionsRun: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.DirectionsRun
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/social/SocialScreen.kt:321:49 'Comment: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.Comment
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:125:44 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:505:96 'DirectionsRun: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.DirectionsRun
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:519:84 'TrendingUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.TrendingUp
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:755:28 Parameter 'insight' is never used, could be renamed to _
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ActivityDetailScreen.kt:1443:26 Parameter 'activity' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalysisDialogs.kt:63:50 'TrendingUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.TrendingUp
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalysisDialogs.kt:154:50 'DirectionsRun: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.DirectionsRun
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/AnalyticsScreen.kt:70:9 Variable 'sportBreakdown' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/DashboardComponents.kt:42:9 Variable 'coachInsight' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/HealthConnectComponents.kt:29:5 Parameter 'context' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/IntelligentInsights.kt:157:43 'DirectionsRun: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.DirectionsRun
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/IntelligentInsights.kt:190:47 'TrendingUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.TrendingUp
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/MapLibreHero.kt:91:67 Parameter 'style' is never used, could be renamed to _
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/MapLibreHero.kt:105:33 'addPolyline(PolylineOptions): Polyline' is deprecated. Deprecated in Java
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/MapLibreHero.kt:106:66 'PolylineOptions' is deprecated. Deprecated in Java
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:873:9 Variable 'textMeasurer' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:874:9 Variable 'labelStyle' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ProfessionalCharts.kt:1316:21 Name shadowed: cw
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/RecapScreen.kt:74:9 Variable 'cal' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/RecapScreen.kt:253:21 Variable 'streak' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ShareActivityDialog.kt:265:5 Parameter 'context' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ShareActivityDialog.kt:325:107 Parameter 'settings' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ShareActivityDialog.kt:357:5 Parameter 'height' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ShareActivityDialog.kt:422:109 Parameter 'settings' is never used
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/ShareActivityDialog.kt:524:44 'insertImage(ContentResolver!, Bitmap!, String!, String!): String!' is deprecated. Deprecated in Java
+w: file:///C:/Users/lomic/Dev/orbital-belt/app/src/main/java/com/orbital/run/ui/theme/Theme.kt:123:20 'setter for statusBarColor: Int' is deprecated. Deprecated in Java
+
+> Task :app:compileReleaseJavaWithJavac
+
+> Task :app:hiltAggregateDepsRelease
+WARNING: [Processor] Library 'C:\Users\lomic\.gradle\caches\9.1.0\transforms\19e61ca66e05f2591bf8e28abee5e32b\workspace\transformed\core-1.12.0-api.jar' contains references to both AndroidX and old support library. This seems like the library is partially migrated. Jetifier will try to rewrite the library anyway.
+ Example of androidX reference: 'androidx/core/os/BuildCompat'
+ Example of support library reference: 'android/support/v4/app/INotificationSideChannel$Default'
+
+> Task :app:hiltJavaCompileRelease
+C:\Users\lomic\Dev\orbital-belt\app\build\generated\hilt\component_sources\release\com\orbital\run\DrawRunApplication_HiltComponents.java:140: error: [Dagger/MissingBinding] com.orbital.run.domain.repositories.ActivityRepository cannot be provided without an @Provides-annotated method.
+  public abstract static class SingletonC implements DrawRunApplication_GeneratedInjector,
+                         ^
+  
+  Missing binding usage:
+      com.orbital.run.domain.repositories.ActivityRepository is injected at
+          com.orbital.run.presentation.screens.home.HomeViewModel(activityRepository, ÔÇª)
+      com.orbital.run.presentation.screens.home.HomeViewModel is injected at
+          com.orbital.run.presentation.screens.home.HomeViewModel_HiltModules.BindsModule.binds(vm)
+      @dagger.hilt.android.internal.lifecycle.HiltViewModelMap java.util.Map<java.lang.String,javax.inject.Provider<androidx.lifecycle.ViewModel>> is requested at
+          dagger.hilt.android.internal.lifecycle.HiltViewModelFactory.ViewModelFactoriesEntryPoint.getHiltViewModelMap() [com.orbital.run.DrawRunApplication_HiltComponents.SingletonC ÔåÆ com.orbital.run.DrawRunApplication_HiltComponents.ActivityRetainedC ÔåÆ com.orbital.run.DrawRunApplication_HiltComponents.ViewModelC]
+  It is also requested at:
+      com.orbital.run.presentation.screens.analytics.AnalyticsViewModel(activityRepository)
+      com.orbital.run.presentation.screens.history.HistoryViewModel(activityRepository)
+1 error
+
+> Task :app:hiltJavaCompileRelease FAILED
+
+[Incubating] Problems report is available at: file:///C:/Users/lomic/Dev/orbital-belt/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:hiltJavaCompileRelease'.
+> Compilation failed; see the compiler output below.
+  C:\Users\lomic\Dev\orbital-belt\app\build\generated\hilt\component_sources\release\com\orbital\run\DrawRunApplication_HiltComponents.java:140: error: [Dagger/MissingBinding] com.orbital.run.domain.repositories.ActivityRepository cannot be provided without an @Provides-annotated method.
+    public abstract static class SingletonC implements DrawRunApplication_GeneratedInjector,
+                           ^
+    
+    Missing binding usage:
+        com.orbital.run.domain.repositories.ActivityRepository is injected at
+            com.orbital.run.presentation.screens.home.HomeViewModel(activityRepository, ÔÇª)
+        com.orbital.run.presentation.screens.home.HomeViewModel is injected at
+            com.orbital.run.presentation.screens.home.HomeViewModel_HiltModules.BindsModule.binds(vm)
+        @dagger.hilt.android.internal.lifecycle.HiltViewModelMap java.util.Map<java.lang.String,javax.inject.Provider<androidx.lifecycle.ViewModel>> is requested at
+            dagger.hilt.android.internal.lifecycle.HiltViewModelFactory.ViewModelFactoriesEntryPoint.getHiltViewModelMap() [com.orbital.run.DrawRunApplication_HiltComponents.SingletonC ÔåÆ com.orbital.run.DrawRunApplication_HiltComponents.ActivityRetainedC ÔåÆ com.orbital.run.DrawRunApplication_HiltComponents.ViewModelC]
+    It is also requested at:
+        com.orbital.run.presentation.screens.analytics.AnalyticsViewModel(activityRepository)
+        com.orbital.run.presentation.screens.history.HistoryViewModel(activityRepository)
+  1 error
+
+* Try:
+> Check your code and dependencies to fix the compilation error(s)
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 1m 47s
+42 actionable tasks: 6 executed, 36 up-to-date

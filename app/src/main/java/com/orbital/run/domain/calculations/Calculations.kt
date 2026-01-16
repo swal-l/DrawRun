@@ -1,7 +1,7 @@
 package com.orbital.run.domain.calculations
 
 import com.orbital.run.domain.models.Distance
-import com.orbital.run.domain.models.Duration
+import kotlin.time.Duration
 import kotlin.math.roundToInt
 
 /**
@@ -21,7 +21,7 @@ fun calculatePace(distance: Distance, duration: Duration): Long? {
     val km = distance.kilometers
     if (km <= 0.0) return null
     
-    return (duration.seconds / km).roundToInt().toLong()
+    return (duration.inWholeSeconds / km).roundToInt().toLong()
 }
 
 /**
@@ -32,7 +32,7 @@ fun calculatePace(distance: Distance, duration: Duration): Long? {
  * @return Speed in km/h, or null if duration is zero
  */
 fun calculateSpeed(distance: Distance, duration: Duration): Double? {
-    val hours = duration.seconds / 3600.0
+    val hours = duration.inWholeSeconds / 3600.0
     if (hours <= 0.0) return null
     
     return distance.kilometers / hours
@@ -57,7 +57,7 @@ fun formatPace(paceSecondsPerKm: Long): String {
  * @return Formatted string
  */
 fun formatDuration(duration: Duration): String {
-    val totalSeconds = duration.seconds
+    val totalSeconds = duration.inWholeSeconds
     val hours = totalSeconds / 3600
     val minutes = (totalSeconds % 3600) / 60
     val seconds = totalSeconds % 60

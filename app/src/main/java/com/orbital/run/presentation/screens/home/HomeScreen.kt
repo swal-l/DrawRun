@@ -145,7 +145,7 @@ private fun MigrationState(
                 
                 // Progress bar
                 LinearProgressIndicator(
-                    progress = { progress.percentage / 100f },
+                    progress = progress.percentage / 100f,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(8.dp),

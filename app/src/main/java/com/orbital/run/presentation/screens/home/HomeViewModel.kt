@@ -61,7 +61,7 @@ class HomeViewModel @Inject constructor(
     private fun observeData() {
         viewModelScope.launch {
             combine(
-                activityRepository.observeActivities(limit = 20),
+                activityRepository.observeActivities(),
                 migrator.progressFlow
             ) { activities, migrationProgress ->
                 // If migration in progress, show migration UI

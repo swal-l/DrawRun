@@ -1,5 +1,6 @@
 package com.orbital.run.ui
 
+import com.orbital.run.domain.calculations.formatPace
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.BorderStroke
@@ -1366,7 +1367,9 @@ fun InteractiveOverlaidChart(
                                 if (selectedMetrics.contains("GAP") && gapSamples.isNotEmpty()) {
                                     val idx = (progress * (gapSamples.size - 1)).toInt().coerceIn(0, gapSamples.size - 1)
                                     val gapMps = gapSamples[idx].second
-                                    ScrubValue("GAP", formatPace(gapMps * 3.6), "/km", Color(0xFF673AB7))
+                                    val speedKmh = gapMps * 3.6
+                                    val paceSec = if(speedKmh > 0.1) (3600 / speedKmh).toLong() else 0L
+                                    ScrubValue("GAP", formatPace(paceSec), "/km", Color(0xFF673AB7))
                                 }
                             }
                         }
@@ -1489,7 +1492,11 @@ fun PaceChart(samples: List<Persistence.SpeedSample>, trainingPlan: com.orbital.
                 String.format("%d:%02d", min, sec)
              } else "--:--"
         } else {
-             formatPace(mps * 3.6)
+             val speedKmh = mps * 3.6
+             if (speedKmh > 0.1) {
+                 val paceSec = (3600 / speedKmh).toLong()
+                 formatPace(paceSec)
+             } else "--:--"
         }
     }
     
